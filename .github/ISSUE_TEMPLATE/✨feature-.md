@@ -2,8 +2,8 @@
 name: "✨FEATURE "
 about: 작업할 내용을 입력해주세요
 title: "[✨FEATURE ]"
-labels: "✨ Feature, \U0001F680 FrontEnd"
-assignees: dmstjdhdh, suminl22
+labels: "✨ Feature, \U0001F680 BackEnd"
+assignees: SHKim55, RaccHoon, 1Kirl
 
 ---
 
