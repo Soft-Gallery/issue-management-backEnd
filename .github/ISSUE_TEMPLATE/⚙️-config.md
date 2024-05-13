@@ -3,7 +3,7 @@ name: "⚙️ CONFIG"
 about: 프로젝트 설정 관련하여 작성해주세요
 title: "[⚙️ CONFIG]"
 labels: "⚙️Config, \U0001F680 FrontEnd"
-assignees: dmstjdhdh, suminl22
+assignees: SHKim55, RaccHoon, 1Kirl
 
 ---
 
