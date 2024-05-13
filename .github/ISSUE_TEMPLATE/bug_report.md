@@ -2,8 +2,8 @@
 name: "\U0001FAB0BUG"
 about: 버그 해결이 필요할 때 작성해주세요
 title: "[\U0001FAB0BUG ]"
-labels: "\U0001FAB0Bug, \U0001F680 FrontEnd"
-assignees: dmstjdhdh, suminl22
+labels: "\U0001FAB0Bug, \U0001F680 BackEnd"
+assignees: SHKim55, RaccHoon, 1Kirl
 
 ---
 
