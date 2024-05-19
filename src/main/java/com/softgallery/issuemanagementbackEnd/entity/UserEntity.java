@@ -4,7 +4,7 @@ import com.softgallery.issuemanagementbackEnd.util.custom_annotation.IDRule;
 import com.softgallery.issuemanagementbackEnd.util.custom_annotation.PasswordRule;
 import com.softgallery.issuemanagementbackEnd.util.Role;
 import jakarta.persistence.*;
-//import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -24,7 +24,7 @@ public abstract class UserEntity {
     private String name;
 
     @NonNull
-//    @Email(message = "이메일 주소 형식이 올바르지 않습니다")
+    @Email(message = "이메일 주소 형식이 올바르지 않습니다")
     private String email;
 
     @NonNull
