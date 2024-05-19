@@ -1,8 +1,8 @@
 package com.softgallery.issuemanagementbackEnd.entity;
 
+import com.softgallery.issuemanagementbackEnd.service.user.Role;
 import com.softgallery.issuemanagementbackEnd.util.custom_annotation.IDRule;
 import com.softgallery.issuemanagementbackEnd.util.custom_annotation.PasswordRule;
-import com.softgallery.issuemanagementbackEnd.util.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
@@ -12,6 +12,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "user")
 public abstract class UserEntity {
     @Id
@@ -28,7 +30,6 @@ public abstract class UserEntity {
     private String email;
 
     @NonNull
-    @PasswordRule
     private String password;
 
     @NonNull

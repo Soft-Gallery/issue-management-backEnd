@@ -12,6 +12,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
     @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+
+        return new BCryptPasswordEncoder();
+    }
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
@@ -19,7 +24,7 @@ public class SecurityConfig {
                 .formLogin((auth) -> auth.disable())
                 .httpBasic((auth) -> auth.disable())
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join").permitAll()
+                        .requestMatchers("/user/login", "/", "/user/singup").permitAll()
                         // .requestMatchers("/admin").hasRole("ADMIN") 특정 롤을 가진 사용자가 접근할 수 있는 api 지정
                         .anyRequest().authenticated())
                 .sessionManagement((session) -> session

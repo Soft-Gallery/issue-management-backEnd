@@ -2,7 +2,7 @@ package com.softgallery.issuemanagementbackEnd.service.user;
 
 public enum Role {
     ADMIN,
-    TEST,
+    TESTER,
     PL,
     DEVELOPER
 }
