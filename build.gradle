@@ -33,7 +33,7 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
-	implementation 'jakarta.platform:jakarta.jakartaee-api:9.0.0'
+//	implementation 'jakarta.platform:jakarta.jakartaee-api:9.0.0'
 
 
 	compileOnly 'org.projectlombok:lombok'
