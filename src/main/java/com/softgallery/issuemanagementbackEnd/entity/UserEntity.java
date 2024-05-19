@@ -1,10 +1,7 @@
 package com.softgallery.issuemanagementbackEnd.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.softgallery.issuemanagementbackEnd.util.Role;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -26,4 +23,11 @@ public abstract class UserEntity {
 
     @NonNull
     private String password;
+
+    // @Enumerated(EnumType.STRING): DB에는 Enum 타입의 이름(ex admin)이 들어감.
+    // 프로그래밍시에는 열거형으로 처리됨
+    // 대신 role 타입 이외의 값이 들어오는것 못 막음
+    @NonNull
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
