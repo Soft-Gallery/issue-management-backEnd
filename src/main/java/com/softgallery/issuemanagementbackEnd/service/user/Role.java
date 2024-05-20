@@ -1,8 +1,8 @@
 package com.softgallery.issuemanagementbackEnd.service.user;
 
 public enum Role {
-    ADMIN,
-    TESTER,
-    PL,
-    DEVELOPER
+    ROLE_ADMIN,
+    ROLE_TESTER,
+    ROLE_PL,
+    ROLE_DEVELOPER
 }

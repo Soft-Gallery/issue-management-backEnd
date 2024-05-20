@@ -6,13 +6,13 @@ import com.softgallery.issuemanagementbackEnd.entity.*;
 public class UserEntityFactory {
     public static UserEntity createUserEntity(Role role) {
         switch (role) {
-            case ADMIN:
+            case ROLE_ADMIN:
                 return new AdminEntity();
-            case PL:
+            case ROLE_PL:
                 return new PLEntity();
-            case TESTER:
+            case ROLE_TESTER:
                 return new TesterEntity();
-            case DEVELOPER:
+            case ROLE_DEVELOPER:
                 return new DeveloperEntity();
             default:
                 throw new IllegalArgumentException("Unsupported role: " + role);

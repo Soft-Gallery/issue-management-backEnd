@@ -3,9 +3,6 @@ package com.softgallery.issuemanagementbackEnd.service.user;
 import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
 import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
 import com.softgallery.issuemanagementbackEnd.repository.UserRepository;
-import com.softgallery.issuemanagementbackEnd.util.custom_annotation.PasswordRule;
-import lombok.NonNull;
-import org.apache.catalina.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 

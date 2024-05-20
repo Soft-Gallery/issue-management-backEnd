@@ -5,12 +5,12 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
 @Entity
-@DiscriminatorValue("ADMIN")
+@DiscriminatorValue("ROLE_ADMIN")
 public class AdminEntity extends UserEntity {
     public void manageUsers() { }
 
     @Override
     public Role getRole() {
-        return Role.ADMIN;
+        return Role.ROLE_ADMIN;
     }
 }

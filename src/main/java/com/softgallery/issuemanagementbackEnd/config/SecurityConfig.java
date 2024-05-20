@@ -1,7 +1,9 @@
 package com.softgallery.issuemanagementbackEnd.config;
 
+import com.softgallery.issuemanagementbackEnd.authentication.JWTFilter;
 import com.softgallery.issuemanagementbackEnd.authentication.JWTUtil;
 import com.softgallery.issuemanagementbackEnd.authentication.LoginFilter;
+import com.softgallery.issuemanagementbackEnd.service.user.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,9 +46,13 @@ public class SecurityConfig {
                 .formLogin((auth) -> auth.disable())
                 .httpBasic((auth) -> auth.disable())
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/user/signin", "/", "/user/singup").permitAll()
-                        // .requestMatchers("/admin").hasRole("ADMIN") 특정 롤을 가진 사용자가 접근할 수 있는 api 지정
+                        .requestMatchers("/user/signin", "/", "/user/signup").permitAll()
+                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/pl").hasRole("PL")
+                        .requestMatchers("/tester").hasRole("TESTER")
+                        .requestMatchers("/developer").hasRole("DEVELOPER")
                         .anyRequest().authenticated())
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

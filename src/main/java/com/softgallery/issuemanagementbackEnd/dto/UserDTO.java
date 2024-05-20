@@ -1,7 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.dto;
 
 import com.softgallery.issuemanagementbackEnd.service.user.Role;
-import com.softgallery.issuemanagementbackEnd.util.custom_annotation.PasswordRule;
 import lombok.Getter;
 
 @Getter

@@ -1,8 +1,7 @@
 package com.softgallery.issuemanagementbackEnd.entity;
 
 import com.softgallery.issuemanagementbackEnd.service.user.Role;
-import com.softgallery.issuemanagementbackEnd.util.custom_annotation.IDRule;
-import com.softgallery.issuemanagementbackEnd.util.custom_annotation.PasswordRule;
+import com.softgallery.issuemanagementbackEnd.custom_annotation.IDRule;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;

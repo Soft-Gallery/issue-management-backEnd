@@ -5,13 +5,13 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
 @Entity
-@DiscriminatorValue("TESTER")
+@DiscriminatorValue("ROLE_TESTER")
 public class TesterEntity extends UserEntity {
     public void writeTestCases() { }
     public void performTesting() { }
 
     @Override
     public Role getRole() {
-        return Role.TESTER;
+        return Role.ROLE_TESTER;
     }
 }

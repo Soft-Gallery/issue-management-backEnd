@@ -5,13 +5,13 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
 @Entity
-@DiscriminatorValue("PL")
+@DiscriminatorValue("ROLE_PL")
 public class PLEntity extends UserEntity {
     public void manageProject() { }
     public void assignTasks() { }
 
     @Override
     public Role getRole() {
-        return Role.PL;
+        return Role.ROLE_PL;
     }
 }

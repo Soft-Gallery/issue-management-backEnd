@@ -12,4 +12,29 @@ public class Home {
     public String test() {
         return "server is running";
     }
+
+    @GetMapping("/auth/check")
+    public String authTest() {
+        return "token is valid";
+    }
+
+    @GetMapping("/admin")
+    public String adminTest() {
+        return "you are admin";
+    }
+
+    @GetMapping("/tester")
+    public String testerTest() {
+        return "you are TESTER";
+    }
+
+    @GetMapping("/pl")
+    public String plTest() {
+        return "you are PL";
+    }
+
+    @GetMapping("/developer")
+    public String devTest() {
+        return "you are developer";
+    }
 }

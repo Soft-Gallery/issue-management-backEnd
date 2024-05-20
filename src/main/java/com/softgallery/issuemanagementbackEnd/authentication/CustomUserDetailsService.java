@@ -25,6 +25,8 @@ public class CustomUserDetailsService implements UserDetailsService {
             return new CustomUserDetails(userData);
         }
 
-        return null;
+        System.out.println("user id: " + userid);
+
+        throw new UsernameNotFoundException(userid);
     }
 }
