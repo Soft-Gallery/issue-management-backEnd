@@ -1,5 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.config;
 
+import com.softgallery.issuemanagementbackEnd.authentication.JWTUtil;
 import com.softgallery.issuemanagementbackEnd.authentication.LoginFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,10 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JWTUtil jwtUtil;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
-
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
         this.authenticationConfiguration = authenticationConfiguration;
+        this.jwtUtil = jwtUtil;
     }
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -42,10 +44,10 @@ public class SecurityConfig {
                 .formLogin((auth) -> auth.disable())
                 .httpBasic((auth) -> auth.disable())
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/user/login", "/", "/user/singup").permitAll()
+                        .requestMatchers("/user/signin", "/", "/user/singup").permitAll()
                         // .requestMatchers("/admin").hasRole("ADMIN") 특정 롤을 가진 사용자가 접근할 수 있는 api 지정
                         .anyRequest().authenticated())
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

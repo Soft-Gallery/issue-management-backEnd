@@ -39,7 +39,6 @@ public class UserService implements UserServiceIF {
             userData.setPassword(bCryptPasswordEncoder.encode(userPassword));
             userData.setName(userDTO.getName());
             userData.setEmail(userDTO.getEmail());
-            userData.setRole(userDTO.getRole());
 
             userRepository.save(userData);
             return true;

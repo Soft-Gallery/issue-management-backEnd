@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "user")
 public abstract class UserEntity {
     @Id
@@ -32,7 +32,5 @@ public abstract class UserEntity {
     @NonNull
     private String password;
 
-    @NonNull
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    public abstract Role getRole();
 }

@@ -1,6 +1,17 @@
 package com.softgallery.issuemanagementbackEnd.entity;
 
+import com.softgallery.issuemanagementbackEnd.service.user.Role;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity
+@DiscriminatorValue("TESTER")
 public class TesterEntity extends UserEntity {
     public void writeTestCases() { }
     public void performTesting() { }
+
+    @Override
+    public Role getRole() {
+        return Role.TESTER;
+    }
 }
