@@ -35,8 +35,6 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        System.out.println("authorization now");
-
         String token = JWTUtil.getOnlyToken(authorization);
 
         //토큰 소멸 시간 검증
@@ -50,7 +48,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String userId = jwtUtil.getUserId(token);
         String role = jwtUtil.getRole(token);
-        System.out.println("role is " + role);
 
         //userEntity를 생성하여 값 set
         UserEntity userEntity = UserEntityFactory.createUserEntity(Role.valueOf(role));

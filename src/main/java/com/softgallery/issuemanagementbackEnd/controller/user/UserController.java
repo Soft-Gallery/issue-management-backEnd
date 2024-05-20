@@ -20,7 +20,6 @@ public class UserController {
 
     @PostMapping("/signup")
     public boolean CreateUser(@RequestBody UserDTO userDTO) {
-        System.out.println(userDTO.getRole());
         return userService.createUser(userDTO);
     }
 
