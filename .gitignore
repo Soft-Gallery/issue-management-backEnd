@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### Application Properties ###
-src/main/resources/application.properties
+resources/application.properties
