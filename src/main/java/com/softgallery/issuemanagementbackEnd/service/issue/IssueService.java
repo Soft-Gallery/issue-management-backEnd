@@ -9,11 +9,15 @@ import com.softgallery.issuemanagementbackEnd.entity.CommentEntity;
 import com.softgallery.issuemanagementbackEnd.entity.IssueEntity;
 import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
 import com.softgallery.issuemanagementbackEnd.repository.IssueRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.softgallery.issuemanagementbackEnd.repository.UserRepository;
 import com.softgallery.issuemanagementbackEnd.service.user.UserEntityFactory;
+import com.softgallery.issuemanagementbackEnd.service.user.UserService;
+import com.softgallery.issuemanagementbackEnd.service.user.UserServiceIF;
 import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +25,14 @@ import org.springframework.stereotype.Service;
 public class IssueService implements IssueServiceIF {
     private final IssueRepository issueRepository;
     private final UserRepository userRepository;
+
+    private final UserServiceIF userService;
     private final JWTUtil jwtUtil;
 
-    public IssueService(final IssueRepository issueRepository, UserRepository userRepository, final JWTUtil jwtUtil) {
+    public IssueService(final IssueRepository issueRepository, UserRepository userRepository, UserServiceIF userService, final JWTUtil jwtUtil) {
         this.issueRepository = issueRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
         this.jwtUtil = jwtUtil;
     }
 
@@ -35,19 +42,9 @@ public class IssueService implements IssueServiceIF {
             String onlyToken = JWTUtil.getOnlyToken(fullToken);
             String currUserId = jwtUtil.getUserId(onlyToken);
 
-            IssueEntity issueEntity = new IssueEntity();
-            issueEntity.setTitle(issueDTO.getTitle());
-            issueEntity.setDescription(issueDTO.getDescription());
-            issueEntity.setReporterId(currUserId);
-            issueEntity.setStatus(State.NEW);
-            issueEntity.setPriority(issueDTO.getPriority()!=null ? issueDTO.getPriority() : Priority.MAJOR);
-            issueEntity.setAssigneeId(null);
-            issueEntity.setFixerId(null);
-            issueEntity.setProjectId(issueDTO.getProjectId());
-
+            IssueEntity issueEntity = switchIssueDTOToEntity(issueDTO, currUserId);
             IssueEntity savedEntity = issueRepository.save(issueEntity);
             System.out.println(savedEntity.getIssueId());
-
             return true;
         }
         catch (IllegalArgumentException e) {
@@ -62,23 +59,29 @@ public class IssueService implements IssueServiceIF {
             throw new RuntimeException("IssueEntity with id " + id + " not found.");
         }
         else {
-            IssueEntity iE = optionalIssueEntity.get();
-
-            UserEntity reporter = userRepository.findByUserId(iE.getReporterId());
-            UserEntity assignee = userRepository.findByUserId(iE.getAssigneeId());
-            UserEntity fixer = userRepository.findByUserId(iE.getFixerId());
-
-            UserDTO reporterDTO = reporter!=null ? new UserDTO(reporter) : null;
-            UserDTO assigneeDTO = assignee!=null ? new UserDTO(assignee) : null;
-            UserDTO fixerDTO = fixer!=null ? new UserDTO(fixer) : null;
-
-            List<CommentEntity> comments = null;
-
-            IssueDTO issueDTO = new IssueDTO(iE.getIssueId(), iE.getTitle(), iE.getDescription(), reporterDTO,
-                    iE.getStatus(), iE.getPriority(), assigneeDTO, comments, fixerDTO, iE.getProjectId());
-
-            return issueDTO;
+            IssueEntity issueEntity = optionalIssueEntity.get();
+            return switchIssueEntityToDTO(issueEntity);
         }
+    }
+
+    @Override
+    public List<IssueDTO> findAllIssues() {
+        List<IssueEntity> issueEntities = issueRepository.findAll();
+        List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
+        for(IssueEntity currEntity:issueEntities) {
+            issueDTOS.add(switchIssueEntityToDTO(currEntity));
+        }
+        return issueDTOS;
+    }
+
+    @Override
+    public List<IssueDTO> findNewStateIssues() {
+        List<IssueEntity> issueEntities = issueRepository.findByStatus(State.NEW);
+        List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
+        for(IssueEntity currEntity:issueEntities) {
+            issueDTOS.add(switchIssueEntityToDTO(currEntity));
+        }
+        return issueDTOS;
     }
 
     @Override
@@ -104,5 +107,126 @@ public class IssueService implements IssueServiceIF {
     @Override
     public StatisticsDTO getIssueStatistics() {
         return null;
+    }
+
+    @Override
+    public IssueEntity switchIssueDTOToEntity(IssueDTO issueDTO, String currUserId) {
+        if(issueDTO==null) return null;
+
+        IssueEntity issueEntity = new IssueEntity();
+        issueEntity.setTitle(issueDTO.getTitle());
+        issueEntity.setDescription(issueDTO.getDescription());
+        issueEntity.setReporterId(currUserId);
+        issueEntity.setStatus(State.NEW);
+        issueEntity.setPriority(issueDTO.getPriority()!=null ? issueDTO.getPriority() : Priority.MAJOR);
+        issueEntity.setAssigneeId(null);
+        issueEntity.setFixerId(null);
+        issueEntity.setProjectId(issueDTO.getProjectId());
+
+        return issueEntity;
+    }
+
+    @Override
+    public void assignDev(Long issueId, String userID) {
+        Optional<IssueEntity> issueEntity = issueRepository.findById(issueId);
+        if(!issueEntity.isPresent()) {
+            throw new RuntimeException("IssueEntity with id " + userID + " not found.");
+        }
+        else {
+            IssueEntity currIssue = issueEntity.get();
+            currIssue.setAssigneeId(userID);
+            currIssue.setStatus(State.ASSIGNED);
+
+            issueRepository.save(currIssue);
+        }
+
+    }
+
+    @Override
+    public List<IssueDTO> findAssignedToMeIssues(String token) {
+        String realToken=JWTUtil.getOnlyToken(token);
+        String userId=jwtUtil.getUserId(realToken);
+
+        List<IssueEntity> issueEntities = issueRepository.findByStatusAndAssigneeId(State.ASSIGNED, userId);
+        List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
+        for(IssueEntity currEntity:issueEntities) {
+            issueDTOS.add(switchIssueEntityToDTO(currEntity));
+        }
+        return issueDTOS;
+    }
+
+    @Override
+    public void fixIssue(String token, Long issueId) {
+        String realToken = JWTUtil.getOnlyToken(token);
+        String userId = jwtUtil.getUserId(realToken);
+        Optional<IssueEntity> issueEntity = issueRepository.findById(issueId);
+        if(!issueEntity.isPresent()) {
+            throw new RuntimeException("IssueEntity with id " + userId + " not found.");
+        }
+        else {
+            IssueEntity issue = issueEntity.get();
+            String assigneeId=issue.getAssigneeId();
+            if(assigneeId==null || !assigneeId.equals(userId)) {
+                throw new RuntimeException("This Issue is not Assigned To " + userId);
+            }
+            else {
+                issue.setFixerId(userId);
+                issue.setStatus(State.FIXED);
+                issueRepository.save(issue);
+            }
+        }
+    }
+
+    @Override
+    public List<IssueDTO> findFixedIssueRelatedReporter(String token) {
+        String realToken=JWTUtil.getOnlyToken(token);
+        String userId=jwtUtil.getUserId(realToken);
+
+        List<IssueEntity> issueEntities = issueRepository.findByStatusAndReporterId(State.FIXED, userId);
+        List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
+        for(IssueEntity currEntity:issueEntities) {
+            issueDTOS.add(switchIssueEntityToDTO(currEntity));
+        }
+        return issueDTOS;
+    }
+
+    @Override
+    public void resolveIssue(String token, Long issueId) {
+        String realToken = JWTUtil.getOnlyToken(token);
+        String userId = jwtUtil.getUserId(realToken);
+        Optional<IssueEntity> issueEntity = issueRepository.findById(issueId);
+        if(!issueEntity.isPresent()) {
+            throw new RuntimeException("IssueEntity with id " + userId + " not found.");
+        }
+        else {
+            IssueEntity issue = issueEntity.get();
+            String reporterId=issue.getReporterId();
+            if(!reporterId.equals(userId)) {
+                throw new RuntimeException("This Issue is not reported To " + userId);
+            }
+            else {
+                issue.setStatus(State.RESOLVED);
+                issueRepository.save(issue);
+            }
+        }
+    }
+
+    @Override
+    public IssueDTO switchIssueEntityToDTO(IssueEntity iE) {
+        if(iE==null) return null;
+
+        UserEntity reporter = userRepository.findByUserId(iE.getReporterId());
+        UserEntity assignee = userRepository.findByUserId(iE.getAssigneeId());
+        UserEntity fixer = userRepository.findByUserId(iE.getFixerId());
+
+        UserDTO reporterDTO =userService.switchUserEntityToDTO(reporter);
+        UserDTO assigneeDTO = userService.switchUserEntityToDTO(assignee);
+        UserDTO fixerDTO = userService.switchUserEntityToDTO(fixer);
+
+        List<CommentEntity> comments = null;
+
+        IssueDTO issueDTO = new IssueDTO(iE.getIssueId(), iE.getTitle(), iE.getDescription(), reporterDTO,
+                iE.getStatus(), iE.getPriority(), assigneeDTO, comments, fixerDTO, iE.getProjectId());
+        return issueDTO;
     }
 }

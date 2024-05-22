@@ -21,11 +21,4 @@ public class UserDTO {
         this.password=password;
         this.role = role;
     }
-
-    public UserDTO(UserEntity userEntity) {
-        this.id=userEntity.getUserId();
-        this.name = userEntity.getName();
-        this.email = userEntity.getEmail();
-        this.role = userEntity.getRole();
-    }
 }

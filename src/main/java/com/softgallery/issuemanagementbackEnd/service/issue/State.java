@@ -4,6 +4,7 @@ public enum State {
         NEW,
         ASSIGNED,
         FIXED,
-        RESOLVED
+        RESOLVED,
+        CLOSED
 
 }

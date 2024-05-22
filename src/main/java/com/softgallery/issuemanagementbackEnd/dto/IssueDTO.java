@@ -1,11 +1,9 @@
 package com.softgallery.issuemanagementbackEnd.dto;
 
-import com.softgallery.issuemanagementbackEnd.entity.CommentEntity;
-import com.softgallery.issuemanagementbackEnd.entity.DeveloperEntity;
-import com.softgallery.issuemanagementbackEnd.entity.TesterEntity;
+import com.softgallery.issuemanagementbackEnd.entity.*;
+
 import java.util.List;
 
-import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
 import com.softgallery.issuemanagementbackEnd.service.issue.Priority;
 import com.softgallery.issuemanagementbackEnd.service.issue.State;
 import lombok.Getter;
