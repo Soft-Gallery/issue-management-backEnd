@@ -50,39 +50,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors((cors) -> cors
-                        .configurationSource(new CorsConfigurationSource() {
-                            @Override
-                            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                                CorsConfiguration configuration = new CorsConfiguration();
-
-                                configuration.setAllowedOrigins(Collections.singletonList(allowedOrigin));
-                                configuration.setAllowedMethods(Collections.singletonList("*"));
-                                configuration.setAllowCredentials(true);
-                                configuration.setAllowedHeaders(Collections.singletonList("Authorization"));
-                                configuration.setMaxAge(3600L);
-
-                                configuration.setExposedHeaders(Collections.singletonList("Authorization"));
-
-                                return null;
-                            }
-                        })
-                )
                 .csrf((auth) -> auth.disable())
                 .formLogin((auth) -> auth.disable())
                 .httpBasic((auth) -> auth.disable())
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/user/signin", "/", "/user/signup").permitAll()
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(
+                                "/user/signup", "/user/signin", "/"
+                        )
+                        .permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/pl").hasRole("PL")
                         .requestMatchers("/tester").hasRole("TESTER")
                         .requestMatchers("/developer").hasRole("DEVELOPER")
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()
+
+                )
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
+
+
 }
