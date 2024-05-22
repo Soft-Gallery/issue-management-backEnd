@@ -1,5 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.entity;
 
+import com.softgallery.issuemanagementbackEnd.service.issue.State;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,7 +30,7 @@ public class IssueEntity {
     private String reporterId;
 
     @NonNull
-    private String status;
+    private Enum<State> status;
 
     @NonNull
     private String priority;
