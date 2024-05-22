@@ -20,6 +20,8 @@ public interface IssueRepository extends JpaRepository<IssueEntity, Long> {
     List<IssueEntity> findByStatusAndAssigneeId(State status, String assigneeId);
     List<IssueEntity> findByStatusAndReporterId(State status, String ReporterId);
 
+
+
     @Override
     List<IssueEntity> findAll();
 
