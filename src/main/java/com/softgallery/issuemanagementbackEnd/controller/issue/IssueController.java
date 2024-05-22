@@ -2,6 +2,7 @@ package com.softgallery.issuemanagementbackEnd.controller.issue;
 
 import com.softgallery.issuemanagementbackEnd.dto.IssueDTO;
 import com.softgallery.issuemanagementbackEnd.service.issue.IssueServiceIF;
+import com.softgallery.issuemanagementbackEnd.service.issue.State;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class IssueController {
         return this.issueServiceIF.createIssue(issueDTO, token);
     }
 
-    @GetMapping("/searching/{issueId}")
+    @GetMapping("/searching/id/{issueId}")
     public IssueDTO getIssue(@PathVariable("issueId") Long issueId) {
         return this.issueServiceIF.getIssue(issueId);
     }
@@ -32,9 +33,9 @@ public class IssueController {
         return this.issueServiceIF.findAllIssues();
     }
 
-    @GetMapping("/searching/state/new")
-    public List<IssueDTO> findNewStateIssues() {
-        return this.issueServiceIF.findNewStateIssues();
+    @GetMapping("/searching/state/{status}")
+    public List<IssueDTO> findNewStateIssues(@PathVariable("status") State state) {
+        return this.issueServiceIF.findNewStateIssues(state);
     }
 
     @GetMapping("/assignment/{issueId}/{devId}")
@@ -60,5 +61,10 @@ public class IssueController {
     @GetMapping("/resolving/{issueId}")
     public void resolveIssue(@RequestHeader(name="Authorization") String token, @PathVariable("issueId") Long issueId) {
         this.issueServiceIF.resolveIssue(token, issueId);
+    }
+
+    @GetMapping("/closing/{issueId}")
+    public void closeIssue(@PathVariable("issueId") Long issueId) {
+        this.issueServiceIF.closeIssue(issueId);
     }
 }

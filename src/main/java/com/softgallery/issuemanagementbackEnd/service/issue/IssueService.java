@@ -13,6 +13,7 @@ import com.softgallery.issuemanagementbackEnd.repository.IssueRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import com.softgallery.issuemanagementbackEnd.repository.UserRepository;
 import com.softgallery.issuemanagementbackEnd.service.user.UserEntityFactory;
@@ -75,8 +76,8 @@ public class IssueService implements IssueServiceIF {
     }
 
     @Override
-    public List<IssueDTO> findNewStateIssues() {
-        List<IssueEntity> issueEntities = issueRepository.findByStatus(State.NEW);
+    public List<IssueDTO> findNewStateIssues(State state) {
+        List<IssueEntity> issueEntities = issueRepository.findByStatus(state);
         List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
         for(IssueEntity currEntity:issueEntities) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));
@@ -130,7 +131,7 @@ public class IssueService implements IssueServiceIF {
     public void assignDev(Long issueId, String userID) {
         Optional<IssueEntity> issueEntity = issueRepository.findById(issueId);
         if(!issueEntity.isPresent()) {
-            throw new RuntimeException("IssueEntity with id " + userID + " not found.");
+            throw new RuntimeException("IssueEntity with id " + issueId + " not found.");
         }
         else {
             IssueEntity currIssue = issueEntity.get();
@@ -161,7 +162,7 @@ public class IssueService implements IssueServiceIF {
         String userId = jwtUtil.getUserId(realToken);
         Optional<IssueEntity> issueEntity = issueRepository.findById(issueId);
         if(!issueEntity.isPresent()) {
-            throw new RuntimeException("IssueEntity with id " + userId + " not found.");
+            throw new RuntimeException("IssueEntity with id " + issueId + " not found.");
         }
         else {
             IssueEntity issue = issueEntity.get();
@@ -196,7 +197,7 @@ public class IssueService implements IssueServiceIF {
         String userId = jwtUtil.getUserId(realToken);
         Optional<IssueEntity> issueEntity = issueRepository.findById(issueId);
         if(!issueEntity.isPresent()) {
-            throw new RuntimeException("IssueEntity with id " + userId + " not found.");
+            throw new RuntimeException("IssueEntity with id " + issueId + " not found.");
         }
         else {
             IssueEntity issue = issueEntity.get();
@@ -208,6 +209,19 @@ public class IssueService implements IssueServiceIF {
                 issue.setStatus(State.RESOLVED);
                 issueRepository.save(issue);
             }
+        }
+    }
+
+    @Override
+    public void closeIssue(Long issueId) {
+        Optional<IssueEntity> issueEntity = issueRepository.findById(issueId);
+        if(!issueEntity.isPresent()) {
+            throw new RuntimeException("IssueEntity with id " + issueId + " not found.");
+        }
+        else {
+            IssueEntity issue = issueEntity.get();
+            issue.setStatus(State.CLOSED);
+            issueRepository.save(issue);
         }
     }
 

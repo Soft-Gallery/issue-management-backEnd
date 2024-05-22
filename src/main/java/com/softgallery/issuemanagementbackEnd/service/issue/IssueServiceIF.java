@@ -13,7 +13,7 @@ public interface IssueServiceIF {
 
     List<IssueDTO> findAllIssues();
 
-    List<IssueDTO> findNewStateIssues();
+    List<IssueDTO> findNewStateIssues(State state);
     void updateIssue(IssueDTO issueDTO, Long id);
     void deleteIssue(Long id);
     void addComment();
@@ -32,5 +32,7 @@ public interface IssueServiceIF {
     List<IssueDTO> findFixedIssueRelatedReporter(String token);
 
     void resolveIssue(String token, Long issueId);
+
+    void closeIssue(Long issueId);
 
 }
