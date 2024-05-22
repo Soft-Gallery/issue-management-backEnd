@@ -1,13 +1,22 @@
 package com.softgallery.issuemanagementbackEnd.controller;
 
+import com.softgallery.issuemanagementbackEnd.authentication.JWTUtil;
+import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @ResponseBody
 public class Home {
+    JWTUtil jwtUtil;
+
+    Home(JWTUtil jwtUtil) {
+        this.jwtUtil=jwtUtil;
+    }
+
     @GetMapping("/")
     public String test() {
         return "server is running";
@@ -36,5 +45,11 @@ public class Home {
     @GetMapping("/developer")
     public String devTest() {
         return "you are developer";
+    }
+
+    @GetMapping("/home/user/info")
+    public String showUserInfo(@RequestHeader(name="Authorization") String token) {
+        String onlyToken=JWTUtil.getOnlyToken(token);
+        return jwtUtil.getUserId(onlyToken);
     }
 }

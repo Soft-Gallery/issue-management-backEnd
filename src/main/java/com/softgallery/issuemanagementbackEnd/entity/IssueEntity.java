@@ -1,5 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,7 +26,7 @@ public class IssueEntity {
     private String description;
 
     @NonNull
-    private Long reporterId;
+    private String reporterId;
 
     @NonNull
     private String status;
@@ -33,11 +34,11 @@ public class IssueEntity {
     @NonNull
     private String priority;
 
-    @NonNull
-    private Long assigneeId;
+    @Nullable
+    private String assigneeId;
 
-    @NonNull
-    private Long fixerId;
+    @Nullable
+    private String fixerId;
 
     @NonNull
     private Long projectId;
