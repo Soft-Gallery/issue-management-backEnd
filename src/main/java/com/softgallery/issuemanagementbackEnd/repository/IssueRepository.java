@@ -7,12 +7,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IssueRepository extends JpaRepository<IssueEntity, Integer> {
+public interface IssueRepository extends JpaRepository<IssueEntity, Long> {
     @Override
     <S extends IssueEntity> S save(S entity);
 
     @Override
-    Optional<IssueEntity> findById(Integer integer);
+    Optional<IssueEntity> findById(Long id);
 
     @Override
     List<IssueEntity> findAll();

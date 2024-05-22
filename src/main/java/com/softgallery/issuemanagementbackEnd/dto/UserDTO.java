@@ -1,5 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.dto;
 
+import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
 import com.softgallery.issuemanagementbackEnd.service.user.Role;
 import lombok.Getter;
 
@@ -19,5 +20,12 @@ public class UserDTO {
         this.email = email;
         this.password=password;
         this.role = role;
+    }
+
+    public UserDTO(UserEntity userEntity) {
+        this.id=userEntity.getUserId();
+        this.name = userEntity.getName();
+        this.email = userEntity.getEmail();
+        this.role = userEntity.getRole();
     }
 }

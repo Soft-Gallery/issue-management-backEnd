@@ -19,4 +19,9 @@ public class IssueController {
     public boolean createIssue(@RequestBody IssueDTO issueDTO, @RequestHeader(name = "Authorization") String token) {
         return this.issueServiceIF.createIssue(issueDTO, token);
     }
+
+    @GetMapping("/{issueId}")
+    public IssueDTO getIssue(@PathVariable("issueId") Long issueId) {
+        return this.issueServiceIF.getIssue(issueId);
+    }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
 import com.softgallery.issuemanagementbackEnd.service.issue.Priority;
+import com.softgallery.issuemanagementbackEnd.service.issue.State;
 import lombok.Getter;
 
 @Getter
@@ -14,18 +15,18 @@ public class IssueDTO {
     private Long id;
     private String title;
     private String description;
-    private UserEntity reporter;
-    private String status;
+    private UserDTO reporter;
+    private State status;
     private Priority priority;
-    private UserEntity assignee;
-    private UserEntity fixer;
+    private UserDTO assignee;
+    private UserDTO fixer;
     private Long projectId;
     private List<CommentEntity> comments;
 
     public IssueDTO() { }
 
-    public IssueDTO(final Long id, final String title, final String description, final TesterEntity reporter,
-                    final String status, final Priority priority) {
+    public IssueDTO(final Long id, final String title, final String description, final UserDTO reporter,
+                    final State status, final Priority priority) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -34,9 +35,9 @@ public class IssueDTO {
         this.priority = priority;
     }
 
-    public IssueDTO(final Long id, final String title, final String description, final TesterEntity reporter,
-                    final String status, final Priority priority,
-                    final DeveloperEntity assignee) {
+    public IssueDTO(final Long id, final String title, final String description, final UserDTO reporter,
+                    final State status, final Priority priority,
+                    final UserDTO assignee) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -46,9 +47,9 @@ public class IssueDTO {
         this.assignee = assignee;
     }
 
-    public IssueDTO(final Long id, final String title, final String description, final TesterEntity reporter,
-                    final String status, final Priority priority,
-                    final DeveloperEntity assignee, final List<CommentEntity> comments, final UserEntity fixer, final Long projectId) {
+    public IssueDTO(final Long id, final String title, final String description, final UserDTO reporter,
+                    final State status, final Priority priority,
+                    final UserDTO assignee, final List<CommentEntity> comments, final UserDTO fixer, final Long projectId) {
         this.id = id;
         this.title = title;
         this.description = description;
