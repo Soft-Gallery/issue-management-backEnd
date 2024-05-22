@@ -16,45 +16,37 @@ import org.springframework.stereotype.Service;
 @Service
 public class IssueService implements IssueServiceIF {
     private final IssueRepository issueRepository;
-    private final UserRepository userRepository;
     private final JWTUtil jwtUtil;
 
-    public IssueService(final IssueRepository issueRepository, final UserRepository userRepository, final JWTUtil jwtUtil) {
+    public IssueService(final IssueRepository issueRepository, final JWTUtil jwtUtil) {
         this.issueRepository = issueRepository;
-        this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
     }
 
     @Override
     public boolean createIssue(final IssueDTO issueDTO, String fullToken) {
-//        try {
-//            String onlyToken = JWTUtil.getOnlyToken(fullToken);
-//            String currUserId = jwtUtil.getUserId(onlyToken);
-//            UserEntity currUser = userRepository.findByUserId(jwtUtil.getUserId(onlyToken));
-//
-//            IssueEntity issueEntity = new IssueEntity();
-//            issueEntity.setTitle(issueDTO.getTitle());
-//            issueEntity.setDescription(issueDTO.getDescription());
-//            issueEntity.setReporterId(currUserId);
-//            issueEntity.setStatus();
-//
-//
-//
-//            UserEntity userData = UserEntityFactory.createUserEntity(userRole);
-//            userData.setUserId(userId);
-//            userData.setPassword(bCryptPasswordEncoder.encode(userPassword));
-//            userData.setName(userDTO.getName());
-//            userData.setEmail(userDTO.getEmail());
-//
-//            userRepository.save(userData);
-//            return true;
-//        }
-//        catch (IllegalArgumentException e) {
-//            return false;
-//        }
-//
-//        this.issueRepository.save()
-        return true;
+        try {
+            String onlyToken = JWTUtil.getOnlyToken(fullToken);
+            String currUserId = jwtUtil.getUserId(onlyToken);
+
+            IssueEntity issueEntity = new IssueEntity();
+            issueEntity.setTitle(issueDTO.getTitle());
+            issueEntity.setDescription(issueDTO.getDescription());
+            issueEntity.setReporterId(currUserId);
+            issueEntity.setStatus(State.NEW);
+            issueEntity.setPriority(issueDTO.getPriority()!=null ? issueDTO.getPriority() : Priority.MAJOR);
+            issueEntity.setAssigneeId(null);
+            issueEntity.setFixerId(null);
+            issueEntity.setProjectId(issueDTO.getProjectId());
+
+            IssueEntity savedEntity = issueRepository.save(issueEntity);
+            System.out.println(savedEntity.getIssueId());
+
+            return true;
+        }
+        catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     @Override

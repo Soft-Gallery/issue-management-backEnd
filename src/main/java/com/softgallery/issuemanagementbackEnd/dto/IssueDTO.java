@@ -6,6 +6,7 @@ import com.softgallery.issuemanagementbackEnd.entity.TesterEntity;
 import java.util.List;
 
 import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
+import com.softgallery.issuemanagementbackEnd.service.issue.Priority;
 import lombok.Getter;
 
 @Getter
@@ -15,7 +16,7 @@ public class IssueDTO {
     private String description;
     private UserEntity reporter;
     private String status;
-    private String priority;
+    private Priority priority;
     private UserEntity assignee;
     private UserEntity fixer;
     private Long projectId;
@@ -24,7 +25,7 @@ public class IssueDTO {
     public IssueDTO() { }
 
     public IssueDTO(final Long id, final String title, final String description, final TesterEntity reporter,
-                    final String status, final String priority) {
+                    final String status, final Priority priority) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -34,7 +35,7 @@ public class IssueDTO {
     }
 
     public IssueDTO(final Long id, final String title, final String description, final TesterEntity reporter,
-                    final String status, final String priority,
+                    final String status, final Priority priority,
                     final DeveloperEntity assignee) {
         this.id = id;
         this.title = title;
@@ -46,7 +47,7 @@ public class IssueDTO {
     }
 
     public IssueDTO(final Long id, final String title, final String description, final TesterEntity reporter,
-                    final String status, final String priority,
+                    final String status, final Priority priority,
                     final DeveloperEntity assignee, final List<CommentEntity> comments, final UserEntity fixer, final Long projectId) {
         this.id = id;
         this.title = title;

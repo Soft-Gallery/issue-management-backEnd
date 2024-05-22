@@ -75,7 +75,7 @@ public class SecurityConfig {
                         .requestMatchers("/user/signin", "/", "/user/signup").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/pl").hasRole("PL")
-                        .requestMatchers("/tester").hasRole("TESTER")
+                        .requestMatchers("/tester", "/issue/new").hasRole("TESTER")
                         .requestMatchers("/developer").hasRole("DEVELOPER")
                         .anyRequest().authenticated())
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)

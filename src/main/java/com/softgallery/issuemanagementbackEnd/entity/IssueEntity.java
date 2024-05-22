@@ -1,12 +1,9 @@
 package com.softgallery.issuemanagementbackEnd.entity;
 
+import com.softgallery.issuemanagementbackEnd.service.issue.Priority;
 import com.softgallery.issuemanagementbackEnd.service.issue.State;
 import jakarta.annotation.Nullable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -29,11 +26,13 @@ public class IssueEntity {
     @NonNull
     private String reporterId;
 
+    @Enumerated(EnumType.STRING)
     @NonNull
-    private Enum<State> status;
+    private State status;
 
+    @Enumerated(EnumType.STRING)
     @NonNull
-    private String priority;
+    private Priority priority;
 
     @Nullable
     private String assigneeId;
