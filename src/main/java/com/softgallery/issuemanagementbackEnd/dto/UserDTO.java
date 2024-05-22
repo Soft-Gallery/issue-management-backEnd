@@ -1,5 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.dto;
 
+import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
 import com.softgallery.issuemanagementbackEnd.service.user.Role;
 import lombok.Getter;
 

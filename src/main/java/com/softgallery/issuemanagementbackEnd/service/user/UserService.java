@@ -67,5 +67,11 @@ public class UserService implements UserServiceIF {
         Matcher matcher = pattern.matcher(password);
         return matcher.matches();
     }
+
+    public UserDTO switchUserEntityToDTO(UserEntity userEntity) {
+        if(userEntity==null) return null;
+        return new UserDTO(userEntity.getUserId(), userEntity.getName(),
+        userEntity.getEmail(), "garbage", userEntity.getRole());
+    }
 }
 
