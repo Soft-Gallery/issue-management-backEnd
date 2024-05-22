@@ -30,6 +30,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String userId = obtainUserId(request);
         String password = obtainPassword(request);
 
+        System.out.println("userId: " + userId);
+        System.out.println("password: " + password);
+
+
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userId, password, null);
 
         return authenticationManager.authenticate(authToken);
