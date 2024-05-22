@@ -27,7 +27,7 @@ public class CommentEntity {
     private LocalDateTime createdAt;
 
     @NonNull
-    private Long authorId;
+    private String authorId;
 
     @NonNull
     private Long issueId;
