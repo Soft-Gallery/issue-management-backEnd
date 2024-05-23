@@ -6,6 +6,8 @@ import com.softgallery.issuemanagementbackEnd.entity.PLEntity;
 import com.softgallery.issuemanagementbackEnd.entity.TesterEntity;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.softgallery.issuemanagementbackEnd.service.project.ProjectState;
 import lombok.Getter;
 
 @Getter
@@ -15,6 +17,7 @@ public class ProjectDTO {
     private String description;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private ProjectState projectState;
     private AdminEntity admin;
     private List<PLEntity> PLs;
     private List<TesterEntity> testers;
@@ -23,13 +26,14 @@ public class ProjectDTO {
     public ProjectDTO() { }
 
     public ProjectDTO(final Long id, final String name, final String description, final LocalDateTime startDate,
-                      final LocalDateTime endDate,
+                      final LocalDateTime endDate, final ProjectState projectState,
                       final AdminEntity admin) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.projectState = projectState;
         this.admin = admin;
     }
 

@@ -29,7 +29,7 @@ public class ProjectService implements ProjectServiceIF {
             projectEntity.setDescription(projectDTO.getDescription());
             projectEntity.setStartDate(projectDTO.getStartDate());
             projectEntity.setEndDate(projectDTO.getEndDate());
-
+            projectEntity.setProjectState(ProjectState.InProgress); // for the first creation, the state is always 'InProgress'
             String realToken = JWTUtil.getOnlyToken(token);
             String userID = jwtUtil.getUserId(realToken);
             projectEntity.setAdminId(userID);
