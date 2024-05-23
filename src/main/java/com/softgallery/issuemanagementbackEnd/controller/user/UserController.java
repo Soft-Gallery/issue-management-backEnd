@@ -3,10 +3,7 @@ package com.softgallery.issuemanagementbackEnd.controller.user;
 import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
 import com.softgallery.issuemanagementbackEnd.service.user.UserServiceIF;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @ResponseBody
@@ -22,5 +19,11 @@ public class UserController {
     public boolean CreateUser(@RequestBody UserDTO userDTO) {
         return userService.createUser(userDTO);
     }
+
+    @GetMapping("/info")
+    public UserDTO getUser(@RequestHeader(name="Authorization") String token) {
+        return this.userService.getUser(token);
+    }
+
 
 }
