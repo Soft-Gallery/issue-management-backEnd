@@ -24,6 +24,4 @@ public class UserController {
     public UserDTO getUser(@RequestHeader(name="Authorization") String token) {
         return this.userService.getUser(token);
     }
-
-
 }
