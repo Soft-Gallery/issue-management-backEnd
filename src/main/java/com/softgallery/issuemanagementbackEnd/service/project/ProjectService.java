@@ -33,6 +33,7 @@ public class ProjectService implements ProjectServiceIF {
             String realToken = JWTUtil.getOnlyToken(token);
             String userID = jwtUtil.getUserId(realToken);
             projectEntity.setAdminId(userID);
+            projectRepository.save(projectEntity);
             return true;
         }catch (IllegalArgumentException e){
             return false;
@@ -42,6 +43,8 @@ public class ProjectService implements ProjectServiceIF {
 
     @Override
     public ProjectDTO getProject(Long id) {
+
+
         return null;
     }
 
