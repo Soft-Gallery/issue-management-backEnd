@@ -1,11 +1,9 @@
 package com.softgallery.issuemanagementbackEnd.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Table;
+import com.softgallery.issuemanagementbackEnd.service.project.ProjectService;
+import com.softgallery.issuemanagementbackEnd.service.project.ProjectState;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NonNull;
@@ -24,6 +22,10 @@ public class ProjectEntity {
     @NonNull
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    @NonNull
+    private ProjectState projectState;
+
     @NonNull
     private String description;
 
@@ -36,5 +38,5 @@ public class ProjectEntity {
     private LocalDateTime endDate;
 
     @NonNull
-    private Long adminId;
+    private String adminId;
 }
