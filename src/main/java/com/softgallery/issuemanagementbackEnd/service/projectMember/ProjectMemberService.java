@@ -54,10 +54,10 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
 
     }
 
-    @Override
-    public boolean updateProjectMember(ProjectMemberDTO projectMemberDTO, Long id) {
-        return false;
-    }
+    // @Override
+    // public boolean updateProjectMember(ProjectMemberDTO projectMemberDTO, Long id) {
+    //     return false;
+    // }
 
     @Override
     public List<UserDTO> getMembersInProject(Long projectId) {
