@@ -4,7 +4,6 @@ package com.softgallery.issuemanagementbackEnd.controller.projectMember;
 import com.softgallery.issuemanagementbackEnd.dto.ProjectDTO;
 import com.softgallery.issuemanagementbackEnd.dto.ProjectMemberDTO;
 import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
-import com.softgallery.issuemanagementbackEnd.entity.ProjectMemberEntity;
 import com.softgallery.issuemanagementbackEnd.service.projectMember.ProjectMemberServiceIF;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
