@@ -18,36 +18,26 @@ public class ProjectDTO {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private ProjectState projectState;
-    private AdminEntity admin;
-    private List<PLEntity> PLs;
-    private List<TesterEntity> testers;
-    private List<DeveloperEntity> developers;
+    private String adminId;
+//    private AdminEntity admin;
+//    private List<PLEntity> PLs;
+//    private List<TesterEntity> testers;
+//    private List<DeveloperEntity> developers;
 
     public ProjectDTO() { }
 
     public ProjectDTO(final Long id, final String name, final String description, final LocalDateTime startDate,
                       final LocalDateTime endDate, final ProjectState projectState,
-                      final AdminEntity admin) {
+                      final String adminId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.projectState = projectState;
-        this.admin = admin;
+        this.adminId = adminId;
     }
-
-    public ProjectDTO(final Long id, final String name, final String description, final LocalDateTime startDate,
-                      final LocalDateTime endDate,
-                      final AdminEntity admin, final List<PLEntity> PLs) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.admin = admin;
-        this.PLs = PLs;
-    }
+    /* Variations of Constructors
 
     public ProjectDTO(final Long id, final String name, final String description, final LocalDateTime startDate,
                       final LocalDateTime endDate,
@@ -64,6 +54,18 @@ public class ProjectDTO {
 
     public ProjectDTO(final Long id, final String name, final String description, final LocalDateTime startDate,
                       final LocalDateTime endDate,
+                      final AdminEntity admin, final List<PLEntity> PLs) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.admin = admin;
+        this.PLs = PLs;
+    }
+
+    public ProjectDTO(final Long id, final String name, final String description, final LocalDateTime startDate,
+                      final LocalDateTime endDate,
                       final AdminEntity admin, final List<PLEntity> PLs, final List<TesterEntity> testers,
                       final List<DeveloperEntity> developers) {
         this.id = id;
@@ -76,4 +78,5 @@ public class ProjectDTO {
         this.testers = testers;
         this.developers = developers;
     }
+* */
 }

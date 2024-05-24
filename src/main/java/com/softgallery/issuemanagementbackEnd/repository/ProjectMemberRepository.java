@@ -21,6 +21,5 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMemberEnti
 
     Boolean existsByProjectIdAndUserId(Long projectId, String userId);
 
-    @Override
-    void deleteById(Long aLong);
+    Long deleteByProjectIdAndUserId(Long projectId, String userId);
 }

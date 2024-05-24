@@ -1,14 +1,20 @@
 package com.softgallery.issuemanagementbackEnd.service.projectMember;
 
+import com.softgallery.issuemanagementbackEnd.dto.ProjectDTO;
 import com.softgallery.issuemanagementbackEnd.dto.ProjectMemberDTO;
 import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
+import com.softgallery.issuemanagementbackEnd.entity.ProjectEntity;
 import com.softgallery.issuemanagementbackEnd.entity.ProjectMemberEntity;
 import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
-import com.softgallery.issuemanagementbackEnd.exception.CustomException;
+import com.softgallery.issuemanagementbackEnd.exception.ObjectNotFoundException;
+import com.softgallery.issuemanagementbackEnd.exception.ProjectMemberNotFoundException;
 import com.softgallery.issuemanagementbackEnd.repository.ProjectMemberRepository;
+import com.softgallery.issuemanagementbackEnd.repository.ProjectRepository;
 import com.softgallery.issuemanagementbackEnd.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,11 +22,13 @@ import java.util.List;
 public class ProjectMemberService implements ProjectMemberServiceIF{
     private final ProjectMemberRepository projectMemberRepository;
     private final UserRepository userRepository;
+    private final ProjectRepository projectRepository;
 
     public ProjectMemberService(final ProjectMemberRepository projectMemberRepository,
-                                final UserRepository userRepository) {
+                                final UserRepository userRepository, ProjectRepository projectRepository) {
         this.projectMemberRepository = projectMemberRepository;
         this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
     }
 
     @Override
@@ -54,14 +62,14 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
     public List<UserDTO> getMembersInProject(Long projectId) {
         List<ProjectMemberEntity> projectMemberEntity = projectMemberRepository.findAllByProjectId(projectId);
         if(projectMemberEntity == null || projectMemberEntity.isEmpty()) {
-        throw new CustomException("MEMBERS_NOT_FOUND");
+        throw new ProjectMemberNotFoundException("MEMBERS_NOT_FOUND");
         }
         else {
-            List<UserDTO> projectMemberDTOList = new ArrayList<>();
+            List<UserDTO> usersInProjectDTOList = new ArrayList<>();
             for(ProjectMemberEntity projectMember : projectMemberEntity) {
                 String id = projectMember.getUserId();
                 UserEntity userEntity = userRepository.findById(id).orElse(null);
-                projectMemberDTOList.add(new UserDTO(
+                usersInProjectDTOList.add(new UserDTO(
                         userEntity.getUserId(),
                         userEntity.getName(),
                         userEntity.getEmail(),
@@ -69,17 +77,48 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
                         userEntity.getRole()
                 ));
             }
-            return projectMemberDTOList;
+            return usersInProjectDTOList;
         }
     }
 
     @Override
-    public List<ProjectMemberDTO> getProjectsOfUser(Long userId) {
-        return List.of();
+    public List<ProjectDTO> getProjectsOfUser(String userId) {
+        List<ProjectMemberEntity> projectMemberEntity = projectMemberRepository.findAllByUserId(userId);
+        if(projectMemberEntity == null || projectMemberEntity.isEmpty()) {
+            throw new ProjectMemberNotFoundException("MEMBERS_NOT_FOUND");
+        }
+        else {
+            List<ProjectDTO> projectDTOsOfUserList = new ArrayList<>();
+            for (ProjectMemberEntity projectMember : projectMemberEntity) {
+                Long id = projectMember.getProjectId();
+                if (!projectRepository.findById(id).isPresent()) {
+                    throw new RuntimeException("ProjectEntity with id " + id + " is not found.");
+                } else {
+                    ProjectEntity projectEntity = projectRepository.findById(id).get();
+                    UserEntity admin = userRepository.findById(projectEntity.getAdminId()).orElse(null);
+                    projectDTOsOfUserList.add(new ProjectDTO(
+                            projectEntity.getProjectId(),
+                            projectEntity.getName(),
+                            projectEntity.getDescription(),
+                            projectEntity.getStartDate(),
+                            projectEntity.getEndDate(),
+                            projectEntity.getProjectState(),
+                            projectEntity.getAdminId())
+                    );
+                }
+            }
+            return projectDTOsOfUserList;
+        }
     }
 
     @Override
-    public boolean deleteProjectMember(Long id) {
-        return false;
+    @Transactional
+    public Boolean deleteProjectMember(Long projectId, String userId) {
+        try{
+        projectMemberRepository.deleteByProjectIdAndUserId(projectId, userId);
+        return true;
+        }catch(RuntimeException e){
+            return false;
+        }
     }
 }

@@ -18,9 +18,25 @@ public class ProjectController {
     public ProjectController(final ProjectServiceIF projectService) {
         this.projectService = projectService;
     }
+
     @PostMapping("/create")
     public boolean createProject(@RequestBody ProjectDTO projectDTO, @RequestHeader(name="Authorization") String token){
         return projectService.createProject(projectDTO, token);
+    }
+
+    @GetMapping("/selection/{projectId}")
+    public ProjectDTO getProject(@PathVariable("projectId") Long projectId){
+        return projectService.getProject(projectId);
+    }
+
+    @PatchMapping("/revision")
+    public void updateProject(@RequestBody ProjectDTO projectDTO){
+        projectService.updateProject(projectDTO);
+    }
+
+    @DeleteMapping("/deletion/{projectID}")
+    public void deleteProject(@PathVariable("projectID") Long projectID){
+        projectService.deleteProject(projectID);
     }
 
 }

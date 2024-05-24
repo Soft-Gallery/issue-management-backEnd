@@ -1,7 +1,9 @@
 package com.softgallery.issuemanagementbackEnd.controller.projectMember;
 
 
+import com.softgallery.issuemanagementbackEnd.dto.ProjectDTO;
 import com.softgallery.issuemanagementbackEnd.dto.ProjectMemberDTO;
+import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
 import com.softgallery.issuemanagementbackEnd.entity.ProjectMemberEntity;
 import com.softgallery.issuemanagementbackEnd.service.projectMember.ProjectMemberServiceIF;
 import org.springframework.stereotype.Controller;
@@ -23,23 +25,24 @@ public class ProjectMemberController {
         return projectMemberService.addProjectMember(projectMemberDTO);
     }
 
-    @GetMapping("/get/{projectId}")
-    public List<ProjectMemberDTO> getMembersInProject(@PathVariable("projectId") Long projectId) {
+    @GetMapping("/get/user/{projectId}")
+    public List<UserDTO> getMembersInProject(@PathVariable("projectId") Long projectId) {
         return projectMemberService.getMembersInProject(projectId);
     }
 
-    @GetMapping("/get/{userId}")
-    public List<ProjectMemberDTO> getProjectsOfUser(@PathVariable Long userId) {
+    @GetMapping("/get/project/{userId}")
+    public List<ProjectDTO> getProjectsOfUser(@PathVariable("userId") String userId) {
         return projectMemberService.getProjectsOfUser(userId);
     }
 
-    @PostMapping("/update/{id}")
-    public boolean updateProjectMember(@RequestBody ProjectMemberDTO projectMemberDTO, @PathVariable Long id) {
-        return projectMemberService.updateProjectMember(projectMemberDTO, id);
-    }
+//    @PostMapping("/update/{id}")
+//    public boolean updateProjectMember(@RequestBody ProjectMemberDTO projectMemberDTO, @PathVariable Long id) {
+//        return projectMemberService.updateProjectMember(projectMemberDTO, id);
+//    }
 
-    @DeleteMapping("/delete/{id}")
-    public boolean deleteProjectMember(@PathVariable Long id) {
-        return projectMemberService.deleteProjectMember(id);
+    @DeleteMapping("/deletion/{projectId}/{userId}")
+    public boolean deleteProjectMember(@PathVariable("projectId") Long projectId, @PathVariable("userId") String userId) {
+        System.out.println("asd");
+        return projectMemberService.deleteProjectMember(projectId, userId);
     }
 }
