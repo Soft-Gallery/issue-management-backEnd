@@ -35,11 +35,6 @@ public class ProjectMemberController {
         return projectMemberService.getProjectsOfUser(userId);
     }
 
-//    @PostMapping("/update/{id}")
-//    public boolean updateProjectMember(@RequestBody ProjectMemberDTO projectMemberDTO, @PathVariable Long id) {
-//        return projectMemberService.updateProjectMember(projectMemberDTO, id);
-//    }
-
     @DeleteMapping("/deletion/{projectId}/{userId}")
     public boolean deleteProjectMember(@PathVariable("projectId") Long projectId, @PathVariable("userId") String userId) {
         System.out.println("asd");
