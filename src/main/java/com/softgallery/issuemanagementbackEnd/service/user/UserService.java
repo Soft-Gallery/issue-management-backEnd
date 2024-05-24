@@ -1,5 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.service.user;
 
+import com.softgallery.issuemanagementbackEnd.authentication.JWTUtil;
 import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
 import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
 import com.softgallery.issuemanagementbackEnd.repository.UserRepository;
@@ -14,9 +15,12 @@ public class UserService implements UserServiceIF {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserService(final UserRepository userRepository, final BCryptPasswordEncoder bCryptPasswordEncoder) {
+    private final JWTUtil jwtUtil;
+
+    public UserService(final UserRepository userRepository, final BCryptPasswordEncoder bCryptPasswordEncoder, JWTUtil jwtUtil) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder=bCryptPasswordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -46,8 +50,12 @@ public class UserService implements UserServiceIF {
     }
 
     @Override
-    public UserDTO getUser(final Long id) {
-        return null;
+    public UserDTO getUser(final String fullToken) {
+        String realToken = JWTUtil.getOnlyToken(fullToken);
+        String userId = jwtUtil.getUserId(realToken);
+        UserEntity userEntity = userRepository.findByUserId(userId);
+        UserDTO userDTO = switchUserEntityToDTO(userEntity);
+        return userDTO;
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
 
 public interface UserServiceIF {
     boolean createUser(UserDTO userDTO);
-    UserDTO getUser(Long id);
+    UserDTO getUser(String id);
     void updateUser(UserDTO userDTO, Long id);
     void deleteUser(Long id);
 
