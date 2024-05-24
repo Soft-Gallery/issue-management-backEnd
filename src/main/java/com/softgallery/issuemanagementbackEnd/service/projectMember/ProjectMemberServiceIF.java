@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ProjectMemberServiceIF {
     boolean addProjectMember(ProjectMemberDTO projectMemberDTO);
-    boolean updateProjectMember(ProjectMemberDTO projectMemberDTO, Long id);
+    //boolean updateProjectMember(ProjectMemberDTO projectMemberDTO, Long id);
     List<UserDTO> getMembersInProject(Long projectId);
     List<UserDTO> getSpecificUsersOfRoleInProject(Long projectId, Role role);
     List<ProjectDTO> getProjectsOfUser(String userId);
