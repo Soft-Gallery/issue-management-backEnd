@@ -36,7 +36,6 @@ public class ProjectMemberController {
 
     @DeleteMapping("/deletion/{projectId}/{userId}")
     public boolean deleteProjectMember(@PathVariable("projectId") Long projectId, @PathVariable("userId") String userId) {
-        System.out.println("asd");
-        return projectMemberService.deleteProjectMember(projectId, userId);
+    return projectMemberService.deleteProjectMember(projectId, userId);
     }
 }
