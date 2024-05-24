@@ -1,6 +1,7 @@
 package com.softgallery.issuemanagementbackEnd.repository;
 
 import com.softgallery.issuemanagementbackEnd.entity.ProjectMemberEntity;
+import com.softgallery.issuemanagementbackEnd.service.user.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMemberEnti
     Optional<ProjectMemberEntity> findById(Long mappingId);
 
     List<ProjectMemberEntity> findAllByProjectId(Long projectId);
-
+    List<ProjectMemberEntity> findAllByProjectIdAndRole(Long projectId, Role role);
     List<ProjectMemberEntity> findAllByUserId(String userId);
 
     Boolean existsByUserId(String id);

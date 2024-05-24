@@ -6,6 +6,7 @@ import com.softgallery.issuemanagementbackEnd.dto.ProjectMemberDTO;
 import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
 import com.softgallery.issuemanagementbackEnd.entity.ProjectMemberEntity;
 import com.softgallery.issuemanagementbackEnd.service.projectMember.ProjectMemberServiceIF;
+import com.softgallery.issuemanagementbackEnd.service.user.Role;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,10 +31,16 @@ public class ProjectMemberController {
         return projectMemberService.getMembersInProject(projectId);
     }
 
+    @GetMapping("/get/user/{projectId}/{role}")
+    public List<UserDTO> getSpecificUsersOfRoleInProject(@PathVariable("projectId") Long projectId, @PathVariable("role") Role role) {
+        return projectMemberService.getSpecificUsersOfRoleInProject(projectId, role);
+    }
+
     @GetMapping("/get/project/{userId}")
     public List<ProjectDTO> getProjectsOfUser(@PathVariable("userId") String userId) {
         return projectMemberService.getProjectsOfUser(userId);
     }
+
 
 //    @PostMapping("/update/{id}")
 //    public boolean updateProjectMember(@RequestBody ProjectMemberDTO projectMemberDTO, @PathVariable Long id) {

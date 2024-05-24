@@ -11,6 +11,7 @@ import com.softgallery.issuemanagementbackEnd.exception.ProjectMemberNotFoundExc
 import com.softgallery.issuemanagementbackEnd.repository.ProjectMemberRepository;
 import com.softgallery.issuemanagementbackEnd.repository.ProjectRepository;
 import com.softgallery.issuemanagementbackEnd.repository.UserRepository;
+import com.softgallery.issuemanagementbackEnd.service.user.Role;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +63,7 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
     public List<UserDTO> getMembersInProject(Long projectId) {
         List<ProjectMemberEntity> projectMemberEntity = projectMemberRepository.findAllByProjectId(projectId);
         if(projectMemberEntity == null || projectMemberEntity.isEmpty()) {
-        throw new ProjectMemberNotFoundException("MEMBERS_NOT_FOUND");
+            throw new ProjectMemberNotFoundException("MEMBERS_NOT_FOUND");
         }
         else {
             List<UserDTO> usersInProjectDTOList = new ArrayList<>();
@@ -80,6 +81,29 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
             return usersInProjectDTOList;
         }
     }
+    @Override
+    public List<UserDTO> getSpecificUsersOfRoleInProject(Long projectId, Role role){
+        List<ProjectMemberEntity> projectMemberEntity = projectMemberRepository.findAllByProjectIdAndRole(projectId, role);
+        if(projectMemberEntity == null || projectMemberEntity.isEmpty()) {
+            throw new ProjectMemberNotFoundException("MEMBERS_NOT_FOUND");
+        }
+        else {
+            List<UserDTO> usersInProjectDTOList = new ArrayList<>();
+            for(ProjectMemberEntity projectMember : projectMemberEntity) {
+                String id = projectMember.getUserId();
+                UserEntity userEntity = userRepository.findById(id).orElse(null);
+                usersInProjectDTOList.add(new UserDTO(
+                        userEntity.getUserId(),
+                        userEntity.getName(),
+                        userEntity.getEmail(),
+                        userEntity.getPassword(),
+                        userEntity.getRole()
+                ));
+            }
+            return usersInProjectDTOList;
+        }
+    }
+
 
     @Override
     public List<ProjectDTO> getProjectsOfUser(String userId) {
