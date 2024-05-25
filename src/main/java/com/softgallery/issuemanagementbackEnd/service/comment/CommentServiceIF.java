@@ -1,13 +1,13 @@
 package com.softgallery.issuemanagementbackEnd.service.comment;
 
-import com.softgallery.issuemanagementbackEnd.entity.CommentEntity;
+import com.softgallery.issuemanagementbackEnd.dto.CommentDTO;
 import com.softgallery.issuemanagementbackEnd.exception.ObjectNotFoundException;
 import java.util.List;
 
 public interface CommentServiceIF {
-    Boolean createComment(CommentEntity commentEntity, String userToken, Long userId);
-    CommentEntity getComment(Long id) throws ObjectNotFoundException;
-    List<CommentEntity> getCommentsInIssue(Long issueId);
-    Boolean updateComment(CommentEntity commentEntity, Long id) throws ObjectNotFoundException;
+    Boolean createComment(CommentDTO commentDTO, String userToken, Long userId);
+    CommentDTO getComment(Long id) throws ObjectNotFoundException;
+    List<CommentDTO> getCommentsInIssue(Long issueId);
+    Boolean updateComment(CommentDTO commentDTO, Long id) throws ObjectNotFoundException;
     Boolean deleteComment(Long id);
 }
