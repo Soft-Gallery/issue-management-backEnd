@@ -2,6 +2,7 @@ package com.softgallery.issuemanagementbackEnd.entity;
 
 import com.softgallery.issuemanagementbackEnd.service.issue.MainCause;
 import com.softgallery.issuemanagementbackEnd.service.issue.Priority;
+import com.softgallery.issuemanagementbackEnd.service.issue.State;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -41,6 +42,9 @@ public class StatisticsEntity {
 
     @NonNull
     private Long duration;
+
+    @NonNull
+    private State state;
 
     @Enumerated(EnumType.STRING)
     @NonNull

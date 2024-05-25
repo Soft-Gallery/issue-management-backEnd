@@ -13,7 +13,7 @@ import java.util.List;
 @ResponseBody
 
 public class IssueController {
-    private IssueServiceIF issueServiceIF;
+    private final IssueServiceIF issueServiceIF;
 
     public IssueController(final IssueServiceIF issueServiceIF) {
         this.issueServiceIF = issueServiceIF;

@@ -2,6 +2,7 @@ package com.softgallery.issuemanagementbackEnd.dto;
 
 import com.softgallery.issuemanagementbackEnd.service.issue.MainCause;
 import com.softgallery.issuemanagementbackEnd.service.issue.Priority;
+import com.softgallery.issuemanagementbackEnd.service.issue.State;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class StatisticsDTO {
     private LocalDateTime startDate;
     private LocalDateTime endDate = LocalDateTime.MIN;
     private Long duration;
+    private State state;
     private MainCause mainCause;
 
     // Duration(시간차) Long 값으로 전달
@@ -26,16 +28,18 @@ public class StatisticsDTO {
 
     public StatisticsDTO() { }
 
-    public StatisticsDTO(final Long issueId, final Long projectId, final Priority priority, final LocalDateTime startDate) {
+    public StatisticsDTO(final Long issueId, final Long projectId, final Priority priority,
+                         final LocalDateTime startDate, final State state) {
         this.issueId = issueId;
         this.projectId = projectId;
         this.priority = priority;
         this.startDate = startDate;
         this.duration = calculateDuration();
+        this.state = state;
     }
 
     public StatisticsDTO(final Long issueId, final Long projectId, final Priority priority, final LocalDateTime startDate,
-                         final LocalDateTime endDate,
+                         final LocalDateTime endDate, final State state,
                          final MainCause mainCause) {
         this.issueId = issueId;
         this.projectId = projectId;
@@ -43,11 +47,12 @@ public class StatisticsDTO {
         this.startDate = startDate;
         this.endDate = endDate;
         this.duration = calculateDuration();
+        this.state = state;
         this.mainCause = mainCause;
     }
 
     public StatisticsDTO(final Long id, final Long issueId, final Long projectId, final Priority priority, final LocalDateTime startDate,
-                         final LocalDateTime endDate,
+                         final LocalDateTime endDate, final State state,
                          final MainCause mainCause) {
         this.id = id;
         this.issueId = issueId;
@@ -56,6 +61,7 @@ public class StatisticsDTO {
         this.startDate = startDate;
         this.endDate = endDate;
         this.duration = calculateDuration();
+        this.state = state;
         this.mainCause = mainCause;
     }
 }

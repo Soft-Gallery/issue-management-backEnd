@@ -28,11 +28,23 @@ public class StatisticsService implements StatisticsServiceIF {
 
     @Override
     public Boolean createIssueStatistics(final IssueDTO issueDTO) {
-//        Long projectId = issueDTO.getProjectId();
-//        LocalDateTime startDate = projectRepository.
+        StatisticsEntity statisticsEntity = new StatisticsEntity();
 
-        // issue 구조 변경 필요
-        return null;
+        try {
+            statisticsEntity.setIssueId(issueDTO.getId());
+            statisticsEntity.setProjectId(issueDTO.getProjectId());
+            statisticsEntity.setPriority(issueDTO.getPriority());
+            statisticsEntity.setStartDate(issueDTO.getStartDate());
+            statisticsEntity.setEndDate(issueDTO.getEndDate());
+            statisticsEntity.setState(issueDTO.getStatus());
+            statisticsEntity.setMainCause(MainCause.RESOLVING);
+
+            statisticsRepository.save(statisticsEntity);
+            return true;
+        } catch (RuntimeException e) {
+            System.out.println(e.getStackTrace());
+            return false;
+        }
     }
 
     @Override
@@ -48,6 +60,7 @@ public class StatisticsService implements StatisticsServiceIF {
                 statisticsEntity.getPriority(),
                 statisticsEntity.getStartDate(),
                 statisticsEntity.getEndDate(),
+                statisticsEntity.getState(),
                 statisticsEntity.getMainCause()
         );
 
@@ -162,6 +175,7 @@ public class StatisticsService implements StatisticsServiceIF {
             statistics.setStartDate(statisticsDTO.getStartDate());
             statistics.setEndDate(statisticsDTO.getEndDate());
             statistics.setDuration(statisticsDTO.getDuration());
+            statistics.setState(statisticsDTO.getState());
             statistics.setMainCause(statisticsDTO.getMainCause());
 
             statisticsRepository.save(statistics);
