@@ -16,14 +16,22 @@ public interface IssueRepository extends JpaRepository<IssueEntity, Long> {
     @Override
     Optional<IssueEntity> findById(Long id);
 
-    List<IssueEntity> findByStatus(State status);
-    List<IssueEntity> findByStatusAndAssigneeId(State status, String assigneeId);
-    List<IssueEntity> findByStatusAndReporterId(State status, String ReporterId);
+    List<IssueEntity> findAllByStatus(State status);
+    List<IssueEntity> findAllByStatusAndAssigneeId(State status, String assigneeId);
+
+    List<IssueEntity> findAllByStatusAndAssigneeIdAndProjectId(State status, String assigneeId, Long projectId);
+
+    List<IssueEntity> findAllByStatusAndReporterIdAndProjectId(State status, String reporterId, Long projectId);
+    List<IssueEntity> findAllByStatusAndReporterId(State status, String ReporterId);
+
+    List<IssueEntity> findAllByStatusAndProjectId(State state, Long projectId);
 
 
 
     @Override
     List<IssueEntity> findAll();
+
+    List<IssueEntity> findAllByProjectId(Long projectId);
 
     @Override
     void delete(IssueEntity entity);

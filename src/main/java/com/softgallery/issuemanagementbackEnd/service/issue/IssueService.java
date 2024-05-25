@@ -56,11 +56,11 @@ public class IssueService implements IssueServiceIF {
             IssueEntity savedEntity = issueRepository.save(issueEntity);
             System.out.println(savedEntity.getIssueId());
 
-            // 이슈 작성 시 만들어지는 기본 코멘트 저장
-            commentRepository.saveAll(issueDTO.getComments());
-
-            // 이슈 작성 시 기본 통계정보 추가
-            statisticsService.createIssueStatistics(issueDTO);
+//            // 이슈 작성 시 만들어지는 기본 코멘트 저장
+//            commentRepository.saveAll(issueDTO.getComments());
+//
+//            // 이슈 작성 시 기본 통계정보 추가
+//            statisticsService.createIssueStatistics(issueDTO);
 
             return true;
         }
@@ -82,8 +82,8 @@ public class IssueService implements IssueServiceIF {
     }
 
     @Override
-    public List<IssueDTO> findAllIssues() {
-        List<IssueEntity> issueEntities = issueRepository.findAll();
+    public List<IssueDTO> findAllIssuesInProject(Long projectId) {
+        List<IssueEntity> issueEntities = issueRepository.findAllByProjectId(projectId);
         List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
         for(IssueEntity currEntity:issueEntities) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));
@@ -92,8 +92,8 @@ public class IssueService implements IssueServiceIF {
     }
 
     @Override
-    public List<IssueDTO> findNewStateIssues(State state) {
-        List<IssueEntity> issueEntities = issueRepository.findByStatus(state);
+    public List<IssueDTO> findStateIssues(Long projectId, State state) {
+        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndProjectId(state, projectId);
         List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
         for(IssueEntity currEntity:issueEntities) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));
@@ -103,13 +103,23 @@ public class IssueService implements IssueServiceIF {
 
     @Override
     public void updateIssue(final IssueDTO issueDTO, final Long id) {
+        Optional<IssueEntity> issueEntity = issueRepository.findById(id);
 
+        if(!issueEntity.isPresent()) {
+            throw new RuntimeException("no issue id " + id);
+        }
+        else {
+            IssueEntity issue = issueEntity.get();
+            issue.setTitle(issueDTO.getTitle());
+            issue.setDescription((issueDTO.getDescription()));
+            issueRepository.save(issue);
+        }
     }
 
     @Override
     @Transactional
     public void deleteIssue(final Long id) {
-
+        issueRepository.deleteById(id);
     }
 
     @Override
@@ -167,7 +177,20 @@ public class IssueService implements IssueServiceIF {
         String realToken=JWTUtil.getOnlyToken(token);
         String userId=jwtUtil.getUserId(realToken);
 
-        List<IssueEntity> issueEntities = issueRepository.findByStatusAndAssigneeId(State.ASSIGNED, userId);
+        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndAssigneeId(State.ASSIGNED, userId);
+        List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
+        for(IssueEntity currEntity:issueEntities) {
+            issueDTOS.add(switchIssueEntityToDTO(currEntity));
+        }
+        return issueDTOS;
+    }
+
+    @Override
+    public List<IssueDTO> findAssignedToMeIssuesInProject(Long projectId, String token) {
+        String realToken=JWTUtil.getOnlyToken(token);
+        String userId=jwtUtil.getUserId(realToken);
+
+        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndAssigneeIdAndProjectId(State.ASSIGNED, userId, projectId);
         List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
         for(IssueEntity currEntity:issueEntities) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));
@@ -202,7 +225,20 @@ public class IssueService implements IssueServiceIF {
         String realToken=JWTUtil.getOnlyToken(token);
         String userId=jwtUtil.getUserId(realToken);
 
-        List<IssueEntity> issueEntities = issueRepository.findByStatusAndReporterId(State.FIXED, userId);
+        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndReporterId(State.FIXED, userId);
+        List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
+        for(IssueEntity currEntity:issueEntities) {
+            issueDTOS.add(switchIssueEntityToDTO(currEntity));
+        }
+        return issueDTOS;
+    }
+
+    @Override
+    public List<IssueDTO> findFixedIssueRelatedReporterInProject(String token, Long projectId) {
+        String realToken=JWTUtil.getOnlyToken(token);
+        String userId=jwtUtil.getUserId(realToken);
+
+        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndReporterIdAndProjectId(State.FIXED, userId, projectId);
         List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
         for(IssueEntity currEntity:issueEntities) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));

@@ -29,14 +29,14 @@ public class IssueController {
         return this.issueServiceIF.getIssue(issueId);
     }
 
-    @GetMapping("/searching/all")
-    public List<IssueDTO> findAllIssues() {
-        return this.issueServiceIF.findAllIssues();
+    @GetMapping("/searching/{projectId}/all")
+    public List<IssueDTO> findAllIssues(@PathVariable("projectId") Long projectId) {
+        return this.issueServiceIF.findAllIssuesInProject(projectId);
     }
 
-    @GetMapping("/searching/state/{status}")
-    public List<IssueDTO> findNewStateIssues(@PathVariable("status") State state) {
-        return this.issueServiceIF.findNewStateIssues(state);
+    @GetMapping("/searching/{projectId}/state/{status}")
+    public List<IssueDTO> findStateIssues(@PathVariable("projectId") Long projectId, @PathVariable("status") State state) {
+        return this.issueServiceIF.findStateIssues(projectId, state);
     }
 
     @GetMapping("/assignment/{issueId}/{devId}")
@@ -49,6 +49,11 @@ public class IssueController {
         return this.issueServiceIF.findAssignedToMeIssues(token);
     }
 
+    @GetMapping("/searching/{projectId}/state/assigned/me")
+    public List<IssueDTO> findAssignedToMeIssuesInProject(@PathVariable("projectId") Long projectId, @RequestHeader(name="Authorization") String token) {
+        return this.issueServiceIF.findAssignedToMeIssuesInProject(projectId, token);
+    }
+
     @GetMapping("/fixing/{issueId}")
     public void fixIssue(@RequestHeader(name="Authorization") String token, @PathVariable("issueId") Long issueId) {
         this.issueServiceIF.fixIssue(token, issueId);
@@ -57,6 +62,11 @@ public class IssueController {
     @GetMapping("/searching/state/fixed/reporter")
     public List<IssueDTO> findFixedIssueRelatedReporter(@RequestHeader(name="Authorization") String token) {
         return this.issueServiceIF.findFixedIssueRelatedReporter(token);
+    }
+
+    @GetMapping("/searching/{projectId}/state/fixed/reporter")
+    public List<IssueDTO> findFixedIssueRelatedReporterInProject(@PathVariable("projectId") Long projectId, @RequestHeader(name="Authorization") String token) {
+        return this.issueServiceIF.findFixedIssueRelatedReporterInProject(token, projectId);
     }
 
     @GetMapping("/resolving/{issueId}")
