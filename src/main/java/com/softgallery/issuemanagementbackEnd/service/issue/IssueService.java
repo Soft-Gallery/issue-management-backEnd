@@ -8,8 +8,11 @@ import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
 import com.softgallery.issuemanagementbackEnd.entity.CommentEntity;
 import com.softgallery.issuemanagementbackEnd.entity.IssueEntity;
 import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
+import com.softgallery.issuemanagementbackEnd.repository.CommentRepository;
 import com.softgallery.issuemanagementbackEnd.repository.IssueRepository;
 
+import com.softgallery.issuemanagementbackEnd.service.statistics.StatisticsServiceIF;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,25 +22,31 @@ import com.softgallery.issuemanagementbackEnd.repository.UserRepository;
 import com.softgallery.issuemanagementbackEnd.service.user.UserEntityFactory;
 import com.softgallery.issuemanagementbackEnd.service.user.UserService;
 import com.softgallery.issuemanagementbackEnd.service.user.UserServiceIF;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 @Service
 public class IssueService implements IssueServiceIF {
     private final IssueRepository issueRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
+    private final StatisticsServiceIF statisticsService;
 
     private final UserServiceIF userService;
     private final JWTUtil jwtUtil;
 
-    public IssueService(final IssueRepository issueRepository, UserRepository userRepository, UserServiceIF userService, final JWTUtil jwtUtil) {
+    public IssueService(final IssueRepository issueRepository, final UserRepository userRepository,
+                        final CommentRepository commentRepository, final StatisticsServiceIF statisticsService,
+                        final UserServiceIF userService, final JWTUtil jwtUtil) {
         this.issueRepository = issueRepository;
         this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
+        this.statisticsService = statisticsService;
         this.userService = userService;
         this.jwtUtil = jwtUtil;
     }
 
     @Override
+    @Transactional
     public boolean createIssue(final IssueDTO issueDTO, String fullToken) {
         try {
             String onlyToken = JWTUtil.getOnlyToken(fullToken);
@@ -46,6 +55,13 @@ public class IssueService implements IssueServiceIF {
             IssueEntity issueEntity = switchIssueDTOToEntity(issueDTO, currUserId);
             IssueEntity savedEntity = issueRepository.save(issueEntity);
             System.out.println(savedEntity.getIssueId());
+
+            // 이슈 작성 시 만들어지는 기본 코멘트 저장
+            commentRepository.saveAll(issueDTO.getComments());
+
+            // 이슈 작성 시 기본 통계정보 추가
+            statisticsService.createIssueStatistics(issueDTO);
+
             return true;
         }
         catch (IllegalArgumentException e) {
@@ -56,7 +72,7 @@ public class IssueService implements IssueServiceIF {
     @Override
     public IssueDTO getIssue(final Long id) {
         Optional<IssueEntity> optionalIssueEntity = issueRepository.findById(id);
-        if(!optionalIssueEntity.isPresent()) {
+        if(optionalIssueEntity.isEmpty()) {
             throw new RuntimeException("IssueEntity with id " + id + " not found.");
         }
         else {
@@ -91,6 +107,7 @@ public class IssueService implements IssueServiceIF {
     }
 
     @Override
+    @Transactional
     public void deleteIssue(final Long id) {
 
     }
@@ -123,6 +140,8 @@ public class IssueService implements IssueServiceIF {
         issueEntity.setAssigneeId(null);
         issueEntity.setFixerId(null);
         issueEntity.setProjectId(issueDTO.getProjectId());
+        issueEntity.setStartDate(issueDTO.getStartDate());
+        issueEntity.setEndDate(issueDTO.getEndDate());
 
         return issueEntity;
     }
@@ -237,10 +256,10 @@ public class IssueService implements IssueServiceIF {
         UserDTO assigneeDTO = userService.switchUserEntityToDTO(assignee);
         UserDTO fixerDTO = userService.switchUserEntityToDTO(fixer);
 
-        List<CommentEntity> comments = null;
+        List<CommentEntity> comments = commentRepository.findAllByIssueId(iE.getIssueId());
 
         IssueDTO issueDTO = new IssueDTO(iE.getIssueId(), iE.getTitle(), iE.getDescription(), reporterDTO,
-                iE.getStatus(), iE.getPriority(), assigneeDTO, comments, fixerDTO, iE.getProjectId());
+                iE.getStatus(), iE.getPriority(), assigneeDTO, comments, fixerDTO, iE.getProjectId(), iE.getStartDate(), iE.getEndDate());
         return issueDTO;
     }
 }
