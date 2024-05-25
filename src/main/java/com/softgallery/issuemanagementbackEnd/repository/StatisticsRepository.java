@@ -21,7 +21,7 @@ public interface StatisticsRepository extends JpaRepository<StatisticsEntity, Lo
     Long countByPriority(Priority priority);
     Long countByDuration(Long duration);
     Long countByMainCause(MainCause mainCause);
-    Long countByState(State state);
+//    Long countByState(State state);
 
 
     // Method for statistics derived by issues in a certain project
@@ -30,7 +30,7 @@ public interface StatisticsRepository extends JpaRepository<StatisticsEntity, Lo
     Long countByProjectIdAndDuration(Long projectId, Long duration);
     Long countByProjectIdAndMainCause(Long projectId, MainCause mainCause);
     Long countByProjectId(Long projectId);
-    Long countByProjectIdAndState(Long projectId, State state);
+//    Long countByProjectIdAndState(Long projectId, State state);
 
     @Override
     void deleteById(Long aLong);

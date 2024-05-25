@@ -88,18 +88,18 @@ public class StatisticsService implements StatisticsServiceIF {
     }
 
     // 각 이슈 상태 별 전체 이슈 개수
-    @Override
-    public HashMap<String, Long> getNumberOfIssuesByState() {
-        HashMap<String, Long> mapStateIssueId = new HashMap<>();
-
-        for(State state : State.values()) {
-            mapStateIssueId.put(
-                    state.name(),
-                    statisticsRepository.countByState(state)
-            );
-        }
-        return mapStateIssueId;
-    }
+//    @Override
+//    public HashMap<String, Long> getNumberOfIssuesByState() {
+//        HashMap<String, Long> mapStateIssueId = new HashMap<>();
+//
+//        for(State state : State.values()) {
+//            mapStateIssueId.put(
+//                    state.name(),
+//                    statisticsRepository.countByState(state)
+//            );
+//        }
+//        return mapStateIssueId;
+//    }
 
     // 각 프로젝트의 전체 이슈 개수
     @Override
@@ -134,18 +134,18 @@ public class StatisticsService implements StatisticsServiceIF {
     }
 
     // 각 이슈 상태 별 프로젝트 내 이슈 개수
-    @Override
-    public HashMap<String, Long> getNumberOfIssuesByProjectAndState(final Long projectId) {
-        HashMap<String, Long> mapStateIssueId = new HashMap<>();
-
-        for(State state : State.values()) {
-            mapStateIssueId.put(
-                    state.name(),
-                    statisticsRepository.countByProjectIdAndState(projectId, state)
-            );
-        }
-        return mapStateIssueId;
-    }
+//    @Override
+//    public HashMap<String, Long> getNumberOfIssuesByProjectAndState(final Long projectId) {
+//        HashMap<String, Long> mapStateIssueId = new HashMap<>();
+//
+//        for(State state : State.values()) {
+//            mapStateIssueId.put(
+//                    state.name(),
+//                    statisticsRepository.countByProjectIdAndState(projectId, state)
+//            );
+//        }
+//        return mapStateIssueId;
+//    }
 
     @Override
     @Transactional

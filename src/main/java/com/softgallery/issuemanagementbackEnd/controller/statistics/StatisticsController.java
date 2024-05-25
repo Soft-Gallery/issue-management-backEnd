@@ -50,10 +50,10 @@ public class StatisticsController {
         return statisticsService.getNumberOfAllIssuesByMainCause();
     }
 
-    @GetMapping("/get/global/state")
-    public HashMap<String, Long> getNumbersByState() {
-        return statisticsService.getNumberOfIssuesByState();
-    }
+//    @GetMapping("/get/global/state")
+//    public HashMap<String, Long> getNumbersByState() {
+//        return statisticsService.getNumberOfIssuesByState();
+//    }
 
 
     // 여기서부터는 특정 프로젝트의 이슈 대상
@@ -72,10 +72,10 @@ public class StatisticsController {
         return statisticsService.getNumberOfIssuesByProjectAndMainCause(projectId);
     }
 
-    @GetMapping("/get/project/state/{projectId}")
-    public HashMap<String, Long> getNumbersByProjectAndState(@PathVariable Long projectId) {
-        return statisticsService.getNumberOfIssuesByProjectAndState(projectId);
-    }
+//    @GetMapping("/get/project/state/{projectId}")
+//    public HashMap<String, Long> getNumbersByProjectAndState(@PathVariable Long projectId) {
+//        return statisticsService.getNumberOfIssuesByProjectAndState(projectId);
+//    }
 
 
     @PostMapping("/update/{statisticsId}")
