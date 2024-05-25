@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping("/issue")
 @ResponseBody
 public class IssueController {
-    private IssueServiceIF issueServiceIF;
+    private final IssueServiceIF issueServiceIF;
 
     public IssueController(final IssueServiceIF issueServiceIF) {
         this.issueServiceIF = issueServiceIF;
