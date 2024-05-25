@@ -18,7 +18,7 @@ public interface StatisticsServiceIF {
 
     HashMap<String, Long> getNumberOfAllIssuesByMainCause();
 
-    HashMap<String, Long> getNumberOfIssuesByState();
+//    HashMap<String, Long> getNumberOfIssuesByState();
 
 
     // statistics in certain project region
@@ -28,7 +28,7 @@ public interface StatisticsServiceIF {
 
     HashMap<String, Long> getNumberOfIssuesByProjectAndMainCause(Long projectId);
 
-    HashMap<String, Long> getNumberOfIssuesByProjectAndState(Long projectId);
+//    HashMap<String, Long> getNumberOfIssuesByProjectAndState(Long projectId);
 
     Boolean updateIssueStatistics(StatisticsDTO statisticsDTO, Long id) throws ObjectNotFoundException;
 
