@@ -28,6 +28,12 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
 
+    private static final String[] AUTH_WHITELIST = {
+            "/user/signup", "/user/signin", "/",
+            "/api/**", "/graphiql", "/graphql",
+            "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
+            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html"
+    };
     @Value("${allowed.origin}")
     String allowedOrigin;
 
@@ -54,9 +60,7 @@ public class SecurityConfig {
                 .formLogin((auth) -> auth.disable())
                 .httpBasic((auth) -> auth.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(
-                                "/user/signup", "/user/signin", "/"
-                        )
+                        .requestMatchers(AUTH_WHITELIST)
                         .permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/pl", "/issue/assignment/*/*").hasRole("PL")
