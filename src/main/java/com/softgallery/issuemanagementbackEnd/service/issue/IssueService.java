@@ -56,11 +56,15 @@ public class IssueService implements IssueServiceIF {
             IssueEntity savedEntity = issueRepository.save(issueEntity);
             System.out.println(savedEntity.getIssueId());
 
-            // 이슈 작성 시 만들어지는 기본 코멘트 저장
-            commentRepository.saveAll(issueDTO.getComments());
-
             // 이슈 작성 시 기본 통계정보 추가
-            statisticsService.createIssueStatistics(issueDTO);
+            statisticsService.createIssueStatistics(new StatisticsDTO(
+                    savedEntity.getIssueId(),
+                    savedEntity.getProjectId(),
+                    savedEntity.getPriority(),
+                    savedEntity.getStartDate(),
+                    savedEntity.getEndDate(),
+                    savedEntity.getStatus()
+            ));
 
             return true;
         }
