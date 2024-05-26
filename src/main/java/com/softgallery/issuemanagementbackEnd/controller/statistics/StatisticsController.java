@@ -25,8 +25,8 @@ public class StatisticsController {
     }
 
     @PostMapping("/create")
-    public Boolean createIssueStatistics(@RequestBody IssueDTO issueDTO) {
-        return statisticsService.createIssueStatistics(issueDTO);
+    public Boolean createIssueStatistics(@RequestBody StatisticsDTO statisticsDTO) {
+        return statisticsService.createIssueStatistics(statisticsDTO);
     }
 
     @GetMapping("/get/{statisticsId}")
@@ -50,10 +50,15 @@ public class StatisticsController {
         return statisticsService.getNumberOfAllIssuesByMainCause();
     }
 
-//    @GetMapping("/get/global/state")
-//    public HashMap<String, Long> getNumbersByState() {
-//        return statisticsService.getNumberOfIssuesByState();
-//    }
+    @GetMapping("/get/global/state")
+    public HashMap<String, Long> getNumbersByState() {
+        return statisticsService.getNumberOfIssuesByState();
+    }
+
+    @GetMapping("/get/global/duration/{lowerDuration}/{upperDuration}")
+    public Long getNumbersByStateAndDuration(@PathVariable Long lowerDuration, @PathVariable Long upperDuration) {
+        return statisticsService.getNumberOfIssuesWithinDuration(lowerDuration, upperDuration);
+    }
 
 
     // 여기서부터는 특정 프로젝트의 이슈 대상
@@ -72,10 +77,15 @@ public class StatisticsController {
         return statisticsService.getNumberOfIssuesByProjectAndMainCause(projectId);
     }
 
-//    @GetMapping("/get/project/state/{projectId}")
-//    public HashMap<String, Long> getNumbersByProjectAndState(@PathVariable Long projectId) {
-//        return statisticsService.getNumberOfIssuesByProjectAndState(projectId);
-//    }
+    @GetMapping("/get/project/state/{projectId}")
+    public HashMap<String, Long> getNumbersByProjectAndState(@PathVariable Long projectId) {
+        return statisticsService.getNumberOfIssuesByProjectAndState(projectId);
+    }
+
+    @GetMapping("/get/project/duration/{projectId}/{lowerDuration}/{upperDuration}")
+    public Long getNumbersByStateAndDuration(@PathVariable Long projectId, @PathVariable Long lowerDuration, @PathVariable Long upperDuration) {
+        return statisticsService.getNumberOfIssuesByProjectWithinDuration(projectId, lowerDuration, upperDuration);
+    }
 
 
     @PostMapping("/update/{statisticsId}")

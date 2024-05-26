@@ -60,6 +60,15 @@ public class IssueService implements IssueServiceIF {
             IssueEntity savedEntity = issueRepository.save(issueEntity);
             System.out.println(savedEntity.getIssueId());
 
+            // 이슈 작성 시 기본 통계정보 추가
+            statisticsService.createIssueStatistics(new StatisticsDTO(
+                    savedEntity.getIssueId(),
+                    savedEntity.getProjectId(),
+                    savedEntity.getPriority(),
+                    savedEntity.getStartDate(),
+                    savedEntity.getEndDate(),
+                    savedEntity.getStatus()
+            ));
             commentDTO.setAuthorId(currUserId);
             commentDTO.setIssueId(savedEntity.getIssueId());
 

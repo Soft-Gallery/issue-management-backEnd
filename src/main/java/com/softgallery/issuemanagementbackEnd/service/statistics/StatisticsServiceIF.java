@@ -6,7 +6,7 @@ import com.softgallery.issuemanagementbackEnd.exception.ObjectNotFoundException;
 import java.util.HashMap;
 
 public interface StatisticsServiceIF {
-    Boolean createIssueStatistics(IssueDTO issueDTO);
+    Boolean createIssueStatistics(StatisticsDTO statisticsDTO);
 
     StatisticsDTO getStatisticsByID(Long statisticsId) throws ObjectNotFoundException;
 
@@ -18,7 +18,9 @@ public interface StatisticsServiceIF {
 
     HashMap<String, Long> getNumberOfAllIssuesByMainCause();
 
-//    HashMap<String, Long> getNumberOfIssuesByState();
+    HashMap<String, Long> getNumberOfIssuesByState();
+
+    Long getNumberOfIssuesWithinDuration(Long lowerDuration, Long upperDuration);
 
 
     // statistics in certain project region
@@ -28,7 +30,10 @@ public interface StatisticsServiceIF {
 
     HashMap<String, Long> getNumberOfIssuesByProjectAndMainCause(Long projectId);
 
-//    HashMap<String, Long> getNumberOfIssuesByProjectAndState(Long projectId);
+    HashMap<String, Long> getNumberOfIssuesByProjectAndState(Long projectId);
+
+    Long getNumberOfIssuesByProjectWithinDuration(Long projectId, Long lowerDuration, Long upperDuration);
+
 
     Boolean updateIssueStatistics(StatisticsDTO statisticsDTO, Long id) throws ObjectNotFoundException;
 

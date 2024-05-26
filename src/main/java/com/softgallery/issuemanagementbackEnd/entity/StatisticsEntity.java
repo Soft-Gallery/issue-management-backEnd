@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Getter
@@ -35,18 +36,21 @@ public class StatisticsEntity {
     private Priority priority;
 
     @NonNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startDate;
 
     @NonNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endDate;
 
     @NonNull
     private Long duration;
 
     @NonNull
+    @Enumerated(EnumType.STRING)
     private State state;
 
-    @Enumerated(EnumType.STRING)
     @NonNull
+    @Enumerated(EnumType.STRING)
     private MainCause mainCause;
 }

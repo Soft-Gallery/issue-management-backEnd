@@ -6,6 +6,7 @@ import com.softgallery.issuemanagementbackEnd.service.issue.State;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import lombok.Getter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Getter
 public class StatisticsDTO {
@@ -13,8 +14,10 @@ public class StatisticsDTO {
     private Long issueId;
     private Long projectId;
     private Priority priority;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startDate;
-    private LocalDateTime endDate = LocalDateTime.MIN;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime endDate = LocalDateTime.of(1990, 1, 1, 0, 0,0 );
     private Long duration;
     private State state;
     private MainCause mainCause;
@@ -29,11 +32,12 @@ public class StatisticsDTO {
     public StatisticsDTO() { }
 
     public StatisticsDTO(final Long issueId, final Long projectId, final Priority priority,
-                         final LocalDateTime startDate, final State state) {
+                         final LocalDateTime startDate, final LocalDateTime endDate, final State state) {
         this.issueId = issueId;
         this.projectId = projectId;
         this.priority = priority;
         this.startDate = startDate;
+        this.endDate = endDate;
         this.duration = calculateDuration();
         this.state = state;
     }
