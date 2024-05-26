@@ -1,5 +1,7 @@
 package com.softgallery.issuemanagementbackEnd.controller.issue;
 
+import com.softgallery.issuemanagementbackEnd.dto.CommentDTO;
+import com.softgallery.issuemanagementbackEnd.dto.IssueCreationRequestDTO;
 import com.softgallery.issuemanagementbackEnd.dto.IssueDTO;
 import com.softgallery.issuemanagementbackEnd.service.issue.IssueServiceIF;
 import com.softgallery.issuemanagementbackEnd.service.issue.State;
@@ -20,8 +22,8 @@ public class IssueController {
     }
 
     @PostMapping("/new")
-    public boolean createIssue(@RequestBody IssueDTO issueDTO, @RequestHeader(name = "Authorization") String token) {
-        return this.issueServiceIF.createIssue(issueDTO, token);
+    public boolean createIssue(@RequestBody IssueCreationRequestDTO issueCreationRequestDTO, @RequestHeader(name = "Authorization") String token) {
+        return this.issueServiceIF.createIssue(issueCreationRequestDTO.getIssue(), issueCreationRequestDTO.getComment(), token);
     }
 
     @GetMapping("/searching/id/{issueId}")

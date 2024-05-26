@@ -12,6 +12,8 @@ public interface ProjectServiceIF {
     ProjectDTO getProject(Long id);
     void updateProject(ProjectDTO projectDTO);
     void deleteProject(Long id);
+
+    void changeDiffState(Long projectId, ProjectState projectState);
     void assignUserToProject();
     List<UserDTO> getProjectUsers();
 

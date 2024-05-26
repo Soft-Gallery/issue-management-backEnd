@@ -5,6 +5,8 @@ import com.softgallery.issuemanagementbackEnd.service.project.ProjectServiceIF;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.softgallery.issuemanagementbackEnd.service.project.ProjectState;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +39,11 @@ public class ProjectController {
     @DeleteMapping("/deletion/{projectID}")
     public void deleteProject(@PathVariable("projectID") Long projectID){
         projectService.deleteProject(projectID);
+    }
+
+    @GetMapping("/change/{projectId}/state/{state}")
+    public void changeDiffState(@PathVariable("projectId") Long projectId, @PathVariable("state") ProjectState projectState) {
+        projectService.changeDiffState(projectId, projectState);
     }
 
 }
