@@ -11,6 +11,8 @@ import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
 import com.softgallery.issuemanagementbackEnd.repository.CommentRepository;
 import com.softgallery.issuemanagementbackEnd.repository.IssueRepository;
 
+import com.softgallery.issuemanagementbackEnd.service.comment.CommentService;
+import com.softgallery.issuemanagementbackEnd.service.comment.CommentServiceIF;
 import com.softgallery.issuemanagementbackEnd.service.statistics.StatisticsServiceIF;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
@@ -32,22 +34,24 @@ public class IssueService implements IssueServiceIF {
     private final StatisticsServiceIF statisticsService;
 
     private final UserServiceIF userService;
+    private final CommentServiceIF commentService;
     private final JWTUtil jwtUtil;
 
     public IssueService(final IssueRepository issueRepository, final UserRepository userRepository,
                         final CommentRepository commentRepository, final StatisticsServiceIF statisticsService,
-                        final UserServiceIF userService, final JWTUtil jwtUtil) {
+                        final UserServiceIF userService, CommentServiceIF commentService, final JWTUtil jwtUtil) {
         this.issueRepository = issueRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
         this.statisticsService = statisticsService;
         this.userService = userService;
+        this.commentService = commentService;
         this.jwtUtil = jwtUtil;
     }
 
     @Override
     @Transactional
-    public boolean createIssue(final IssueDTO issueDTO, String fullToken) {
+    public boolean createIssue(final IssueDTO issueDTO, CommentDTO commentDTO, String fullToken) {
         try {
             String onlyToken = JWTUtil.getOnlyToken(fullToken);
             String currUserId = jwtUtil.getUserId(onlyToken);
@@ -55,6 +59,13 @@ public class IssueService implements IssueServiceIF {
             IssueEntity issueEntity = switchIssueDTOToEntity(issueDTO, currUserId);
             IssueEntity savedEntity = issueRepository.save(issueEntity);
             System.out.println(savedEntity.getIssueId());
+
+            commentDTO.setAuthorId(currUserId);
+            commentDTO.setIssueId(savedEntity.getIssueId());
+
+            commentService.createComment(commentDTO, fullToken, savedEntity.getIssueId());
+
+
 
 //            // 이슈 작성 시 만들어지는 기본 코멘트 저장
 //            commentRepository.saveAll(issueDTO.getComments());

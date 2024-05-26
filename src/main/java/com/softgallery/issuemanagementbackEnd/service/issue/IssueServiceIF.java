@@ -8,7 +8,7 @@ import com.softgallery.issuemanagementbackEnd.entity.IssueEntity;
 import java.util.List;
 
 public interface IssueServiceIF {
-    boolean createIssue(IssueDTO issueDTO, String token);
+    boolean createIssue(IssueDTO issueDTO, CommentDTO commentDTO, String token);
     IssueDTO getIssue(Long id);
 
     List<IssueDTO> findAllIssuesInProject(Long projectId);
