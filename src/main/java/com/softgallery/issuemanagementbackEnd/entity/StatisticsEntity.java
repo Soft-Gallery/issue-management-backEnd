@@ -1,8 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.entity;
 
 import com.softgallery.issuemanagementbackEnd.service.issue.MainCause;
-import com.softgallery.issuemanagementbackEnd.service.issue.Priority;
-import com.softgallery.issuemanagementbackEnd.service.issue.State;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,6 +13,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
 
 @Entity
 @Getter
@@ -31,24 +30,16 @@ public class StatisticsEntity {
     @NonNull
     private Long projectId;
 
-    @Enumerated(EnumType.STRING)
-    @NonNull
-    private Priority priority;
-
     @NonNull
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startDate;
 
-    @NonNull
+    @Nullable
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endDate;
 
-    @NonNull
+    @Nullable
     private Long duration;
-
-    @NonNull
-    @Enumerated(EnumType.STRING)
-    private State state;
 
     @NonNull
     @Enumerated(EnumType.STRING)
