@@ -8,6 +8,7 @@ import java.util.List;
 import com.softgallery.issuemanagementbackEnd.service.issue.Priority;
 import com.softgallery.issuemanagementbackEnd.service.issue.State;
 import lombok.Getter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Getter
 public class IssueDTO {
@@ -21,8 +22,10 @@ public class IssueDTO {
     private UserDTO fixer;
     private Long projectId;
     private List<CommentEntity> comments;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startDate;
-    private LocalDateTime endDate = LocalDateTime.MIN;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime endDate = LocalDateTime.of(1950, 6, 25, 0, 0, 0);
 
     public IssueDTO() { }
 
