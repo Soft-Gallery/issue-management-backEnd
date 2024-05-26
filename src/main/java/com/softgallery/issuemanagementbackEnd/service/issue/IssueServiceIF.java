@@ -11,9 +11,9 @@ public interface IssueServiceIF {
     boolean createIssue(IssueDTO issueDTO, String token);
     IssueDTO getIssue(Long id);
 
-    List<IssueDTO> findAllIssues();
+    List<IssueDTO> findAllIssuesInProject(Long projectId);
 
-    List<IssueDTO> findNewStateIssues(State state);
+    List<IssueDTO> findStateIssues(Long projectId, State state);
     void updateIssue(IssueDTO issueDTO, Long id);
     void deleteIssue(Long id);
     void addComment();
@@ -26,6 +26,10 @@ public interface IssueServiceIF {
     void assignDev(Long issueId, String userID);
 
     List<IssueDTO> findAssignedToMeIssues(String token);
+
+    List<IssueDTO> findAssignedToMeIssuesInProject(Long projectId, String token);
+
+    List<IssueDTO> findFixedIssueRelatedReporterInProject(String token, Long projectId);
 
     void fixIssue(String token, Long issueId);
 
