@@ -54,11 +54,6 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
 
     }
 
-    // @Override
-    // public boolean updateProjectMember(ProjectMemberDTO projectMemberDTO, Long id) {
-    //     return false;
-    // }
-
     @Override
     public List<UserDTO> getMembersInProject(Long projectId) {
         List<ProjectMemberEntity> projectMemberEntity = projectMemberRepository.findAllByProjectId(projectId);
@@ -81,6 +76,7 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
             return usersInProjectDTOList;
         }
     }
+
     @Override
     public List<UserDTO> getSpecificUsersOfRoleInProject(Long projectId, Role role){
         List<ProjectMemberEntity> projectMemberEntity = projectMemberRepository.findAllByProjectIdAndRole(projectId, role);
