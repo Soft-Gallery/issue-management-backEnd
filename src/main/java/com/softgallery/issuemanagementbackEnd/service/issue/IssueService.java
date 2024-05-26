@@ -77,7 +77,7 @@ public class IssueService implements IssueServiceIF {
 
     @Override
     public List<IssueDTO> findNewStateIssues(State state) {
-        List<IssueEntity> issueEntities = issueRepository.findByStatus(state);
+        List<IssueEntity> issueEntities = issueRepository.findAllByStatus(state);
         List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
         for(IssueEntity currEntity:issueEntities) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));
@@ -148,7 +148,7 @@ public class IssueService implements IssueServiceIF {
         String realToken=JWTUtil.getOnlyToken(token);
         String userId=jwtUtil.getUserId(realToken);
 
-        List<IssueEntity> issueEntities = issueRepository.findByStatusAndAssigneeId(State.ASSIGNED, userId);
+        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndAssigneeId(State.ASSIGNED, userId);
         List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
         for(IssueEntity currEntity:issueEntities) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));
@@ -183,7 +183,7 @@ public class IssueService implements IssueServiceIF {
         String realToken=JWTUtil.getOnlyToken(token);
         String userId=jwtUtil.getUserId(realToken);
 
-        List<IssueEntity> issueEntities = issueRepository.findByStatusAndReporterId(State.FIXED, userId);
+        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndReporterId(State.FIXED, userId);
         List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
         for(IssueEntity currEntity:issueEntities) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));

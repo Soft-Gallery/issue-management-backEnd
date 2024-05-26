@@ -18,7 +18,12 @@ public class Message implements Serializable {
     private String content;
 
     Message(String content) {
-        this.role="system";
+        this.role="user";
+        this.content=content;
+    }
+
+    Message(String content, String role) {
+        this.role=role;
         this.content=content;
     }
 }

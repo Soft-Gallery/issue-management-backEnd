@@ -1,5 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.dto;
 
+import com.softgallery.issuemanagementbackEnd.service.chatGpt.GptPrompt;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -17,7 +18,10 @@ public class QuestionRequestDTO implements Serializable {
     public QuestionRequestDTO(){}
     public QuestionRequestDTO(String s){
         this.messages=new ArrayList<Message>();
-        Message message = new Message(s);
-        this.messages.add(message);
+        Message prompMessage = new Message(GptPrompt.getPromptVer1());
+        Message questionMessage = new Message(s);
+
+        this.messages.add(prompMessage);
+        this.messages.add(questionMessage);
     }
 }
