@@ -1,6 +1,5 @@
 package com.softgallery.issuemanagementbackEnd.service.statistics;
 
-import com.softgallery.issuemanagementbackEnd.dto.IssueDTO;
 import com.softgallery.issuemanagementbackEnd.dto.StatisticsDTO;
 import com.softgallery.issuemanagementbackEnd.exception.ObjectNotFoundException;
 import java.util.HashMap;
@@ -18,7 +17,7 @@ public interface StatisticsServiceIF {
 
     HashMap<String, Long> getNumberOfAllIssuesByMainCause();
 
-    HashMap<String, Long> getNumberOfIssuesByState();
+    HashMap<String, Long> getNumberOfAllIssuesByState();
 
     Long getNumberOfIssuesWithinDuration(Long lowerDuration, Long upperDuration);
 

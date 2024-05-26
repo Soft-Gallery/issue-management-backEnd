@@ -2,9 +2,9 @@ package com.softgallery.issuemanagementbackEnd.service.issue;
 
 import com.softgallery.issuemanagementbackEnd.dto.CommentDTO;
 import com.softgallery.issuemanagementbackEnd.dto.IssueDTO;
-import com.softgallery.issuemanagementbackEnd.dto.StatisticsDTO;
 import com.softgallery.issuemanagementbackEnd.entity.IssueEntity;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface IssueServiceIF {
@@ -16,9 +16,6 @@ public interface IssueServiceIF {
     List<IssueDTO> findStateIssues(Long projectId, State state);
     void updateIssue(IssueDTO issueDTO, Long id);
     void deleteIssue(Long id);
-    void addComment();
-    List<CommentDTO> getIssueComments();
-    StatisticsDTO getIssueStatistics();
 
     IssueDTO switchIssueEntityToDTO(IssueEntity issueEntity);
     IssueEntity switchIssueDTOToEntity(IssueDTO issueDTO, String userId);
@@ -38,7 +35,6 @@ public interface IssueServiceIF {
     void resolveIssue(String token, Long issueId);
 
     void closeIssue(Long issueId);
-
     List<IssueDTO> findAllIssuesRelatedAssignee(List<String> ids);
 
 }

@@ -11,18 +11,14 @@ import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
 import com.softgallery.issuemanagementbackEnd.repository.CommentRepository;
 import com.softgallery.issuemanagementbackEnd.repository.IssueRepository;
 
-import com.softgallery.issuemanagementbackEnd.service.comment.CommentService;
 import com.softgallery.issuemanagementbackEnd.service.comment.CommentServiceIF;
 import com.softgallery.issuemanagementbackEnd.service.statistics.StatisticsServiceIF;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
 import com.softgallery.issuemanagementbackEnd.repository.UserRepository;
-import com.softgallery.issuemanagementbackEnd.service.user.UserEntityFactory;
-import com.softgallery.issuemanagementbackEnd.service.user.UserService;
 import com.softgallery.issuemanagementbackEnd.service.user.UserServiceIF;
 import org.springframework.stereotype.Service;
 
@@ -64,23 +60,13 @@ public class IssueService implements IssueServiceIF {
             statisticsService.createIssueStatistics(new StatisticsDTO(
                     savedEntity.getIssueId(),
                     savedEntity.getProjectId(),
-                    savedEntity.getPriority(),
                     savedEntity.getStartDate(),
-                    savedEntity.getEndDate(),
-                    savedEntity.getStatus()
+                    savedEntity.getEndDate()
             ));
             commentDTO.setAuthorId(currUserId);
             commentDTO.setIssueId(savedEntity.getIssueId());
 
             commentService.createComment(commentDTO, fullToken, savedEntity.getIssueId());
-
-
-
-//            // 이슈 작성 시 만들어지는 기본 코멘트 저장
-//            commentRepository.saveAll(issueDTO.getComments());
-//
-//            // 이슈 작성 시 기본 통계정보 추가
-//            statisticsService.createIssueStatistics(issueDTO);
 
             return true;
         }
@@ -142,21 +128,6 @@ public class IssueService implements IssueServiceIF {
     }
 
     @Override
-    public void addComment() {
-
-    }
-
-    @Override
-    public List<CommentDTO> getIssueComments() {
-        return null;
-    }
-
-    @Override
-    public StatisticsDTO getIssueStatistics() {
-        return null;
-    }
-
-    @Override
     public IssueEntity switchIssueDTOToEntity(IssueDTO issueDTO, String currUserId) {
         if(issueDTO==null) return null;
 
@@ -197,7 +168,7 @@ public class IssueService implements IssueServiceIF {
         String userId=jwtUtil.getUserId(realToken);
 
         List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndAssigneeId(State.ASSIGNED, userId);
-        List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
+        List<IssueDTO> issueDTOS = new ArrayList<>();
         for(IssueEntity currEntity:issueEntities) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));
         }
@@ -210,7 +181,7 @@ public class IssueService implements IssueServiceIF {
         String userId=jwtUtil.getUserId(realToken);
 
         List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndAssigneeIdAndProjectId(State.ASSIGNED, userId, projectId);
-        List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
+        List<IssueDTO> issueDTOS = new ArrayList<>();
         for(IssueEntity currEntity:issueEntities) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));
         }

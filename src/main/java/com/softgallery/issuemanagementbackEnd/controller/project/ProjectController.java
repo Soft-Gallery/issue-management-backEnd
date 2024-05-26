@@ -32,18 +32,18 @@ public class ProjectController {
     }
 
     @PatchMapping("/revision")
-    public void updateProject(@RequestBody ProjectDTO projectDTO){
-        projectService.updateProject(projectDTO);
+    public boolean updateProject(@RequestBody ProjectDTO projectDTO){
+        return projectService.updateProject(projectDTO);
     }
 
     @DeleteMapping("/deletion/{projectID}")
-    public void deleteProject(@PathVariable("projectID") Long projectID){
-        projectService.deleteProject(projectID);
+    public boolean deleteProject(@PathVariable("projectID") Long projectID){
+        return projectService.deleteProject(projectID);
     }
 
     @GetMapping("/change/{projectId}/state/{state}")
-    public void changeDiffState(@PathVariable("projectId") Long projectId, @PathVariable("state") ProjectState projectState) {
-        projectService.changeDiffState(projectId, projectState);
+    public boolean changeDiffState(@PathVariable("projectId") Long projectId, @PathVariable("state") ProjectState projectState) {
+        return projectService.changeDiffState(projectId, projectState);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.softgallery.issuemanagementbackEnd.repository;
 
 import com.softgallery.issuemanagementbackEnd.entity.IssueEntity;
+import com.softgallery.issuemanagementbackEnd.service.issue.Priority;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,4 +38,11 @@ public interface IssueRepository extends JpaRepository<IssueEntity, Long> {
 
     @Override
     void delete(IssueEntity entity);
+
+
+    // for statistics
+    Long countByPriority(Priority priority);
+    Long countByStatus(State state);
+    Long countByProjectIdAndPriority(Long projectId, Priority priority);
+    Long countByProjectIdAndStatus(Long projectId, State state);
 }
