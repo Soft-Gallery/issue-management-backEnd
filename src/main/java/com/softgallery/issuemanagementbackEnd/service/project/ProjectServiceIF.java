@@ -10,12 +10,12 @@ import java.util.List;
 public interface ProjectServiceIF {
     boolean createProject(ProjectDTO projectDTO, String Token);
     ProjectDTO getProject(Long id);
-    void updateProject(ProjectDTO projectDTO);
-    void deleteProject(Long id);
+    boolean updateProject(ProjectDTO projectDTO);
+    boolean deleteProject(Long id);
 
-    void changeDiffState(Long projectId, ProjectState projectState);
-    void assignUserToProject();
-    List<UserDTO> getProjectUsers();
+    boolean changeDiffState(Long projectId, ProjectState projectState);
+    void assignUserToProject(Long projectId, UserDTO userDTO);
+    List<UserDTO> getProjectUsers(Long projectId);
 
     ProjectDTO switchProjectEntityToDTO(ProjectEntity projectEntity);
     ProjectEntity switchProjectDTOToEntity(ProjectDTO projectDTO);
