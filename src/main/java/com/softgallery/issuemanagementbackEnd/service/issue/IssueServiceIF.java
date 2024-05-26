@@ -8,12 +8,12 @@ import com.softgallery.issuemanagementbackEnd.entity.IssueEntity;
 import java.util.List;
 
 public interface IssueServiceIF {
-    boolean createIssue(IssueDTO issueDTO, String token);
+    boolean createIssue(IssueDTO issueDTO, CommentDTO commentDTO, String token);
     IssueDTO getIssue(Long id);
 
-    List<IssueDTO> findAllIssues();
+    List<IssueDTO> findAllIssuesInProject(Long projectId);
 
-    List<IssueDTO> findNewStateIssues(State state);
+    List<IssueDTO> findStateIssues(Long projectId, State state);
     void updateIssue(IssueDTO issueDTO, Long id);
     void deleteIssue(Long id);
     void addComment();
@@ -27,6 +27,10 @@ public interface IssueServiceIF {
 
     List<IssueDTO> findAssignedToMeIssues(String token);
 
+    List<IssueDTO> findAssignedToMeIssuesInProject(Long projectId, String token);
+
+    List<IssueDTO> findFixedIssueRelatedReporterInProject(String token, Long projectId);
+
     void fixIssue(String token, Long issueId);
 
     List<IssueDTO> findFixedIssueRelatedReporter(String token);
@@ -34,5 +38,7 @@ public interface IssueServiceIF {
     void resolveIssue(String token, Long issueId);
 
     void closeIssue(Long issueId);
+
+    List<IssueDTO> findAllIssuesRelatedAssignee(List<String> ids);
 
 }

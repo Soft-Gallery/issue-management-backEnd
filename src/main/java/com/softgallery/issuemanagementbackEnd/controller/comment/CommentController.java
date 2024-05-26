@@ -1,6 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.controller.comment;
 
-import com.softgallery.issuemanagementbackEnd.entity.CommentEntity;
+import com.softgallery.issuemanagementbackEnd.dto.CommentDTO;
 import com.softgallery.issuemanagementbackEnd.exception.ObjectNotFoundException;
 import com.softgallery.issuemanagementbackEnd.service.comment.CommentServiceIF;
 import java.util.List;
@@ -24,25 +24,25 @@ public class CommentController {
     }
 
     @PostMapping("/new/{issueId}")
-    public Boolean createComment(@RequestBody CommentEntity commentEntity,
+    public Boolean createComment(@RequestBody CommentDTO commentDTO,
                                  @RequestHeader(name = "Authorization") String userToken,
                                  @PathVariable Long issueId) {
-        return commentService.createComment(commentEntity, userToken, issueId);
+        return commentService.createComment(commentDTO, userToken, issueId);
     }
 
     @PostMapping("/get/{id}")
-    public CommentEntity getComment(@PathVariable Long id) throws ObjectNotFoundException {
+    public CommentDTO getComment(@PathVariable Long id) throws ObjectNotFoundException {
         return commentService.getComment(id);
     }
 
     @PostMapping("/get-list/{issueId}")
-    public List<CommentEntity> getCommentsInIssue(@PathVariable Long issueId) {
+    public List<CommentDTO> getCommentsInIssue(@PathVariable Long issueId) {
         return commentService.getCommentsInIssue(issueId);
     }
 
     @PostMapping("/update/{id}")
-    public Boolean updateComment(@RequestBody CommentEntity commentEntity, @PathVariable Long id) throws ObjectNotFoundException {
-        return commentService.updateComment(commentEntity, id);
+    public Boolean updateComment(@RequestBody CommentDTO commentDTO, @PathVariable Long id) throws ObjectNotFoundException {
+        return commentService.updateComment(commentDTO, id);
     }
 
     @DeleteMapping("/delete/{id}")

@@ -2,11 +2,13 @@ package com.softgallery.issuemanagementbackEnd.dto;
 
 import com.softgallery.issuemanagementbackEnd.entity.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.softgallery.issuemanagementbackEnd.service.issue.Priority;
 import com.softgallery.issuemanagementbackEnd.service.issue.State;
 import lombok.Getter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Getter
 public class IssueDTO {
@@ -20,22 +22,27 @@ public class IssueDTO {
     private UserDTO fixer;
     private Long projectId;
     private List<CommentEntity> comments;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime startDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime endDate = LocalDateTime.of(1950, 6, 25, 0, 0, 0);
 
     public IssueDTO() { }
 
     public IssueDTO(final Long id, final String title, final String description, final UserDTO reporter,
-                    final State status, final Priority priority) {
+                    final State status, final Priority priority, final LocalDateTime startDate) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.reporter = reporter;
         this.status = status;
         this.priority = priority;
+        this.startDate = startDate;
     }
 
     public IssueDTO(final Long id, final String title, final String description, final UserDTO reporter,
                     final State status, final Priority priority,
-                    final UserDTO assignee) {
+                    final UserDTO assignee, final LocalDateTime startDate) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -43,11 +50,14 @@ public class IssueDTO {
         this.status = status;
         this.priority = priority;
         this.assignee = assignee;
+        this.startDate = startDate;
     }
 
     public IssueDTO(final Long id, final String title, final String description, final UserDTO reporter,
                     final State status, final Priority priority,
-                    final UserDTO assignee, final List<CommentEntity> comments, final UserDTO fixer, final Long projectId) {
+                    final UserDTO assignee, final List<CommentEntity> comments,
+                    final UserDTO fixer, final Long projectId,
+                    final LocalDateTime startDate) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -58,5 +68,25 @@ public class IssueDTO {
         this.comments = comments;
         this.fixer = fixer;
         this.projectId = projectId;
+        this.startDate = startDate;
+    }
+
+    public IssueDTO(final Long id, final String title, final String description, final UserDTO reporter,
+                    final State status, final Priority priority,
+                    final UserDTO assignee, final List<CommentEntity> comments,
+                    final UserDTO fixer, final Long projectId,
+                    final LocalDateTime startDate, final LocalDateTime endDate) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.reporter = reporter;
+        this.status = status;
+        this.priority = priority;
+        this.assignee = assignee;
+        this.comments = comments;
+        this.fixer = fixer;
+        this.projectId = projectId;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 }

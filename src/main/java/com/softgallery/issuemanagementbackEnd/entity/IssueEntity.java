@@ -4,9 +4,11 @@ import com.softgallery.issuemanagementbackEnd.service.issue.Priority;
 import com.softgallery.issuemanagementbackEnd.service.issue.State;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Getter
@@ -42,4 +44,12 @@ public class IssueEntity {
 
     @NonNull
     private Long projectId;
+
+    @NonNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime startDate;
+
+    @NonNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime endDate;
 }

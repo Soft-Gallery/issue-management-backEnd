@@ -17,6 +17,11 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
     @Override
     List<ProjectEntity> findAll();
 
+
     @Override
     void delete(ProjectEntity entity);
+
+
+
+
 }
