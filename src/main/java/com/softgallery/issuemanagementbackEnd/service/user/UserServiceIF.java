@@ -9,5 +9,7 @@ public interface UserServiceIF {
     void updateUser(UserDTO userDTO, Long id);
     void deleteUser(Long id);
 
+    void initialSetting();
+
     UserDTO switchUserEntityToDTO(UserEntity userEntity);
 }

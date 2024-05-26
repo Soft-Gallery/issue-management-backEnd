@@ -81,6 +81,21 @@ public class ProjectService implements ProjectServiceIF {
     }
 
     @Override
+    public void changeDiffState(Long projectId, ProjectState projectState) {
+        Optional<ProjectEntity> projectEntity = projectRepository.findById(projectId);
+
+        if(!projectEntity.isPresent()) {
+            throw new RuntimeException("no project entity id " + projectId);
+        }
+        else {
+            ProjectEntity project = projectEntity.get();
+            project.setProjectState(projectState);
+            projectRepository.save(project);
+        }
+
+    }
+
+    @Override
     public void assignUserToProject() {
 
     }

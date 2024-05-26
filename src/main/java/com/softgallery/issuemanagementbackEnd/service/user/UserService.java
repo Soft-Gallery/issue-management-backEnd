@@ -68,6 +68,25 @@ public class UserService implements UserServiceIF {
 
     }
 
+    @Override
+    public void initialSetting() {
+        int[] userNums = {1, 5, 2, 10};
+        Role[] role = {Role.ROLE_ADMIN, Role.ROLE_TESTER, Role.ROLE_PL, Role.ROLE_DEVELOPER};
+        String[] idAndPasses = {"admin", "tester", "PL", "DEV"};
+
+        for(int i=0; i<4; i++) {
+            for(int j=0; j<userNums[i]; j++) {
+                UserEntity userEntity = UserEntityFactory.createUserEntity(role[i]);
+                userEntity.setUserId(idAndPasses[i]+0+j);
+                userEntity.setPassword(bCryptPasswordEncoder.encode(idAndPasses[i]+"00"+j));
+                userEntity.setName(idAndPasses[i]+"_name"+j);
+                userEntity.setEmail((idAndPasses[i]+j+"@"+idAndPasses[i]+".com"));
+
+                userRepository.save(userEntity);
+            }
+        }
+    }
+
     public boolean isValidPassword(String password) {
         String patternString = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,16}$";
         Pattern pattern = Pattern.compile(patternString);

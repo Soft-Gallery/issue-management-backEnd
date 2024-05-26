@@ -40,8 +40,8 @@ public class CommentService implements CommentServiceIF {
             CommentEntity commentEntity = new CommentEntity();
             commentEntity.setText(commentDTO.getText());
             commentEntity.setCreatedAt(LocalDateTime.now());
-            commentEntity.setAuthorId(jwtUtil.getUserId(tokenValue));
-            commentEntity.setIssueId(issueId);
+            commentEntity.setAuthorId(commentDTO.getAuthorId());
+            commentEntity.setIssueId(commentDTO.getIssueId());
 
             commentRepository.save(commentEntity);
             return true;
