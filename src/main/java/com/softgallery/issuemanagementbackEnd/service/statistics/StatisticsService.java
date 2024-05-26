@@ -3,6 +3,7 @@ package com.softgallery.issuemanagementbackEnd.service.statistics;
 import com.softgallery.issuemanagementbackEnd.dto.StatisticsDTO;
 import com.softgallery.issuemanagementbackEnd.entity.StatisticsEntity;
 import com.softgallery.issuemanagementbackEnd.exception.ObjectNotFoundException;
+import com.softgallery.issuemanagementbackEnd.repository.IssueRepository;
 import com.softgallery.issuemanagementbackEnd.repository.StatisticsRepository;
 import com.softgallery.issuemanagementbackEnd.service.issue.MainCause;
 import com.softgallery.issuemanagementbackEnd.service.issue.Priority;
@@ -15,9 +16,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class StatisticsService implements StatisticsServiceIF {
     private final StatisticsRepository statisticsRepository;
+    private final IssueRepository issueRepository;
 
-    public StatisticsService(final StatisticsRepository statisticsRepository) {
+    public StatisticsService(final StatisticsRepository statisticsRepository, final IssueRepository issueRepository) {
         this.statisticsRepository = statisticsRepository;
+        this.issueRepository = issueRepository;
     }
 
     @Override
@@ -27,11 +30,9 @@ public class StatisticsService implements StatisticsServiceIF {
         try {
             statisticsEntity.setIssueId(statisticsDTO.getIssueId());
             statisticsEntity.setProjectId(statisticsDTO.getProjectId());
-            statisticsEntity.setPriority(statisticsDTO.getPriority());
             statisticsEntity.setStartDate(statisticsDTO.getStartDate());
             statisticsEntity.setEndDate(statisticsDTO.getEndDate());
             statisticsEntity.setDuration(statisticsDTO.getDuration());
-            statisticsEntity.setState(statisticsDTO.getState());
             statisticsEntity.setMainCause(MainCause.RESOLVING);
 
             statisticsRepository.save(statisticsEntity);
@@ -52,10 +53,8 @@ public class StatisticsService implements StatisticsServiceIF {
                 statisticsEntity.getStatisticsId(),
                 statisticsEntity.getIssueId(),
                 statisticsEntity.getProjectId(),
-                statisticsEntity.getPriority(),
                 statisticsEntity.getStartDate(),
                 statisticsEntity.getEndDate(),
-                statisticsEntity.getState(),
                 statisticsEntity.getMainCause()
         );
 
@@ -76,7 +75,7 @@ public class StatisticsService implements StatisticsServiceIF {
         for(Priority priority : Priority.values()) {
             mapPriorityIssueId.put(
                     priority.name(),
-                    statisticsRepository.countByPriority(priority));
+                    issueRepository.countByPriority(priority));
         }
         return mapPriorityIssueId;
     }
@@ -97,13 +96,13 @@ public class StatisticsService implements StatisticsServiceIF {
 
     // 각 이슈 상태 별 전체 이슈 개수
     @Override
-    public HashMap<String, Long> getNumberOfIssuesByState() {
+    public HashMap<String, Long> getNumberOfAllIssuesByState() {
         HashMap<String, Long> mapStateIssueId = new HashMap<>();
 
         for(State state : State.values()) {
             mapStateIssueId.put(
                     state.name(),
-                    statisticsRepository.countByState(state)
+                    issueRepository.countByStatus(state)
             );
         }
         return mapStateIssueId;
@@ -132,7 +131,7 @@ public class StatisticsService implements StatisticsServiceIF {
         for(Priority priority : Priority.values()) {
             mapPriorityIssueId.put(
                     priority.name(),
-                    statisticsRepository.countByProjectIdAndPriority(projectId, priority));
+                    issueRepository.countByProjectIdAndPriority(projectId, priority));
         }
         return mapPriorityIssueId;
     }
@@ -158,7 +157,7 @@ public class StatisticsService implements StatisticsServiceIF {
         for(State state : State.values()) {
             mapStateIssueId.put(
                     state.name(),
-                    statisticsRepository.countByProjectIdAndState(projectId, state)
+                    issueRepository.countByProjectIdAndStatus(projectId, state)
             );
         }
         return mapStateIssueId;
@@ -182,11 +181,9 @@ public class StatisticsService implements StatisticsServiceIF {
             StatisticsEntity statistics = oldStatisticsEntity.get();
             statistics.setIssueId(statisticsDTO.getIssueId());
             statistics.setProjectId(statisticsDTO.getProjectId());
-            statistics.setPriority(statisticsDTO.getPriority());
             statistics.setStartDate(statisticsDTO.getStartDate());
             statistics.setEndDate(statisticsDTO.getEndDate());
             statistics.setDuration(statisticsDTO.getDuration());
-            statistics.setState(statisticsDTO.getState());
             statistics.setMainCause(statisticsDTO.getMainCause());
 
             statisticsRepository.save(statistics);
