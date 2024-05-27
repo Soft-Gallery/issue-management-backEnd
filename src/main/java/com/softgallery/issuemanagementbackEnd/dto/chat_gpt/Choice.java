@@ -1,4 +1,4 @@
-package com.softgallery.issuemanagementbackEnd.dto;
+package com.softgallery.issuemanagementbackEnd.dto.chat_gpt;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -10,7 +10,6 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 public class Choice implements Serializable {
-
     private Message message;
     private Integer index;
     @JsonProperty("finish_reason")

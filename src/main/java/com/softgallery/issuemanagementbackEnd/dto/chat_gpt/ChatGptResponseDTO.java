@@ -1,4 +1,4 @@
-package com.softgallery.issuemanagementbackEnd.dto;
+package com.softgallery.issuemanagementbackEnd.dto.chat_gpt;
 
 import lombok.Builder;
 import lombok.Getter;

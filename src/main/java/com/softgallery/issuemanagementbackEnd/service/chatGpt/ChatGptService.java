@@ -1,7 +1,9 @@
 package com.softgallery.issuemanagementbackEnd.service.chatGpt;
 
 import com.softgallery.issuemanagementbackEnd.config.ChatGptConfig;
-import com.softgallery.issuemanagementbackEnd.dto.*;
+import com.softgallery.issuemanagementbackEnd.dto.chat_gpt.ChatGptRequestDTO;
+import com.softgallery.issuemanagementbackEnd.dto.chat_gpt.ChatGptResponseDTO;
+import com.softgallery.issuemanagementbackEnd.dto.chat_gpt.QuestionRequestDTO;
 import com.softgallery.issuemanagementbackEnd.dto.issue.IssueDTO;
 import com.softgallery.issuemanagementbackEnd.dto.user.UserDTO;
 import com.softgallery.issuemanagementbackEnd.service.issue.IssueServiceIF;

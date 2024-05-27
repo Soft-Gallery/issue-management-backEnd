@@ -1,4 +1,4 @@
-package com.softgallery.issuemanagementbackEnd.controller.projectMember;
+package com.softgallery.issuemanagementbackEnd.controller.project_member;
 
 
 import com.softgallery.issuemanagementbackEnd.dto.project.ProjectDTO;
