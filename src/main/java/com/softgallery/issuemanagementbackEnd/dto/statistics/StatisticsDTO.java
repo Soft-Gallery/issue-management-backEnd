@@ -14,7 +14,7 @@ public class StatisticsDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime endDate = LocalDateTime.of(1990, 1, 1, 0, 0,0 );
+    private LocalDateTime endDate;
     private Long duration;
     private MainCause mainCause;
 
@@ -26,27 +26,6 @@ public class StatisticsDTO {
     }
 
     public StatisticsDTO() { }
-
-    public StatisticsDTO(final Long issueId, final Long projectId,
-                         final LocalDateTime startDate, final LocalDateTime endDate) {
-        this.issueId = issueId;
-        this.projectId = projectId;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.duration = calculateDuration();
-    }
-
-    public StatisticsDTO(final Long issueId, final Long projectId, final LocalDateTime startDate,
-                         final LocalDateTime endDate,
-                         final MainCause mainCause) {
-        this.issueId = issueId;
-        this.projectId = projectId;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.duration = calculateDuration();
-        this.mainCause = mainCause;
-    }
-
     public StatisticsDTO(final Long id, final Long issueId, final Long projectId, final LocalDateTime startDate,
                          final LocalDateTime endDate,
                          final MainCause mainCause) {
