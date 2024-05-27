@@ -70,6 +70,15 @@ public class IssueService implements IssueServiceIF {
         }
     }
 
+    public List<IssueDTO> findStateIssues(Long projectId, State state) {
+        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndProjectId(state, projectId);
+        List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
+        for(IssueEntity currEntity:issueEntities) {
+            issueDTOS.add(switchIssueEntityToDTO(currEntity));
+        }
+        return issueDTOS;
+    }
+
     @Override
     public void updateIssue(final IssueDTO issueDTO, final Long id) {
         Optional<IssueEntity> issueEntity = issueRepository.findById(id);
@@ -252,6 +261,15 @@ public class IssueService implements IssueServiceIF {
     @Override
     public Long countByProjectIdAndStatus(Long projectId, State state) {
         return issueRepository.countByProjectIdAndStatus(projectId, state);
+    }
+
+    public List<IssueDTO> findAllIssuesRelatedAssignee(List<String> ids) {
+        List<IssueEntity> issues = issueRepository.findAllByAssigneeIdIn(ids);
+        List<IssueDTO> ret=new ArrayList<IssueDTO>();
+        for(IssueEntity issue:issues) {
+            ret.add(switchIssueEntityToDTO(issue));
+        }
+        return ret;
     }
 
     @Override

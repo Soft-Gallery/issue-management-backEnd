@@ -25,8 +25,13 @@ public interface IssueServiceIF {
     List<IssueDTO> findFixedIssueRelatedToReporter(String token);
     void resolveIssue(String token, Long issueId);
     void closeIssue(Long issueId);
+
     Long countByPriority(Priority priority);
     Long countByStatus(State state);
+
     Long countByProjectIdAndPriority(Long projectId, Priority priority);
     Long countByProjectIdAndStatus(Long projectId, State state);
+
+    List<IssueDTO> findAllIssuesRelatedAssignee(List<String> ids);
+
 }

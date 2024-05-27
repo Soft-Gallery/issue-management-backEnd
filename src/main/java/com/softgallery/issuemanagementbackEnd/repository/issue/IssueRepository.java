@@ -27,7 +27,9 @@ public interface IssueRepository extends JpaRepository<IssueEntity, Long> {
 
     List<IssueEntity> findAllByStatusAndProjectId(State state, Long projectId);
 
+    List<IssueEntity> findAllByProjectIdAndStatusNot(Long projectId, State status);
 
+    List<IssueEntity> findAllByAssigneeIdIn(List<String> assigneeIds);
 
     @Override
     List<IssueEntity> findAll();
