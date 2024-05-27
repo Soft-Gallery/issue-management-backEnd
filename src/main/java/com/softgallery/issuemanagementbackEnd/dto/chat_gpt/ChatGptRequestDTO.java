@@ -1,4 +1,4 @@
-package com.softgallery.issuemanagementbackEnd.dto;
+package com.softgallery.issuemanagementbackEnd.dto.chat_gpt;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,9 +24,8 @@ public class ChatGptRequestDTO implements Serializable {
     public ChatGptRequestDTO(String model, List<Message> messages,
                              Integer maxTokens, Double temperature,
                              Double topP) {
-        this.messages=messages;
-        this.model = model;
         this.messages = messages;
+        this.model = model;
         this.maxTokens = maxTokens;
         this.temperature = temperature;
         this.topP = topP;

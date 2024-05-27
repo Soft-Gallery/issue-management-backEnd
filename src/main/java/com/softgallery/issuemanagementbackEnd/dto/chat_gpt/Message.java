@@ -1,4 +1,4 @@
-package com.softgallery.issuemanagementbackEnd.dto;
+package com.softgallery.issuemanagementbackEnd.dto.chat_gpt;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -17,7 +17,7 @@ public class Message implements Serializable {
     private String role;
     private String content;
 
-    Message(String content) {
+    public Message(String content) {
         this.role="user";
         this.content=content;
     }
