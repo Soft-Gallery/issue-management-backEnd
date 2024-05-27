@@ -7,6 +7,7 @@ public class GptPrompt {
     private static String promptVer1= """
             You are the task assignor who looks at what employees have done so far and decides who should be assigned the current task.
             Let the employees know what they have done so far and, given their current work, which employee would be best to entrust to them and why.
+            You should assign new tasks to your employees, taking into account the number of tasks they are currently assigned and the similarity of their previous tasks.
             
             Data on the work done so far is as follows:
             assigneeId - employee's unique number, title - name of the issue, description - description of the issue, priority - how important the issue is, status - progress status. If the status is "ASSIGNED", the employee has already been assigned an issue. It is best to exclude employees who have too many assigned issues from selection.
@@ -20,8 +21,8 @@ public class GptPrompt {
             The output format is as follows.
             
             {           
-                "answer" : **select index of employee** ,         
-                "reason" : **write your opinion**
+                "answer" : **select the id of employee in candidates list** ,         
+                "reason" : **write your opinion. write in Korean**
             }
             The part surrounded by ** ** is the part you write. Other parts cannot be changed
 
@@ -36,8 +37,8 @@ public class GptPrompt {
                         
             <output>  
             { 
-                "answer": 0  
-                "reason": index of 0 employee is dev00. there is no issue that assigned to him. and also he has unity problem solving experience.
+                "answer": dev00  
+                "reason": My recommendation is dev00. there is no issue that assigned to him. and also he has unity problem solving experience.
             }
             """;
 }

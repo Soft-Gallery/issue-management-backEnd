@@ -11,6 +11,7 @@ import com.softgallery.issuemanagementbackEnd.repository.UserRepository;
 import com.softgallery.issuemanagementbackEnd.service.issue.IssueServiceIF;
 import com.softgallery.issuemanagementbackEnd.service.issue.State;
 import com.softgallery.issuemanagementbackEnd.service.projectMember.ProjectMemberServiceIF;
+import com.softgallery.issuemanagementbackEnd.service.user.Role;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -59,7 +60,7 @@ public class ChatGptService implements ChatGptServiceIF {
     @Override
     public ChatGptResponseDTO selectUser(Long issueId) {
         IssueDTO issueDTO = issueService.getIssue(issueId);
-        List<UserDTO> devsInProject= projectMememberService.getMembersInProject(issueDTO.getProjectId());
+        List<UserDTO> devsInProject= projectMememberService.getSpecificUsersOfRoleInProject(issueDTO.getProjectId(), Role.ROLE_DEVELOPER);
 
         List<String> devIdsInProject=new ArrayList<>();
         for(UserDTO userDTO:devsInProject) {
@@ -119,40 +120,4 @@ public class ChatGptService implements ChatGptServiceIF {
 
         return content;
     }
-//
-//    @Override
-//    public ChatGptResponseDTO getTag(Long issueId) {
-//        Optional<IssueEntity> issueEntity = issueRepository.findById(issueId);
-//
-//        if(!issueEntity.isPresent()) {
-//            throw new RuntimeException("no such issue id " + issueId);
-//        }
-//        else {
-//            IssueEntity currIssueEntity = issueEntity.get();
-//            String content = currIssueEntity.getDescription();
-//
-//
-//            QuestionRequestDTO requestDTO = new QuestionRequestDTO(content);
-//
-//            return this.getResponse(
-//                    this.buildHttpEntity(
-//                            new ChatGptRequestDTO(
-//                                    ChatGptConfig.MODEL,
-//                                    requestDTO.getMessages(),
-//                                    ChatGptConfig.MAX_TOKEN,
-//                                    ChatGptConfig.TEMPERATURE,
-//                                    ChatGptConfig.TOP_P
-//                            )
-//                    )
-//            );
-//            HttpEntity<ChatGptRequestDTO> requestEntity = new HttpEntity<>(requestDTO);
-//
-//            ResponseEntity<ChatGptResponseDTO> responseEntity = restTemplate.postForEntity(
-//                    ChatGptConfig.URL,
-//                    chatGptRequestDtoHttpEntity,
-//                    ChatGptResponseDTO.class);
-//
-//            ChatGptResponseDTO chatGptResponseDTO = new ChatGptResponseDTO()
-//        }
-//    }
 }
