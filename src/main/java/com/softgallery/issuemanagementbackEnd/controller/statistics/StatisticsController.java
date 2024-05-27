@@ -1,6 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.controller.statistics;
 
-import com.softgallery.issuemanagementbackEnd.dto.StatisticsDTO;
+import com.softgallery.issuemanagementbackEnd.dto.statistics.StatisticsDTO;
 import com.softgallery.issuemanagementbackEnd.exception.ObjectNotFoundException;
 import com.softgallery.issuemanagementbackEnd.service.statistics.StatisticsServiceIF;
 import java.util.HashMap;

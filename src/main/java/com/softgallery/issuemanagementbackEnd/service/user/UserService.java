@@ -1,9 +1,9 @@
 package com.softgallery.issuemanagementbackEnd.service.user;
 
 import com.softgallery.issuemanagementbackEnd.authentication.JWTUtil;
-import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
-import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
-import com.softgallery.issuemanagementbackEnd.repository.UserRepository;
+import com.softgallery.issuemanagementbackEnd.dto.user.UserDTO;
+import com.softgallery.issuemanagementbackEnd.entity.user.UserEntity;
+import com.softgallery.issuemanagementbackEnd.repository.user.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 public class UserService implements UserServiceIF {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
     private final JWTUtil jwtUtil;
 
     public UserService(final UserRepository userRepository, final BCryptPasswordEncoder bCryptPasswordEncoder, JWTUtil jwtUtil) {
@@ -59,32 +58,15 @@ public class UserService implements UserServiceIF {
     }
 
     @Override
-    public void updateUser(final UserDTO userDTO, final Long id) {
-
+    public void updateUser(final UserDTO userDTO, final String id) {
+        UserEntity user = userRepository.findByUserId(id);
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
     }
 
     @Override
-    public void deleteUser(final Long id) {
-
-    }
-
-    @Override
-    public void initialSetting() {
-        int[] userNums = {1, 5, 2, 10};
-        Role[] role = {Role.ROLE_ADMIN, Role.ROLE_TESTER, Role.ROLE_PL, Role.ROLE_DEVELOPER};
-        String[] idAndPasses = {"admin", "tester", "PL", "DEV"};
-
-        for(int i=0; i<4; i++) {
-            for(int j=0; j<userNums[i]; j++) {
-                UserEntity userEntity = UserEntityFactory.createUserEntity(role[i]);
-                userEntity.setUserId(idAndPasses[i]+0+j);
-                userEntity.setPassword(bCryptPasswordEncoder.encode(idAndPasses[i]+"00"+j));
-                userEntity.setName(idAndPasses[i]+"_name"+j);
-                userEntity.setEmail((idAndPasses[i]+j+"@"+idAndPasses[i]+".com"));
-
-                userRepository.save(userEntity);
-            }
-        }
+    public void deleteUser(final String id) {
+        userRepository.deleteById(id);
     }
 
     public boolean isValidPassword(String password) {
@@ -95,6 +77,7 @@ public class UserService implements UserServiceIF {
         return matcher.matches();
     }
 
+    @Override
     public UserDTO switchUserEntityToDTO(UserEntity userEntity) {
         if(userEntity==null) return null;
         return new UserDTO(userEntity.getUserId(), userEntity.getName(),

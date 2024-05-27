@@ -1,6 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.authentication;
 
-import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
+import com.softgallery.issuemanagementbackEnd.entity.user.UserEntity;
 import com.softgallery.issuemanagementbackEnd.service.user.Role;
 import com.softgallery.issuemanagementbackEnd.service.user.UserEntityFactory;
 import jakarta.servlet.FilterChain;

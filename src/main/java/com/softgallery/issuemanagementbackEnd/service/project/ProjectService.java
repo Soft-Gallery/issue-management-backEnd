@@ -1,25 +1,24 @@
 package com.softgallery.issuemanagementbackEnd.service.project;
 
 import com.softgallery.issuemanagementbackEnd.authentication.JWTUtil;
-import com.softgallery.issuemanagementbackEnd.dto.ProjectDTO;
-import com.softgallery.issuemanagementbackEnd.dto.ProjectMemberDTO;
-import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
-import com.softgallery.issuemanagementbackEnd.entity.ProjectEntity;
-import com.softgallery.issuemanagementbackEnd.repository.ProjectRepository;
+import com.softgallery.issuemanagementbackEnd.dto.project.ProjectDTO;
+import com.softgallery.issuemanagementbackEnd.dto.project_member.ProjectMemberDTO;
+import com.softgallery.issuemanagementbackEnd.dto.user.UserDTO;
+import com.softgallery.issuemanagementbackEnd.entity.project.ProjectEntity;
+import com.softgallery.issuemanagementbackEnd.repository.project.ProjectRepository;
 
 import com.softgallery.issuemanagementbackEnd.service.projectMember.ProjectMemberService;
 import com.softgallery.issuemanagementbackEnd.service.user.UserService;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProjectService implements ProjectServiceIF {
-    private ProjectRepository projectRepository;
-    private ProjectMemberService projectMemberService;
-    private UserService userService;
-    private JWTUtil jwtUtil;
+    private final ProjectRepository projectRepository;
+    private final ProjectMemberService projectMemberService;
+    private final UserService userService;
+    private final JWTUtil jwtUtil;
 
     public ProjectService(final ProjectRepository projectRepository, final ProjectMemberService projectMemberService,
                           final UserService userService, JWTUtil jwtUtil) {
@@ -70,7 +69,6 @@ public class ProjectService implements ProjectServiceIF {
 
     @Override
     public boolean updateProject(final ProjectDTO projectDTO) {
-        System.out.println(projectDTO.getId());
         Optional<ProjectEntity> projectEntity = projectRepository.findById(projectDTO.getId());
         if (!projectEntity.isPresent()) {
             throw new RuntimeException("no project id : " + projectDTO.getId());
@@ -123,16 +121,10 @@ public class ProjectService implements ProjectServiceIF {
         projectMemberService.addProjectMember(projectMemberDTO);
     }
 
-    @Override
-    public List<UserDTO> getProjectUsers(Long projectId) {
-        return projectMemberService.getMembersInProject(projectId);
-    }
-
     public ProjectDTO switchProjectEntityToDTO(ProjectEntity projectEntity) {
         return new ProjectDTO(projectEntity.getProjectId(), projectEntity.getName(),
                 projectEntity.getDescription(), projectEntity.getStartDate(), projectEntity.getEndDate(),
                 projectEntity.getProjectState(), projectEntity.getAdminId());
-
     }
 
     public ProjectEntity switchProjectDTOToEntity(ProjectDTO projectDTO) {

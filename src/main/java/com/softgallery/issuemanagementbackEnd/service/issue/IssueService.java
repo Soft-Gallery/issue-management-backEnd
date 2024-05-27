@@ -1,15 +1,12 @@
 package com.softgallery.issuemanagementbackEnd.service.issue;
 
 import com.softgallery.issuemanagementbackEnd.authentication.JWTUtil;
-import com.softgallery.issuemanagementbackEnd.dto.CommentDTO;
-import com.softgallery.issuemanagementbackEnd.dto.IssueDTO;
-import com.softgallery.issuemanagementbackEnd.dto.StatisticsDTO;
-import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
-import com.softgallery.issuemanagementbackEnd.entity.CommentEntity;
-import com.softgallery.issuemanagementbackEnd.entity.IssueEntity;
-import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
-import com.softgallery.issuemanagementbackEnd.repository.CommentRepository;
-import com.softgallery.issuemanagementbackEnd.repository.IssueRepository;
+import com.softgallery.issuemanagementbackEnd.dto.comment.CommentDTO;
+import com.softgallery.issuemanagementbackEnd.dto.issue.IssueDTO;
+import com.softgallery.issuemanagementbackEnd.dto.statistics.StatisticsDTO;
+import com.softgallery.issuemanagementbackEnd.dto.user.UserDTO;
+import com.softgallery.issuemanagementbackEnd.entity.issue.IssueEntity;
+import com.softgallery.issuemanagementbackEnd.repository.issue.IssueRepository;
 
 import com.softgallery.issuemanagementbackEnd.service.comment.CommentServiceIF;
 import com.softgallery.issuemanagementbackEnd.service.statistics.StatisticsServiceIF;
@@ -18,27 +15,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.softgallery.issuemanagementbackEnd.repository.UserRepository;
 import com.softgallery.issuemanagementbackEnd.service.user.UserServiceIF;
 import org.springframework.stereotype.Service;
 
 @Service
 public class IssueService implements IssueServiceIF {
     private final IssueRepository issueRepository;
-    private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
     private final StatisticsServiceIF statisticsService;
-
     private final UserServiceIF userService;
     private final CommentServiceIF commentService;
     private final JWTUtil jwtUtil;
 
-    public IssueService(final IssueRepository issueRepository, final UserRepository userRepository,
-                        final CommentRepository commentRepository, final StatisticsServiceIF statisticsService,
-                        final UserServiceIF userService, CommentServiceIF commentService, final JWTUtil jwtUtil) {
+    public IssueService(final IssueRepository issueRepository, final StatisticsServiceIF statisticsService,
+                        final UserServiceIF userService, final CommentServiceIF commentService, final JWTUtil jwtUtil) {
         this.issueRepository = issueRepository;
-        this.userRepository = userRepository;
-        this.commentRepository = commentRepository;
         this.statisticsService = statisticsService;
         this.userService = userService;
         this.commentService = commentService;
@@ -49,22 +39,15 @@ public class IssueService implements IssueServiceIF {
     @Transactional
     public boolean createIssue(final IssueDTO issueDTO, CommentDTO commentDTO, String fullToken) {
         try {
-            String onlyToken = JWTUtil.getOnlyToken(fullToken);
-            String currUserId = jwtUtil.getUserId(onlyToken);
+            String currUserId = jwtUtil.getUserId(JWTUtil.getOnlyToken(fullToken));
+            IssueEntity savedEntity = issueRepository.save(switchIssueDTOToEntity(issueDTO, currUserId));
 
-            IssueEntity issueEntity = switchIssueDTOToEntity(issueDTO, currUserId);
-            IssueEntity savedEntity = issueRepository.save(issueEntity);
-            System.out.println(savedEntity.getIssueId());
-
-            // 이슈 작성 시 기본 통계정보 추가
             statisticsService.createIssueStatistics(new StatisticsDTO(
                     savedEntity.getIssueId(),
                     savedEntity.getProjectId(),
                     savedEntity.getStartDate(),
                     savedEntity.getEndDate()
             ));
-            commentDTO.setAuthorId(currUserId);
-            commentDTO.setIssueId(savedEntity.getIssueId());
 
             commentService.createComment(commentDTO, fullToken, savedEntity.getIssueId());
 
@@ -85,26 +68,6 @@ public class IssueService implements IssueServiceIF {
             IssueEntity issueEntity = optionalIssueEntity.get();
             return switchIssueEntityToDTO(issueEntity);
         }
-    }
-
-    @Override
-    public List<IssueDTO> findAllIssuesInProject(Long projectId) {
-        List<IssueEntity> issueEntities = issueRepository.findAllByProjectId(projectId);
-        List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
-        for(IssueEntity currEntity:issueEntities) {
-            issueDTOS.add(switchIssueEntityToDTO(currEntity));
-        }
-        return issueDTOS;
-    }
-
-    @Override
-    public List<IssueDTO> findStateIssues(Long projectId, State state) {
-        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndProjectId(state, projectId);
-        List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
-        for(IssueEntity currEntity:issueEntities) {
-            issueDTOS.add(switchIssueEntityToDTO(currEntity));
-        }
-        return issueDTOS;
     }
 
     @Override
@@ -129,22 +92,23 @@ public class IssueService implements IssueServiceIF {
     }
 
     @Override
-    public IssueEntity switchIssueDTOToEntity(IssueDTO issueDTO, String currUserId) {
-        if(issueDTO==null) return null;
+    public List<IssueDTO> findAllIssuesInProject(Long projectId) {
+        List<IssueEntity> issueEntities = issueRepository.findAllByProjectId(projectId);
+        List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
+        for(IssueEntity currEntity:issueEntities) {
+            issueDTOS.add(switchIssueEntityToDTO(currEntity));
+        }
+        return issueDTOS;
+    }
 
-        IssueEntity issueEntity = new IssueEntity();
-        issueEntity.setTitle(issueDTO.getTitle());
-        issueEntity.setDescription(issueDTO.getDescription());
-        issueEntity.setReporterId(currUserId);
-        issueEntity.setStatus(State.NEW);
-        issueEntity.setPriority(issueDTO.getPriority()!=null ? issueDTO.getPriority() : Priority.MAJOR);
-        issueEntity.setAssigneeId(null);
-        issueEntity.setFixerId(null);
-        issueEntity.setProjectId(issueDTO.getProjectId());
-        issueEntity.setStartDate(issueDTO.getStartDate());
-        issueEntity.setEndDate(issueDTO.getEndDate());
-
-        return issueEntity;
+    @Override
+    public List<IssueDTO> findIssuesByState(Long projectId, State state) {
+        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndProjectId(state, projectId);
+        List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
+        for(IssueEntity currEntity:issueEntities) {
+            issueDTOS.add(switchIssueEntityToDTO(currEntity));
+        }
+        return issueDTOS;
     }
 
     @Override
@@ -160,11 +124,10 @@ public class IssueService implements IssueServiceIF {
 
             issueRepository.save(currIssue);
         }
-
     }
 
     @Override
-    public List<IssueDTO> findAssignedToMeIssues(String token) {
+    public List<IssueDTO> findIssuesAssignedToMe(String token) {
         String realToken=JWTUtil.getOnlyToken(token);
         String userId=jwtUtil.getUserId(realToken);
 
@@ -177,7 +140,7 @@ public class IssueService implements IssueServiceIF {
     }
 
     @Override
-    public List<IssueDTO> findAssignedToMeIssuesInProject(Long projectId, String token) {
+    public List<IssueDTO> findIssuesInProjectAssignedToMe(Long projectId, String token) {
         String realToken=JWTUtil.getOnlyToken(token);
         String userId=jwtUtil.getUserId(realToken);
 
@@ -212,7 +175,7 @@ public class IssueService implements IssueServiceIF {
     }
 
     @Override
-    public List<IssueDTO> findFixedIssueRelatedReporter(String token) {
+    public List<IssueDTO> findFixedIssueRelatedToReporter(String token) {
         String realToken=JWTUtil.getOnlyToken(token);
         String userId=jwtUtil.getUserId(realToken);
 
@@ -225,7 +188,7 @@ public class IssueService implements IssueServiceIF {
     }
 
     @Override
-    public List<IssueDTO> findFixedIssueRelatedReporterInProject(String token, Long projectId) {
+    public List<IssueDTO> findFixedIssueInProjectRelatedToReporter(String token, Long projectId) {
         String realToken=JWTUtil.getOnlyToken(token);
         String userId=jwtUtil.getUserId(realToken);
 
@@ -272,21 +235,61 @@ public class IssueService implements IssueServiceIF {
     }
 
     @Override
+    public Long countByPriority(Priority priority) {
+        return issueRepository.countByPriority(priority);
+    }
+
+    @Override
+    public Long countByStatus(State state) {
+        return issueRepository.countByStatus(state);
+    }
+
+    @Override
+    public Long countByProjectIdAndPriority(Long projectId, Priority priority) {
+        return issueRepository.countByProjectIdAndPriority(projectId, priority);
+    }
+
+    @Override
+    public Long countByProjectIdAndStatus(Long projectId, State state) {
+        return issueRepository.countByProjectIdAndStatus(projectId, state);
+    }
+
+    @Override
     public IssueDTO switchIssueEntityToDTO(IssueEntity iE) {
         if(iE==null) return null;
 
-        UserEntity reporter = userRepository.findByUserId(iE.getReporterId());
-        UserEntity assignee = userRepository.findByUserId(iE.getAssigneeId());
-        UserEntity fixer = userRepository.findByUserId(iE.getFixerId());
+        UserDTO reporterDTO = userService.getUser(iE.getReporterId());
+        UserDTO assigneeDTO = userService.getUser(iE.getAssigneeId());
+        UserDTO fixerDTO =userService.getUser(iE.getFixerId());
 
-        UserDTO reporterDTO =userService.switchUserEntityToDTO(reporter);
-        UserDTO assigneeDTO = userService.switchUserEntityToDTO(assignee);
-        UserDTO fixerDTO = userService.switchUserEntityToDTO(fixer);
+        List<CommentDTO> comments = commentService.getCommentsInIssue(iE.getIssueId());
 
-        List<CommentEntity> comments = commentRepository.findAllByIssueId(iE.getIssueId());
+        IssueDTO issueDTO = new IssueDTO(
+                iE.getIssueId(), iE.getTitle(), iE.getDescription(), reporterDTO,
+                iE.getStatus(), iE.getPriority(), assigneeDTO, comments, fixerDTO,
+                iE.getProjectId(), iE.getStartDate(), iE.getEndDate()
+        );
 
-        IssueDTO issueDTO = new IssueDTO(iE.getIssueId(), iE.getTitle(), iE.getDescription(), reporterDTO,
-                iE.getStatus(), iE.getPriority(), assigneeDTO, comments, fixerDTO, iE.getProjectId(), iE.getStartDate(), iE.getEndDate());
         return issueDTO;
     }
+
+    @Override
+    public IssueEntity switchIssueDTOToEntity(IssueDTO issueDTO, String currUserId) {
+        if(issueDTO==null) return null;
+
+        IssueEntity issueEntity = new IssueEntity();
+        issueEntity.setTitle(issueDTO.getTitle());
+        issueEntity.setDescription(issueDTO.getDescription());
+        issueEntity.setReporterId(currUserId);
+        issueEntity.setStatus(State.NEW);
+        issueEntity.setPriority(issueDTO.getPriority()!=null ? issueDTO.getPriority() : Priority.MAJOR);
+        issueEntity.setAssigneeId(null);
+        issueEntity.setFixerId(null);
+        issueEntity.setProjectId(issueDTO.getProjectId());
+        issueEntity.setStartDate(issueDTO.getStartDate());
+        issueEntity.setEndDate(issueDTO.getEndDate());
+
+        return issueEntity;
+    }
+
 }

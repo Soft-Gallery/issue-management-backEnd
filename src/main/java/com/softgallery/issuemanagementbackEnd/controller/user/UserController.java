@@ -1,6 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.controller.user;
 
-import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
+import com.softgallery.issuemanagementbackEnd.dto.user.UserDTO;
 import com.softgallery.issuemanagementbackEnd.service.user.UserServiceIF;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @ResponseBody
 @RequestMapping("/user")
 public class UserController {
-    private UserServiceIF userService;
+    private final UserServiceIF userService;
 
     public UserController(final UserServiceIF userService) {
         this.userService = userService;
@@ -23,10 +23,5 @@ public class UserController {
     @GetMapping("/info")
     public UserDTO getUser(@RequestHeader(name="Authorization") String token) {
         return this.userService.getUser(token);
-    }
-
-    @GetMapping("/initialization")
-    public void initialSetting() {
-        this.userService.initialSetting();
     }
 }

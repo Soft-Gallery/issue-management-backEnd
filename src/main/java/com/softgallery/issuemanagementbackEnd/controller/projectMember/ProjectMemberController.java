@@ -1,9 +1,9 @@
 package com.softgallery.issuemanagementbackEnd.controller.projectMember;
 
 
-import com.softgallery.issuemanagementbackEnd.dto.ProjectDTO;
-import com.softgallery.issuemanagementbackEnd.dto.ProjectMemberDTO;
-import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
+import com.softgallery.issuemanagementbackEnd.dto.project.ProjectDTO;
+import com.softgallery.issuemanagementbackEnd.dto.project_member.ProjectMemberDTO;
+import com.softgallery.issuemanagementbackEnd.dto.user.UserDTO;
 import com.softgallery.issuemanagementbackEnd.service.projectMember.ProjectMemberServiceIF;
 import com.softgallery.issuemanagementbackEnd.service.user.Role;
 import org.springframework.stereotype.Controller;

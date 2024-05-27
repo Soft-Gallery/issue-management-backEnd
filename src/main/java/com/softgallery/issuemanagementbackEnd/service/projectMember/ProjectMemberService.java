@@ -1,35 +1,29 @@
 package com.softgallery.issuemanagementbackEnd.service.projectMember;
 
-import com.softgallery.issuemanagementbackEnd.dto.ProjectDTO;
-import com.softgallery.issuemanagementbackEnd.dto.ProjectMemberDTO;
-import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
-import com.softgallery.issuemanagementbackEnd.entity.ProjectEntity;
-import com.softgallery.issuemanagementbackEnd.entity.ProjectMemberEntity;
-import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
-import com.softgallery.issuemanagementbackEnd.exception.ObjectNotFoundException;
+import com.softgallery.issuemanagementbackEnd.dto.project.ProjectDTO;
+import com.softgallery.issuemanagementbackEnd.dto.project_member.ProjectMemberDTO;
+import com.softgallery.issuemanagementbackEnd.dto.user.UserDTO;
+import com.softgallery.issuemanagementbackEnd.entity.project_member.ProjectMemberEntity;
 import com.softgallery.issuemanagementbackEnd.exception.ProjectMemberNotFoundException;
-import com.softgallery.issuemanagementbackEnd.repository.ProjectMemberRepository;
-import com.softgallery.issuemanagementbackEnd.repository.ProjectRepository;
-import com.softgallery.issuemanagementbackEnd.repository.UserRepository;
+import com.softgallery.issuemanagementbackEnd.repository.project_member.ProjectMemberRepository;
+import com.softgallery.issuemanagementbackEnd.service.project.ProjectServiceIF;
 import com.softgallery.issuemanagementbackEnd.service.user.Role;
+import com.softgallery.issuemanagementbackEnd.service.user.UserServiceIF;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ProjectMemberService implements ProjectMemberServiceIF{
     private final ProjectMemberRepository projectMemberRepository;
-    private final UserRepository userRepository;
-    private final ProjectRepository projectRepository;
-
-    public ProjectMemberService(final ProjectMemberRepository projectMemberRepository,
-                                final UserRepository userRepository, ProjectRepository projectRepository) {
+    private final ProjectServiceIF projectService;
+    private final UserServiceIF userService;
+    public ProjectMemberService(final ProjectMemberRepository projectMemberRepository, final ProjectServiceIF projectService, final UserServiceIF userService) {
         this.projectMemberRepository = projectMemberRepository;
-        this.userRepository = userRepository;
-        this.projectRepository = projectRepository;
+        this.projectService = projectService;
+        this.userService = userService;
     }
 
     @Override
@@ -39,7 +33,6 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
 
         Boolean isExist = projectMemberRepository.existsByProjectIdAndUserId(projectId, userId);
         if(isExist) return false;
-
         try
         {
             ProjectMemberEntity projectMemberEntity = new ProjectMemberEntity();
@@ -64,14 +57,7 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
             List<UserDTO> usersInProjectDTOList = new ArrayList<>();
             for(ProjectMemberEntity projectMember : projectMemberEntity) {
                 String id = projectMember.getUserId();
-                UserEntity userEntity = userRepository.findById(id).orElse(null);
-                usersInProjectDTOList.add(new UserDTO(
-                        userEntity.getUserId(),
-                        userEntity.getName(),
-                        userEntity.getEmail(),
-                        userEntity.getPassword(),
-                        userEntity.getRole()
-                ));
+                usersInProjectDTOList.add(userService.getUser(id));
             }
             return usersInProjectDTOList;
         }
@@ -87,19 +73,11 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
             List<UserDTO> usersInProjectDTOList = new ArrayList<>();
             for(ProjectMemberEntity projectMember : projectMemberEntity) {
                 String id = projectMember.getUserId();
-                UserEntity userEntity = userRepository.findById(id).orElse(null);
-                usersInProjectDTOList.add(new UserDTO(
-                        userEntity.getUserId(),
-                        userEntity.getName(),
-                        userEntity.getEmail(),
-                        userEntity.getPassword(),
-                        userEntity.getRole()
-                ));
+                usersInProjectDTOList.add(userService.getUser(id));
             }
             return usersInProjectDTOList;
         }
     }
-
 
     @Override
     public List<ProjectDTO> getProjectsOfUser(String userId) {
@@ -111,21 +89,8 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
             List<ProjectDTO> projectDTOsOfUserList = new ArrayList<>();
             for (ProjectMemberEntity projectMember : projectMemberEntity) {
                 Long id = projectMember.getProjectId();
-                if (!projectRepository.findById(id).isPresent()) {
-                    throw new RuntimeException("ProjectEntity with id " + id + " is not found.");
-                } else {
-                    ProjectEntity projectEntity = projectRepository.findById(id).get();
-                    UserEntity admin = userRepository.findById(projectEntity.getAdminId()).orElse(null);
-                    projectDTOsOfUserList.add(new ProjectDTO(
-                            projectEntity.getProjectId(),
-                            projectEntity.getName(),
-                            projectEntity.getDescription(),
-                            projectEntity.getStartDate(),
-                            projectEntity.getEndDate(),
-                            projectEntity.getProjectState(),
-                            projectEntity.getAdminId())
-                    );
-                }
+                ProjectDTO projectDTO = projectService.getProject(id);
+                projectDTOsOfUserList.add(projectDTO);
             }
             return projectDTOsOfUserList;
         }
@@ -134,10 +99,10 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
     @Override
     @Transactional
     public Boolean deleteProjectMember(Long projectId, String userId) {
-        try{
-        projectMemberRepository.deleteByProjectIdAndUserId(projectId, userId);
-        return true;
-        }catch(RuntimeException e){
+        try {
+            projectMemberRepository.deleteByProjectIdAndUserId(projectId, userId);
+            return true;
+        } catch(RuntimeException e) {
             return false;
         }
     }

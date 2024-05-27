@@ -1,10 +1,9 @@
 package com.softgallery.issuemanagementbackEnd.service.project;
 
-import com.softgallery.issuemanagementbackEnd.dto.ProjectDTO;
-import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
-import com.softgallery.issuemanagementbackEnd.entity.ProjectEntity;
+import com.softgallery.issuemanagementbackEnd.dto.project.ProjectDTO;
+import com.softgallery.issuemanagementbackEnd.dto.user.UserDTO;
+import com.softgallery.issuemanagementbackEnd.entity.project.ProjectEntity;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ProjectServiceIF {
@@ -15,7 +14,6 @@ public interface ProjectServiceIF {
 
     boolean changeDiffState(Long projectId, ProjectState projectState);
     void assignUserToProject(Long projectId, UserDTO userDTO);
-    List<UserDTO> getProjectUsers(Long projectId);
 
     ProjectDTO switchProjectEntityToDTO(ProjectEntity projectEntity);
     ProjectEntity switchProjectDTOToEntity(ProjectDTO projectDTO);

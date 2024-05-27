@@ -1,6 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.controller.comment;
 
-import com.softgallery.issuemanagementbackEnd.dto.CommentDTO;
+import com.softgallery.issuemanagementbackEnd.dto.comment.CommentDTO;
 import com.softgallery.issuemanagementbackEnd.exception.ObjectNotFoundException;
 import com.softgallery.issuemanagementbackEnd.service.comment.CommentServiceIF;
 import java.util.List;

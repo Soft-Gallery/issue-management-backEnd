@@ -1,7 +1,7 @@
 package com.softgallery.issuemanagementbackEnd.authentication;
 
-import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
-import com.softgallery.issuemanagementbackEnd.repository.UserRepository;
+import com.softgallery.issuemanagementbackEnd.entity.user.UserEntity;
+import com.softgallery.issuemanagementbackEnd.repository.user.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

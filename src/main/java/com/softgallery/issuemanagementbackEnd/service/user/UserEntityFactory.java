@@ -1,7 +1,7 @@
 
 package com.softgallery.issuemanagementbackEnd.service.user;
 
-import com.softgallery.issuemanagementbackEnd.entity.*;
+import com.softgallery.issuemanagementbackEnd.entity.user.*;
 
 public class UserEntityFactory {
     public static UserEntity createUserEntity(Role role) {
