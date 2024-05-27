@@ -26,51 +26,9 @@ public class IssueDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime endDate = LocalDateTime.of(1950, 6, 25, 0, 0, 0);
+    private LocalDateTime endDate;
 
     public IssueDTO() { }
-
-    public IssueDTO(final Long id, final String title, final String description, final UserDTO reporter,
-                    final State status, final Priority priority, final LocalDateTime startDate) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.reporter = reporter;
-        this.status = status;
-        this.priority = priority;
-        this.startDate = startDate;
-    }
-
-    public IssueDTO(final Long id, final String title, final String description, final UserDTO reporter,
-                    final State status, final Priority priority,
-                    final UserDTO assignee, final LocalDateTime startDate) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.reporter = reporter;
-        this.status = status;
-        this.priority = priority;
-        this.assignee = assignee;
-        this.startDate = startDate;
-    }
-
-    public IssueDTO(final Long id, final String title, final String description, final UserDTO reporter,
-                    final State status, final Priority priority,
-                    final UserDTO assignee, final List<CommentDTO> comments,
-                    final UserDTO fixer, final Long projectId,
-                    final LocalDateTime startDate) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.reporter = reporter;
-        this.status = status;
-        this.priority = priority;
-        this.assignee = assignee;
-        this.comments = comments;
-        this.fixer = fixer;
-        this.projectId = projectId;
-        this.startDate = startDate;
-    }
 
     public IssueDTO(final Long id, final String title, final String description, final UserDTO reporter,
                     final State status, final Priority priority,

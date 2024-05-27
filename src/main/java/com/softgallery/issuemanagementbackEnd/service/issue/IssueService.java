@@ -3,13 +3,13 @@ package com.softgallery.issuemanagementbackEnd.service.issue;
 import com.softgallery.issuemanagementbackEnd.authentication.JWTUtil;
 import com.softgallery.issuemanagementbackEnd.dto.comment.CommentDTO;
 import com.softgallery.issuemanagementbackEnd.dto.issue.IssueDTO;
-import com.softgallery.issuemanagementbackEnd.dto.statistics.StatisticsDTO;
 import com.softgallery.issuemanagementbackEnd.dto.user.UserDTO;
 import com.softgallery.issuemanagementbackEnd.entity.issue.IssueEntity;
+import com.softgallery.issuemanagementbackEnd.entity.statistics.StatisticsEntity;
 import com.softgallery.issuemanagementbackEnd.repository.issue.IssueRepository;
 
+import com.softgallery.issuemanagementbackEnd.repository.statistics.StatisticsRepository;
 import com.softgallery.issuemanagementbackEnd.service.comment.CommentServiceIF;
-import com.softgallery.issuemanagementbackEnd.service.statistics.StatisticsServiceIF;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,15 +21,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class IssueService implements IssueServiceIF {
     private final IssueRepository issueRepository;
-    private final StatisticsServiceIF statisticsService;
+    private final StatisticsRepository statisticsRepository;
     private final UserServiceIF userService;
     private final CommentServiceIF commentService;
     private final JWTUtil jwtUtil;
 
-    public IssueService(final IssueRepository issueRepository, final StatisticsServiceIF statisticsService,
+    public IssueService(final IssueRepository issueRepository, StatisticsRepository statisticsRepository,
                         final UserServiceIF userService, final CommentServiceIF commentService, final JWTUtil jwtUtil) {
         this.issueRepository = issueRepository;
-        this.statisticsService = statisticsService;
+        this.statisticsRepository = statisticsRepository;
         this.userService = userService;
         this.commentService = commentService;
         this.jwtUtil = jwtUtil;
@@ -42,15 +42,14 @@ public class IssueService implements IssueServiceIF {
             String currUserId = jwtUtil.getUserId(JWTUtil.getOnlyToken(fullToken));
             IssueEntity savedEntity = issueRepository.save(switchIssueDTOToEntity(issueDTO, currUserId));
 
-            statisticsService.createIssueStatistics(new StatisticsDTO(
-                    savedEntity.getIssueId(),
-                    savedEntity.getProjectId(),
-                    savedEntity.getStartDate(),
-                    savedEntity.getEndDate()
-            ));
+            StatisticsEntity statisticsEntity = new StatisticsEntity();
+            statisticsEntity.setIssueId(savedEntity.getIssueId());
+            statisticsEntity.setProjectId(savedEntity.getProjectId());
+            statisticsEntity.setStartDate(savedEntity.getStartDate());
+            statisticsEntity.setMainCause(MainCause.RESOLVING);
 
+            statisticsRepository.save(statisticsEntity);
             commentService.createComment(commentDTO, fullToken, savedEntity.getIssueId());
-
             return true;
         }
         catch (IllegalArgumentException e) {

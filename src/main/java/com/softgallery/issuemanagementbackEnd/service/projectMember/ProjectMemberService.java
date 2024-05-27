@@ -3,10 +3,11 @@ package com.softgallery.issuemanagementbackEnd.service.projectMember;
 import com.softgallery.issuemanagementbackEnd.dto.project.ProjectDTO;
 import com.softgallery.issuemanagementbackEnd.dto.project_member.ProjectMemberDTO;
 import com.softgallery.issuemanagementbackEnd.dto.user.UserDTO;
+import com.softgallery.issuemanagementbackEnd.entity.project.ProjectEntity;
 import com.softgallery.issuemanagementbackEnd.entity.project_member.ProjectMemberEntity;
 import com.softgallery.issuemanagementbackEnd.exception.ProjectMemberNotFoundException;
+import com.softgallery.issuemanagementbackEnd.repository.project.ProjectRepository;
 import com.softgallery.issuemanagementbackEnd.repository.project_member.ProjectMemberRepository;
-import com.softgallery.issuemanagementbackEnd.service.project.ProjectServiceIF;
 import com.softgallery.issuemanagementbackEnd.service.user.Role;
 import com.softgallery.issuemanagementbackEnd.service.user.UserServiceIF;
 import jakarta.transaction.Transactional;
@@ -14,15 +15,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProjectMemberService implements ProjectMemberServiceIF{
     private final ProjectMemberRepository projectMemberRepository;
-    private final ProjectServiceIF projectService;
+    private final ProjectRepository projectRepository;
     private final UserServiceIF userService;
-    public ProjectMemberService(final ProjectMemberRepository projectMemberRepository, final ProjectServiceIF projectService, final UserServiceIF userService) {
+    public ProjectMemberService(final ProjectMemberRepository projectMemberRepository, ProjectRepository projectRepository, final UserServiceIF userService) {
         this.projectMemberRepository = projectMemberRepository;
-        this.projectService = projectService;
+        this.projectRepository = projectRepository;
         this.userService = userService;
     }
 
@@ -89,8 +91,18 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
             List<ProjectDTO> projectDTOsOfUserList = new ArrayList<>();
             for (ProjectMemberEntity projectMember : projectMemberEntity) {
                 Long id = projectMember.getProjectId();
-                ProjectDTO projectDTO = projectService.getProject(id);
-                projectDTOsOfUserList.add(projectDTO);
+                Optional<ProjectEntity> projectEntity = projectRepository.findById(id);
+                if(!projectEntity.isPresent()) {
+                    throw new RuntimeException("no project id " + id);
+                }
+                else {
+                    ProjectEntity pe = projectEntity.get();
+                    ProjectDTO projectDTO = new ProjectDTO(
+                            pe.getProjectId(), pe.getName(), pe.getDescription(),
+                            pe.getStartDate(), pe.getEndDate(), pe.getProjectState(), pe.getAdminId()
+                    );
+                    projectDTOsOfUserList.add(projectDTO);
+                }
             }
             return projectDTOsOfUserList;
         }
