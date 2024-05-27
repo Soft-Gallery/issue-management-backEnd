@@ -18,7 +18,7 @@ public class QuestionRequestDTO implements Serializable {
     public QuestionRequestDTO(){}
     public QuestionRequestDTO(String s){
         this.messages=new ArrayList<Message>();
-        Message prompMessage = new Message(GptPrompt.getPromptVer1());
+        Message prompMessage = new Message("system",GptPrompt.getPromptVer1());
         Message questionMessage = new Message(s);
 
         this.messages.add(prompMessage);
