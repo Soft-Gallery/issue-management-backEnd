@@ -1,6 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.service.user;
 
-import com.softgallery.issuemanagementbackEnd.custom_annotation.IDRule;
+import com.softgallery.issuemanagementbackEnd.service.custom_annotation.IDRule;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
