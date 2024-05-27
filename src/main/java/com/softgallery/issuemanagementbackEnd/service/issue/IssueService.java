@@ -97,7 +97,6 @@ public class IssueService implements IssueServiceIF {
         return issueDTOS;
     }
 
-    @Override
     public List<IssueDTO> findStateIssues(Long projectId, State state) {
         List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndProjectId(state, projectId);
         List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
@@ -269,6 +268,16 @@ public class IssueService implements IssueServiceIF {
             issue.setStatus(State.CLOSED);
             issueRepository.save(issue);
         }
+    }
+
+    @Override
+    public List<IssueDTO> findAllIssuesRelatedAssignee(List<String> ids) {
+        List<IssueEntity> issues = issueRepository.findAllByAssigneeIdIn(ids);
+        List<IssueDTO> ret=new ArrayList<IssueDTO>();
+        for(IssueEntity issue:issues) {
+            ret.add(switchIssueEntityToDTO(issue));
+        }
+        return ret;
     }
 
     @Override

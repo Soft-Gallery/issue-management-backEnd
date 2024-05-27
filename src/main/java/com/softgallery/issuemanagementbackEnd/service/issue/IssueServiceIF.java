@@ -35,4 +35,6 @@ public interface IssueServiceIF {
     void resolveIssue(String token, Long issueId);
 
     void closeIssue(Long issueId);
+    List<IssueDTO> findAllIssuesRelatedAssignee(List<String> ids);
+
 }
