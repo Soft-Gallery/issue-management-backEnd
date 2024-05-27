@@ -1,8 +1,7 @@
 package com.softgallery.issuemanagementbackEnd.controller.issue;
 
-import com.softgallery.issuemanagementbackEnd.dto.CommentDTO;
-import com.softgallery.issuemanagementbackEnd.dto.IssueCreationRequestDTO;
-import com.softgallery.issuemanagementbackEnd.dto.IssueDTO;
+import com.softgallery.issuemanagementbackEnd.dto.issue.IssueCreationRequestDTO;
+import com.softgallery.issuemanagementbackEnd.dto.issue.IssueDTO;
 import com.softgallery.issuemanagementbackEnd.service.issue.IssueServiceIF;
 import com.softgallery.issuemanagementbackEnd.service.issue.State;
 import org.springframework.stereotype.Controller;
@@ -38,7 +37,7 @@ public class IssueController {
 
     @GetMapping("/searching/{projectId}/state/{status}")
     public List<IssueDTO> findStateIssues(@PathVariable("projectId") Long projectId, @PathVariable("status") State state) {
-        return this.issueServiceIF.findStateIssues(projectId, state);
+        return this.issueServiceIF.findIssuesByState(projectId, state);
     }
 
     @GetMapping("/assignment/{issueId}/{devId}")
@@ -48,12 +47,12 @@ public class IssueController {
 
     @GetMapping("/searching/state/assigned/me")
     public List<IssueDTO> findAssignedToMeIssues(@RequestHeader(name="Authorization") String token) {
-        return this.issueServiceIF.findAssignedToMeIssues(token);
+        return this.issueServiceIF.findIssuesAssignedToMe(token);
     }
 
     @GetMapping("/searching/{projectId}/state/assigned/me")
     public List<IssueDTO> findAssignedToMeIssuesInProject(@PathVariable("projectId") Long projectId, @RequestHeader(name="Authorization") String token) {
-        return this.issueServiceIF.findAssignedToMeIssuesInProject(projectId, token);
+        return this.issueServiceIF.findIssuesInProjectAssignedToMe(projectId, token);
     }
 
     @GetMapping("/fixing/{issueId}")
@@ -63,12 +62,12 @@ public class IssueController {
 
     @GetMapping("/searching/state/fixed/reporter")
     public List<IssueDTO> findFixedIssueRelatedReporter(@RequestHeader(name="Authorization") String token) {
-        return this.issueServiceIF.findFixedIssueRelatedReporter(token);
+        return this.issueServiceIF.findFixedIssueRelatedToReporter(token);
     }
 
     @GetMapping("/searching/{projectId}/state/fixed/reporter")
     public List<IssueDTO> findFixedIssueRelatedReporterInProject(@PathVariable("projectId") Long projectId, @RequestHeader(name="Authorization") String token) {
-        return this.issueServiceIF.findFixedIssueRelatedReporterInProject(token, projectId);
+        return this.issueServiceIF.findFixedIssueInProjectRelatedToReporter(token, projectId);
     }
 
     @GetMapping("/resolving/{issueId}")

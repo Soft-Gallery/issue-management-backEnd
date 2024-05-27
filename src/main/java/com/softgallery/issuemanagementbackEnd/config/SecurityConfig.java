@@ -3,8 +3,6 @@ package com.softgallery.issuemanagementbackEnd.config;
 import com.softgallery.issuemanagementbackEnd.authentication.JWTFilter;
 import com.softgallery.issuemanagementbackEnd.authentication.JWTUtil;
 import com.softgallery.issuemanagementbackEnd.authentication.LoginFilter;
-import com.softgallery.issuemanagementbackEnd.service.user.Role;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,10 +14,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-
-import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity

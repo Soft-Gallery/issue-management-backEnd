@@ -1,7 +1,7 @@
 package com.softgallery.issuemanagementbackEnd.service.user;
 
-import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
-import com.softgallery.issuemanagementbackEnd.repository.UserRepository;
+import com.softgallery.issuemanagementbackEnd.dto.user.UserDTO;
+import com.softgallery.issuemanagementbackEnd.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

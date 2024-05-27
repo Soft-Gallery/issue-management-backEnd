@@ -1,13 +1,10 @@
 package com.softgallery.issuemanagementbackEnd.service.statistics;
 
-import com.softgallery.issuemanagementbackEnd.dto.StatisticsDTO;
-import com.softgallery.issuemanagementbackEnd.entity.StatisticsEntity;
+import com.softgallery.issuemanagementbackEnd.dto.statistics.StatisticsDTO;
+import com.softgallery.issuemanagementbackEnd.entity.statistics.StatisticsEntity;
 import com.softgallery.issuemanagementbackEnd.exception.ObjectNotFoundException;
-import com.softgallery.issuemanagementbackEnd.repository.IssueRepository;
-import com.softgallery.issuemanagementbackEnd.repository.StatisticsRepository;
-import com.softgallery.issuemanagementbackEnd.service.issue.MainCause;
-import com.softgallery.issuemanagementbackEnd.service.issue.Priority;
-import com.softgallery.issuemanagementbackEnd.service.issue.State;
+import com.softgallery.issuemanagementbackEnd.repository.statistics.StatisticsRepository;
+import com.softgallery.issuemanagementbackEnd.service.issue.*;
 import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Optional;
@@ -16,11 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class StatisticsService implements StatisticsServiceIF {
     private final StatisticsRepository statisticsRepository;
-    private final IssueRepository issueRepository;
+    private final IssueServiceIF issueService;
 
-    public StatisticsService(final StatisticsRepository statisticsRepository, final IssueRepository issueRepository) {
+    public StatisticsService(final StatisticsRepository statisticsRepository, final IssueServiceIF issueService) {
         this.statisticsRepository = statisticsRepository;
-        this.issueRepository = issueRepository;
+        this.issueService = issueService;
     }
 
     @Override
@@ -61,115 +58,6 @@ public class StatisticsService implements StatisticsServiceIF {
         return statisticsDTO;
     }
 
-    // 전체 이슈 개수
-    @Override
-    public Long getNumberOfAllIssues() {
-        return statisticsRepository.count();
-    }
-
-    // 각 우선순위 별 전체 이슈 개수
-    @Override
-    public HashMap<String, Long> getNumberOfAllIssuesByPriority() {
-        HashMap<String, Long> mapPriorityIssueId = new HashMap<>();
-
-        for(Priority priority : Priority.values()) {
-            mapPriorityIssueId.put(
-                    priority.name(),
-                    issueRepository.countByPriority(priority));
-        }
-        return mapPriorityIssueId;
-    }
-
-
-    // 각 이슈 원인 별 전체 이슈 개수
-    @Override
-    public HashMap<String, Long> getNumberOfAllIssuesByMainCause() {
-        HashMap<String, Long> mapMainCauseIssueId = new HashMap<>();
-
-        for(MainCause mainCause : MainCause.values()) {
-            mapMainCauseIssueId.put(
-                    mainCause.name(),
-                    statisticsRepository.countByMainCause(mainCause));
-        }
-        return mapMainCauseIssueId;
-    }
-
-    // 각 이슈 상태 별 전체 이슈 개수
-    @Override
-    public HashMap<String, Long> getNumberOfAllIssuesByState() {
-        HashMap<String, Long> mapStateIssueId = new HashMap<>();
-
-        for(State state : State.values()) {
-            mapStateIssueId.put(
-                    state.name(),
-                    issueRepository.countByStatus(state)
-            );
-        }
-        return mapStateIssueId;
-    }
-
-    // Duration 범위 내 전체 이슈 개수
-    @Override
-    public Long getNumberOfIssuesWithinDuration(Long lowerDuration, Long upperDuration) {
-        return statisticsRepository.countByDurationBetween(lowerDuration, upperDuration);
-    }
-
-
-
-
-    // 각 프로젝트의 전체 이슈 개수
-    @Override
-    public Long getNumberOfIssuesByProject(final Long projectId) {
-        return statisticsRepository.countByProjectId(projectId);
-    }
-
-    // 각 우선순위 별 프로젝트 내 이슈 개수
-    @Override
-    public HashMap<String, Long> getNumberOfIssuesByProjectAndPriority(final Long projectId) {
-        HashMap<String, Long> mapPriorityIssueId = new HashMap<>();
-
-        for(Priority priority : Priority.values()) {
-            mapPriorityIssueId.put(
-                    priority.name(),
-                    issueRepository.countByProjectIdAndPriority(projectId, priority));
-        }
-        return mapPriorityIssueId;
-    }
-
-    // 각 이슈 원인 별 프로젝트 내 이슈 개수
-    @Override
-    public HashMap<String, Long> getNumberOfIssuesByProjectAndMainCause(final Long projectId) {
-        HashMap<String, Long> mapMainCauseIssueId = new HashMap<>();
-
-        for(MainCause mainCause : MainCause.values()) {
-            mapMainCauseIssueId.put(
-                    mainCause.name(),
-                    statisticsRepository.countByProjectIdAndMainCause(projectId, mainCause));
-        }
-        return mapMainCauseIssueId;
-    }
-
-    // 각 이슈 상태 별 프로젝트 내 이슈 개수
-    @Override
-    public HashMap<String, Long> getNumberOfIssuesByProjectAndState(final Long projectId) {
-        HashMap<String, Long> mapStateIssueId = new HashMap<>();
-
-        for(State state : State.values()) {
-            mapStateIssueId.put(
-                    state.name(),
-                    issueRepository.countByProjectIdAndStatus(projectId, state)
-            );
-        }
-        return mapStateIssueId;
-    }
-
-    // Duration 범위 내 프로젝트 내 이슈 개수
-    @Override
-    public Long getNumberOfIssuesByProjectWithinDuration(Long projectId, Long lowerDuration, Long upperDuration) {
-        return statisticsRepository.countByProjectIdAndDurationBetween(projectId, lowerDuration, upperDuration);
-    }
-
-
     @Override
     @Transactional
     public Boolean updateIssueStatistics(final StatisticsDTO statisticsDTO, final Long id) throws ObjectNotFoundException {
@@ -201,5 +89,109 @@ public class StatisticsService implements StatisticsServiceIF {
             System.out.println(e);
             return false;
         }
+    }
+
+    // 전체 이슈 개수
+    @Override
+    public Long getNumberOfAllIssues() {
+        return statisticsRepository.count();
+    }
+
+    // 각 우선순위 별 전체 이슈 개수
+    @Override
+    public HashMap<String, Long> getNumberOfAllIssuesByPriority() {
+        HashMap<String, Long> mapPriorityIssueId = new HashMap<>();
+
+        for(Priority priority : Priority.values()) {
+            mapPriorityIssueId.put(
+                    priority.name(),
+                    issueService.countByPriority(priority));
+        }
+        return mapPriorityIssueId;
+    }
+
+    // 각 이슈 원인 별 전체 이슈 개수
+    @Override
+    public HashMap<String, Long> getNumberOfAllIssuesByMainCause() {
+        HashMap<String, Long> mapMainCauseIssueId = new HashMap<>();
+
+        for(MainCause mainCause : MainCause.values()) {
+            mapMainCauseIssueId.put(
+                    mainCause.name(),
+                    statisticsRepository.countByMainCause(mainCause));
+        }
+        return mapMainCauseIssueId;
+    }
+
+    // 각 이슈 상태 별 전체 이슈 개수
+    @Override
+    public HashMap<String, Long> getNumberOfAllIssuesByState() {
+        HashMap<String, Long> mapStateIssueId = new HashMap<>();
+
+        for(State state : State.values()) {
+            mapStateIssueId.put(
+                    state.name(),
+                    issueService.countByStatus(state)
+            );
+        }
+        return mapStateIssueId;
+    }
+
+    // Duration 범위 내 전체 이슈 개수
+    @Override
+    public Long getNumberOfIssuesWithinDuration(Long lowerDuration, Long upperDuration) {
+        return statisticsRepository.countByDurationBetween(lowerDuration, upperDuration);
+    }
+
+    // 각 프로젝트의 전체 이슈 개수
+    @Override
+    public Long getNumberOfIssuesByProject(final Long projectId) {
+        return statisticsRepository.countByProjectId(projectId);
+    }
+
+    // 각 우선순위 별 프로젝트 내 이슈 개수
+    @Override
+    public HashMap<String, Long> getNumberOfIssuesByProjectAndPriority(final Long projectId) {
+        HashMap<String, Long> mapPriorityIssueId = new HashMap<>();
+
+        for(Priority priority : Priority.values()) {
+            mapPriorityIssueId.put(
+                    priority.name(),
+                    issueService.countByProjectIdAndPriority(projectId, priority));
+        }
+        return mapPriorityIssueId;
+    }
+
+    // 각 이슈 원인 별 프로젝트 내 이슈 개수
+    @Override
+    public HashMap<String, Long> getNumberOfIssuesByProjectAndMainCause(final Long projectId) {
+        HashMap<String, Long> mapMainCauseIssueId = new HashMap<>();
+
+        for(MainCause mainCause : MainCause.values()) {
+            mapMainCauseIssueId.put(
+                    mainCause.name(),
+                    statisticsRepository.countByProjectIdAndMainCause(projectId, mainCause));
+        }
+        return mapMainCauseIssueId;
+    }
+
+    // 각 이슈 상태 별 프로젝트 내 이슈 개수
+    @Override
+    public HashMap<String, Long> getNumberOfIssuesByProjectAndState(final Long projectId) {
+        HashMap<String, Long> mapStateIssueId = new HashMap<>();
+
+        for(State state : State.values()) {
+            mapStateIssueId.put(
+                    state.name(),
+                    issueService.countByProjectIdAndStatus(projectId, state)
+            );
+        }
+        return mapStateIssueId;
+    }
+
+    // Duration 범위 내 프로젝트 내 이슈 개수
+    @Override
+    public Long getNumberOfIssuesByProjectWithinDuration(Long projectId, Long lowerDuration, Long upperDuration) {
+        return statisticsRepository.countByProjectIdAndDurationBetween(projectId, lowerDuration, upperDuration);
     }
 }

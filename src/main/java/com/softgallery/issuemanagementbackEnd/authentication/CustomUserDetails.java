@@ -1,6 +1,6 @@
 package com.softgallery.issuemanagementbackEnd.authentication;
 
-import com.softgallery.issuemanagementbackEnd.entity.UserEntity;
+import com.softgallery.issuemanagementbackEnd.entity.user.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,7 +12,6 @@ public class CustomUserDetails implements UserDetails {
     private final UserEntity userEntity;
 
     public CustomUserDetails(UserEntity userEntity) {
-
         this.userEntity = userEntity;
     }
 

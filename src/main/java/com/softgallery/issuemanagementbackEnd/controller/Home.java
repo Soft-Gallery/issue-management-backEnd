@@ -1,10 +1,8 @@
 package com.softgallery.issuemanagementbackEnd.controller;
 
 import com.softgallery.issuemanagementbackEnd.authentication.JWTUtil;
-import com.softgallery.issuemanagementbackEnd.dto.UserDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseBody;
 

@@ -1,10 +1,10 @@
 package com.softgallery.issuemanagementbackEnd.service.comment;
 
 import com.softgallery.issuemanagementbackEnd.authentication.JWTUtil;
-import com.softgallery.issuemanagementbackEnd.dto.CommentDTO;
-import com.softgallery.issuemanagementbackEnd.entity.CommentEntity;
+import com.softgallery.issuemanagementbackEnd.dto.comment.CommentDTO;
+import com.softgallery.issuemanagementbackEnd.entity.comment.CommentEntity;
 import com.softgallery.issuemanagementbackEnd.exception.ObjectNotFoundException;
-import com.softgallery.issuemanagementbackEnd.repository.CommentRepository;
+import com.softgallery.issuemanagementbackEnd.repository.comment.CommentRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public class CommentService implements CommentServiceIF {
     private final CommentRepository commentRepository;
     private final JWTUtil jwtUtil;
 
-    public CommentService(final CommentRepository commentRepository, final JWTUtil jwtUtil) {
+    public CommentService(final CommentRepository commentRepository, JWTUtil jwtUtil) {
         this.commentRepository = commentRepository;
         this.jwtUtil = jwtUtil;
     }
@@ -32,16 +32,13 @@ public class CommentService implements CommentServiceIF {
     }
 
     @Override
-    public Boolean createComment(final CommentDTO commentDTO, String userToken, Long issueId) {
-        // Token Parsing
-        String tokenValue = JWTUtil.getOnlyToken(userToken);
-
+    public Boolean createComment(final CommentDTO commentDTO, String token, Long issueId) {
         try {
             CommentEntity commentEntity = new CommentEntity();
             commentEntity.setText(commentDTO.getText());
             commentEntity.setCreatedAt(LocalDateTime.now());
-            commentEntity.setAuthorId(commentDTO.getAuthorId());
-            commentEntity.setIssueId(commentDTO.getIssueId());
+            commentEntity.setAuthorId(jwtUtil.getUserId(JWTUtil.getOnlyToken(token)));
+            commentEntity.setIssueId(issueId);
 
             commentRepository.save(commentEntity);
             return true;
