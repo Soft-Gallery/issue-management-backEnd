@@ -99,7 +99,7 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
                     ProjectEntity pe = projectEntity.get();
                     ProjectDTO projectDTO = new ProjectDTO(
                             pe.getProjectId(), pe.getName(), pe.getDescription(),
-                            pe.getStartDate(), pe.getEndDate(), pe.getProjectState(), pe.getAdminId()
+                            pe.getProjectState(), pe.getAdminId()
                     );
                     projectDTOsOfUserList.add(projectDTO);
                 }

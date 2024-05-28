@@ -35,8 +35,6 @@ public class ProjectService implements ProjectServiceIF {
             ProjectEntity projectEntity = new ProjectEntity();
             projectEntity.setName(projectDTO.getName());
             projectEntity.setDescription(projectDTO.getDescription());
-            projectEntity.setStartDate(projectDTO.getStartDate());
-            projectEntity.setEndDate(projectDTO.getEndDate());
             projectEntity.setProjectState(ProjectState.InProgress); // for the first creation, the state is always 'InProgress'
             String realToken = JWTUtil.getOnlyToken(token);
             String userID = jwtUtil.getUserId(realToken);
@@ -77,8 +75,6 @@ public class ProjectService implements ProjectServiceIF {
             ProjectEntity project = projectEntity.get();
             project.setName(projectDTO.getName());
             project.setDescription(projectDTO.getDescription());
-            project.setStartDate(projectDTO.getStartDate());
-            project.setEndDate(projectDTO.getEndDate());
             project.setProjectState(projectDTO.getProjectState());
             projectRepository.save(project);
             return true;
@@ -123,8 +119,7 @@ public class ProjectService implements ProjectServiceIF {
 
     public ProjectDTO switchProjectEntityToDTO(ProjectEntity projectEntity) {
         return new ProjectDTO(projectEntity.getProjectId(), projectEntity.getName(),
-                projectEntity.getDescription(), projectEntity.getStartDate(), projectEntity.getEndDate(),
-                projectEntity.getProjectState(), projectEntity.getAdminId());
+                projectEntity.getDescription(), projectEntity.getProjectState(), projectEntity.getAdminId());
     }
 
     public ProjectEntity switchProjectDTOToEntity(ProjectDTO projectDTO) {
@@ -132,8 +127,6 @@ public class ProjectService implements ProjectServiceIF {
         projectEntity.setProjectId(projectDTO.getId());
         projectEntity.setName(projectDTO.getName());
         projectEntity.setDescription(projectDTO.getDescription());
-        projectEntity.setStartDate(projectDTO.getStartDate());
-        projectEntity.setEndDate(projectDTO.getEndDate());
         projectEntity.setProjectState(projectDTO.getProjectState());
         projectEntity.setAdminId(projectDTO.getAdminId());
         return projectEntity;
