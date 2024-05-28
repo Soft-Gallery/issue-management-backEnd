@@ -3,11 +3,9 @@ package com.softgallery.issuemanagementbackEnd.entity.project;
 import com.softgallery.issuemanagementbackEnd.service.project.ProjectState;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Getter
@@ -27,14 +25,6 @@ public class ProjectEntity {
 
     @NonNull
     private String description;
-
-    @NonNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime startDate;
-
-    @NonNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime endDate;
 
     @NonNull
     private String adminId;
