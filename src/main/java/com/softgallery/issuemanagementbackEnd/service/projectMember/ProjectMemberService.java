@@ -29,24 +29,27 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
     }
 
     @Override
-    public boolean addProjectMember(ProjectMemberDTO projectMemberDTO) {
-        String userId = projectMemberDTO.getUserId();
-        Long projectId = projectMemberDTO.getProjectId();
+    public boolean addProjectMember(List<ProjectMemberDTO> projectMemberDTOs) {
+        boolean noError=true;
+        for(ProjectMemberDTO projectMemberDTO: projectMemberDTOs) {
+            String userId = projectMemberDTO.getUserId();
+            Long projectId = projectMemberDTO.getProjectId();
 
-        Boolean isExist = projectMemberRepository.existsByProjectIdAndUserId(projectId, userId);
-        if(isExist) return false;
-        try
-        {
-            ProjectMemberEntity projectMemberEntity = new ProjectMemberEntity();
-            projectMemberEntity.setProjectId(projectMemberDTO.getProjectId());
-            projectMemberEntity.setUserId(projectMemberDTO.getUserId());
-            projectMemberEntity.setRole(projectMemberDTO.getRole());
-            projectMemberRepository.save(projectMemberEntity);
-            return true;
-        } catch(IllegalArgumentException e){
-            return false;
+            Boolean isExist = projectMemberRepository.existsByProjectIdAndUserId(projectId, userId);
+            if(isExist) return false;
+            try
+            {
+                ProjectMemberEntity projectMemberEntity = new ProjectMemberEntity();
+                projectMemberEntity.setProjectId(projectMemberDTO.getProjectId());
+                projectMemberEntity.setUserId(projectMemberDTO.getUserId());
+                projectMemberEntity.setRole(projectMemberDTO.getRole());
+                projectMemberRepository.save(projectMemberEntity);
+            } catch(IllegalArgumentException e){
+                noError=false;
+                throw new RuntimeException("error occur during add member in project");
+            }
         }
-
+        return noError;
     }
 
     @Override

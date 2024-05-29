@@ -9,6 +9,9 @@ import com.softgallery.issuemanagementbackEnd.repository.project.ProjectReposito
 
 import com.softgallery.issuemanagementbackEnd.service.projectMember.ProjectMemberService;
 import com.softgallery.issuemanagementbackEnd.service.user.UserService;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -114,7 +117,9 @@ public class ProjectService implements ProjectServiceIF {
                 userDTO.getId(),
                 userDTO.getRole()
         );
-        projectMemberService.addProjectMember(projectMemberDTO);
+        List<ProjectMemberDTO> ret = new ArrayList<>();
+        ret.add(projectMemberDTO);
+        projectMemberService.addProjectMember(ret);
     }
 
     public ProjectDTO switchProjectEntityToDTO(ProjectEntity projectEntity) {
