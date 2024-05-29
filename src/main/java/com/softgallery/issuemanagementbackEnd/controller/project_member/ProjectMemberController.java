@@ -21,7 +21,7 @@ public class ProjectMemberController {
     }
 
     @PostMapping("/add")
-    public boolean addProjectMember(@RequestBody ProjectMemberDTO projectMemberDTO) {
+    public boolean addProjectMember(@RequestBody List<ProjectMemberDTO> projectMemberDTO) {
         return projectMemberService.addProjectMember(projectMemberDTO);
     }
 
