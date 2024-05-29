@@ -7,6 +7,8 @@ import com.softgallery.issuemanagementbackEnd.repository.user.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,6 +69,17 @@ public class UserService implements UserServiceIF {
     @Override
     public void deleteUser(final String id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public List<UserDTO> getAllUserByRole(Role role) {
+        List<UserEntity> users=userRepository.findAllByRole(role);
+        List<UserDTO> ret = new ArrayList<>();
+
+        for(UserEntity user:users) {
+            ret.add(switchUserEntityToDTO(user));
+        }
+        return ret;
     }
 
     public boolean isValidPassword(String password) {

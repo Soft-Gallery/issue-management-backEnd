@@ -31,5 +31,9 @@ public abstract class UserEntity {
     @NonNull
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", insertable = false, updatable = false)
+    private Role role;
+
     public abstract Role getRole();
 }
