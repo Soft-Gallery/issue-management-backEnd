@@ -274,10 +274,10 @@ public class IssueService implements IssueServiceIF {
     @Override
     public IssueDTO switchIssueEntityToDTO(IssueEntity iE) {
         if(iE==null) return null;
+        UserDTO reporterDTO = userService.getUserById(iE.getReporterId());
 
-        UserDTO reporterDTO = userService.getUser(iE.getReporterId());
-        UserDTO assigneeDTO = userService.getUser(iE.getAssigneeId());
-        UserDTO fixerDTO =userService.getUser(iE.getFixerId());
+        UserDTO assigneeDTO = userService.getUserById(iE.getAssigneeId());
+        UserDTO fixerDTO =userService.getUserById(iE.getFixerId());
 
         List<CommentDTO> comments = commentService.getCommentsInIssue(iE.getIssueId());
 
@@ -286,6 +286,7 @@ public class IssueService implements IssueServiceIF {
                 iE.getStatus(), iE.getPriority(), assigneeDTO, comments, fixerDTO,
                 iE.getProjectId(), iE.getStartDate(), iE.getEndDate()
         );
+
 
         return issueDTO;
     }

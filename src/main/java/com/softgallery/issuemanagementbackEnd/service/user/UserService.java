@@ -53,7 +53,13 @@ public class UserService implements UserServiceIF {
     @Override
     public UserDTO getUser(final String fullToken) {
         String realToken = JWTUtil.getOnlyToken(fullToken);
-        String userId = jwtUtil.getUserId(realToken);
+
+        return getUserById(jwtUtil.getUserId(realToken));
+    }
+
+    @Override
+    public UserDTO getUserById(final String id) {
+        String userId = id;
         UserEntity userEntity = userRepository.findByUserId(userId);
         UserDTO userDTO = switchUserEntityToDTO(userEntity);
         return userDTO;
