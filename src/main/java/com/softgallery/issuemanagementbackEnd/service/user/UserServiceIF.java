@@ -7,6 +7,9 @@ import java.util.List;
 public interface UserServiceIF {
     boolean createUser(UserDTO userDTO);
     UserDTO getUser(String id);
+
+    UserDTO getUserById(String id);
+
     void updateUser(UserDTO userDTO, String id);
     void deleteUser(String id);
 

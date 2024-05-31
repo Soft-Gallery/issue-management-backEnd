@@ -62,7 +62,7 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
             List<UserDTO> usersInProjectDTOList = new ArrayList<>();
             for(ProjectMemberEntity projectMember : projectMemberEntity) {
                 String id = projectMember.getUserId();
-                usersInProjectDTOList.add(userService.getUser(id));
+                usersInProjectDTOList.add(userService.getUserById(id));
             }
             return usersInProjectDTOList;
         }
@@ -78,7 +78,7 @@ public class ProjectMemberService implements ProjectMemberServiceIF{
             List<UserDTO> usersInProjectDTOList = new ArrayList<>();
             for(ProjectMemberEntity projectMember : projectMemberEntity) {
                 String id = projectMember.getUserId();
-                usersInProjectDTOList.add(userService.getUser(id));
+                usersInProjectDTOList.add(userService.getUserById(id));
             }
             return usersInProjectDTOList;
         }
