@@ -1,0 +1,76 @@
+@startuml
+
+class User {
+    userId
+    name
+    email
+    password
+    role
+}
+
+class Admin extends User {
+}
+
+class PL extends User {
+}
+
+class Developer extends User {
+}
+
+class Tester extends User {
+}
+
+class Project {
+    projectId
+    name
+    projectState
+    description
+    adminId
+}
+
+class Issue {
+    issueId
+    title
+    description
+    reporterId
+    status
+    priority
+    assigneeId
+    fixerId
+    projectId
+    startDate
+    endDate
+}
+
+class Comment {
+    commentId
+    text
+    authorId
+    issueId
+}
+
+class ChatGpt {
+}
+
+class Statistics {
+    statisticsId
+    issueId
+    projectId
+    startDate
+    endDate
+    mainCause
+}
+
+User <|-- Admin
+User <|-- PL
+User <|-- Developer
+User <|-- Tester
+
+Project "1" --> "*" Issue : includes
+Project "1" --> "*" User : has
+Issue "1" --> "*" Comment : has
+Issue "1" --> "1" Statistics : generates
+
+ChatGpt --> Issue : recommendAssignee
+
+@enduml

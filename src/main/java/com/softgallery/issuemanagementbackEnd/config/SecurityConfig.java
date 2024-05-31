@@ -56,10 +56,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(AUTH_WHITELIST)
                         .permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/pl", "/issue/assignment/*/*").hasRole("PL")
-                        .requestMatchers("/tester", "/issue/new").hasRole("TESTER")
-                        .requestMatchers("/developer").hasRole("DEVELOPER")
+                        .requestMatchers("/admin", "/project/create").hasRole("ADMIN")
+                        .requestMatchers("/pl", "/issue/assignment/*/*", "/gpt/recommendation/*", "/issue/closing/").hasRole("PL")
+                        .requestMatchers("/tester", "/issue/new", "/issue/resolving/*").hasRole("TESTER")
+                        .requestMatchers("/developer", "/issue/fixing/*").hasRole("DEVELOPER")
                         .anyRequest().authenticated()
 
                 )
