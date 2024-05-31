@@ -1,0 +1,856 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+package "Admin" {
+  class AdminEntity {
+    + getRole(): Role
+    + manageUsers(): void
+  }
+}
+
+package "Configuration" {
+  class CORsMVCConfig {
+    ~ allowedOrigin: String
+    + addCorsMappings(CorsRegistry): void
+  }
+  class ChatGptConfig {
+    + URL: String
+    + API_KEY: String
+    + BEARER: String
+    + MODEL: String
+    + MAX_TOKEN: Integer
+    + TEMPERATURE: Double
+    + MEDIA_TYPE: String
+    + AUTHORIZATION: String
+    + TOP_P: Double
+    + setSecretKey(String): void
+  }
+  class CorsConfig {
+    + corsFilter(): CorsFilter
+  }
+  class SecurityConfig {
+    - authenticationConfiguration: AuthenticationConfiguration
+    - AUTH_WHITELIST: String[]
+    - jwtUtil: JWTUtil
+    ~ allowedOrigin: String
+    + authenticationManager(AuthenticationConfiguration): AuthenticationManager
+    + bCryptPasswordEncoder(): BCryptPasswordEncoder
+    + filterChain(HttpSecurity): SecurityFilterChain
+  }
+  class SwaggerConfig {
+    + openAPI(): OpenAPI
+  }
+}
+
+package "ChatGpt" {
+  class ChatGptController {
+    - chatGptService: ChatGptServiceIF
+    + selectUser(Long): ChatGptResponseDTO
+  }
+  class ChatGptRequestDTO {
+    - messages: List<Message>
+    - topP: Double
+    - maxTokens: Integer
+    - temperature: Double
+    - model: String
+    + getModel(): String
+    + getMessages(): List<Message>
+    + getMaxTokens(): Integer
+    + getTemperature(): Double
+    + getTopP(): Double
+    + builder(): ChatGptRequestDTOBuilder
+  }
+  class ChatGptResponseDTO {
+    - id: String
+    - created: LocalDate
+    - model: String
+    - object: String
+    - choices: List<Choice>
+    + getId(): String
+    + getObject(): String
+    + getCreated(): LocalDate
+    + getModel(): String
+    + getChoices(): List<Choice>
+    + builder(): ChatGptResponseDTOBuilder
+  }
+  class ChatGptService {
+    - issueService: IssueServiceIF
+    - apiKey: String
+    - projectMemberService: ProjectMemberServiceIF
+    - restTemplate: RestTemplate
+    + buildHttpEntity(ChatGptRequestDTO): HttpEntity<ChatGptRequestDTO>
+    + getResponse(HttpEntity<ChatGptRequestDTO>): ChatGptResponseDTO
+    + selectUser(Long): ChatGptResponseDTO
+    + makeQuestionStr(List<IssueDTO>, IssueDTO, List<String>): String
+  }
+  interface ChatGptServiceIF << interface >> {
+    + getResponse(HttpEntity<ChatGptRequestDTO>): ChatGptResponseDTO
+    + buildHttpEntity(ChatGptRequestDTO): HttpEntity<ChatGptRequestDTO>
+    + selectUser(Long): ChatGptResponseDTO
+  }
+  class Choice {
+    - finishReason: String
+    - index: Integer
+    - message: Message
+    + getMessage(): Message
+    + getIndex(): Integer
+    + getFinishReason(): String
+    + builder(): ChoiceBuilder
+  }
+}
+
+package "Comment" {
+  class CommentController {
+    - commentService: CommentServiceIF
+    + createComment(CommentDTO, String, Long): Boolean
+    + getComment(Long): CommentDTO
+    + getCommentsInIssue(Long): List<CommentDTO>
+    + updateComment(CommentDTO, Long): Boolean
+    + deleteComment(Long): Boolean
+  }
+  class CommentDTO {
+    - id: Long
+    - text: String
+    - createdAt: LocalDateTime
+    - authorId: String
+    - issueId: Long
+    + getId(): Long
+    + getText(): String
+    + getCreatedAt(): LocalDateTime
+    + getAuthorId(): String
+    + getIssueId(): Long
+  }
+  class CommentEntity {
+    - issueId: Long
+    - authorId: String
+    - commentId: Long
+    - createdAt: LocalDateTime
+    - text: String
+    + getCommentId(): Long
+    + getText(): String
+    + getCreatedAt(): LocalDateTime
+    + getAuthorId(): String
+    + getIssueId(): Long
+    + setCommentId(Long): void
+    + setText(String): void
+    + setCreatedAt(LocalDateTime): void
+    + setAuthorId(String): void
+    + setIssueId(Long): void
+  }
+  interface CommentRepository << interface >> {
+    + save(S): S
+    + findById(Long): Optional<CommentEntity>
+    + findAllByIssueId(Long): List<CommentEntity>
+    + deleteById(Long): void
+  }
+  class CommentService {
+    - commentRepository: CommentRepository
+    - jwtUtil: JWTUtil
+    + createComment(CommentDTO, String, Long): Boolean
+    + updateComment(CommentDTO, Long): Boolean
+    + getCommentsInIssue(Long): List<CommentDTO>
+    + getComment(Long): CommentDTO
+    + deleteComment(Long): Boolean
+    - entityToDTO(CommentEntity): CommentDTO
+  }
+  interface CommentServiceIF << interface >> {
+    + getCommentsInIssue(Long): List<CommentDTO>
+    + createComment(CommentDTO, String, Long): Boolean
+    + deleteComment(Long): Boolean
+    + getComment(Long): CommentDTO
+    + updateComment(CommentDTO, Long): Boolean
+  }
+}
+
+package "Issue" {
+  class IssueController {
+    - issueServiceIF: IssueServiceIF
+    + assignDev(Long, String): void
+    + fixIssue(String, Long): void
+    + findStateIssues(Long, State): List<IssueDTO>
+    + findAssignedToMeIssues(String): List<IssueDTO>
+    + closeIssue(Long): void
+    + findAssignedToMeIssuesInProject(Long, String): List<IssueDTO>
+    + createIssue(IssueCreationRequestDTO, String): boolean
+    + resolveIssue(String, Long): void
+    + findFixedIssueRelatedReporterInProject(Long, String): List<IssueDTO>
+    + findAllIssues(Long): List<IssueDTO>
+    + findFixedIssueRelatedReporter(String): List<IssueDTO>
+    + getIssue(Long): IssueDTO
+  }
+  class IssueCreationRequestDTO {
+    - issue: IssueDTO
+    - comment: CommentDTO
+    + getIssue(): IssueDTO
+    + getComment(): CommentDTO
+  }
+  class IssueDTO {
+    - startDate: LocalDateTime
+    - projectId: Long
+    - status: State
+    - id: Long
+    - description: String
+    - assignee: UserDTO
+    - comments: List<CommentDTO>
+    - priority: Priority
+    - reporter: UserDTO
+    - endDate: LocalDateTime
+    - title: String
+    - fixer: UserDTO
+    + getDescription(): String
+    + getId(): Long
+    + getTitle(): String
+    + getReporter(): UserDTO
+    + getStatus(): State
+    + getPriority(): Priority
+    + getAssignee(): UserDTO
+    + getFixer(): UserDTO
+    + getProjectId(): Long
+    + getComments(): List<CommentDTO>
+    + getStartDate(): LocalDateTime
+    + getEndDate(): LocalDateTime
+  }
+  class IssueEntity {
+    - title: String
+    - priority: Priority
+    - fixerId: String?
+    - reporterId: String
+    - status: State
+    - assigneeId: String?
+    - issueId: Long
+    - description: String
+    - endDate: LocalDateTime?
+    - projectId: Long
+    - startDate: LocalDateTime
+    + getDescription(): String
+    + getTitle(): String
+    + getIssueId(): Long
+    + setDescription(String): void
+    + getReporterId(): String
+    + setAssigneeId(String?): void
+    + setProjectId(Long): void
+    + getStatus(): State
+    + setEndDate(LocalDateTime?): void
+    + getPriority(): Priority
+    + getAssigneeId(): String?
+    + setIssueId(Long): void
+    + setStartDate(LocalDateTime): void
+    + getEndDate(): LocalDateTime?
+    + getFixerId(): String?
+    + getProjectId(): Long
+    + getStartDate(): LocalDateTime
+    + setPriority(Priority): void
+    + setTitle(String): void
+    + setStatus(State): void
+    + setFixerId(String?): void
+    + setReporterId(String): void
+  }
+  class IssueService {
+    - userService: UserServiceIF
+    - commentService: CommentServiceIF
+    - jwtUtil: JWTUtil
+    - issueRepository: IssueRepository
+    - statisticsRepository: StatisticsRepository
+    + deleteIssue(Long): void
+    + countByProjectIdAndPriority(Long, Priority): Long
+    + switchIssueEntityToDTO(IssueEntity): IssueDTO
+    + findFixedIssueRelatedToReporter(String): List<IssueDTO>
+    + updateIssue(IssueDTO, Long): void
+    + findStateIssues(Long, State): List<IssueDTO>
+    + createIssue(IssueDTO, CommentDTO, String): boolean
+    + findFixedIssueInProjectRelatedToReporter(String, Long): List<IssueDTO>
+    + findAllIssuesRelatedAssignee(List<String>): List<IssueDTO>
+    + findIssuesInProjectAssignedToMe(Long, String): List<IssueDTO>
+    + resolveIssue(String, Long): void
+    + countByStatus(State): Long
+    + assignDev(Long, String): void
+    + getIssue(Long): IssueDTO
+    + closeIssue(Long): void
+    + findAllIssuesInProject(Long): List<IssueDTO>
+    + findIssuesByState(Long, State): List<IssueDTO>
+    + findIssuesAssignedToMe(String): List<IssueDTO>
+    + countByPriority(Priority): Long
+    + fixIssue(String, Long): void
+    + switchIssueDTOToEntity(IssueDTO, String): IssueEntity
+    + countByProjectIdAndStatus(Long, State): Long
+  }
+  interface IssueRepository << interface >> {
+    + findAllByStatusAndReporterId(State, String): List<IssueEntity>
+    + findAllByAssigneeIdIn(List<String>): List<IssueEntity>
+    + findAllByStatusAndAssigneeIdAndProjectId(State, String, Long): List<IssueEntity>
+    + countByProjectIdAndStatus(Long, State): Long
+    + findAll(): List<IssueEntity>
+    + findAllByProjectId(Long): List<IssueEntity>
+    + findById(Long): Optional<IssueEntity>
+    + findAllByStatus(State): List<IssueEntity>
+    + countByPriority(Priority): Long
+    + findAllByProjectIdAndStatusNot(Long, State): List<IssueEntity>
+    + countByProjectIdAndPriority(Long, Priority): Long
+    + save(S): S
+    + findAllByStatusAndAssigneeId(State, String): List<IssueEntity>
+    + delete(IssueEntity): void
+    + countByStatus(State): Long
+    + findAllByStatusAndReporterIdAndProjectId(State, String, Long): List<IssueEntity>
+    + findAllByStatusAndProjectId(State, Long): List<IssueEntity>
+  }
+  interface IssueServiceIF << interface >> {
+    + deleteIssue(Long): void
+    + resolveIssue(String, Long): void
+    + closeIssue(Long): void
+    + findAllIssuesInProject(Long): List<IssueDTO>
+    + findIssuesInProjectAssignedToMe(Long, String): List<IssueDTO>
+    + findAllIssuesRelatedAssignee(List<String>): List<IssueDTO>
+    + fixIssue(String, Long): void
+    + findFixedIssueInProjectRelatedToReporter(String, Long): List<IssueDTO>
+    + findFixedIssueRelatedToReporter(String): List<IssueDTO>
+    + countByPriority(Priority): Long
+    + switchIssueEntityToDTO(IssueEntity): IssueDTO
+    + switchIssueDTOToEntity(IssueDTO, String): IssueEntity
+    + updateIssue(IssueDTO, Long): void
+    + countByProjectIdAndStatus(Long, State): Long
+    + countByStatus(State): Long
+    + createIssue(IssueDTO, CommentDTO, String): boolean
+    + countByProjectIdAndPriority(Long, Priority): Long
+    + getIssue(Long): IssueDTO
+    + assignDev(Long, String): void
+    + findIssuesAssignedToMe(String): List<IssueDTO>
+    + findIssuesByState(Long, State): List<IssueDTO>
+  }
+}
+
+package "JWT" {
+  class JWTFilter {
+    - jwtUtil: JWTUtil
+    # doFilterInternal(HttpServletRequest, HttpServletResponse, FilterChain): void
+  }
+  class JWTUtil {
+    - secretKey: SecretKey
+    + getUsername(String): String
+    + isExpired(String): Boolean
+    + getOnlyToken(String): String
+    + getRole(String): String
+    + getUserId(String): String
+    + createJwt(String, String, Long): String
+  }
+  class LoginFilter {
+    - authenticationManager: AuthenticationManager
+    - jwtUtil: JWTUtil
+    # successfulAuthentication(HttpServletRequest, HttpServletResponse, FilterChain, Authentication): void
+    # obtainUserId(HttpServletRequest): String
+    # unsuccessfulAuthentication(HttpServletRequest, HttpServletResponse, AuthenticationException): void
+    + attemptAuthentication(HttpServletRequest, HttpServletResponse): Authentication
+  }
+}
+
+package "Enums" {
+  enum MainCause << enumeration >> {
+    + TYPO:
+    + LOGIC:
+    + CONFIGURATION:
+    + INFRA:
+    + DOCUMENTATION:
+    + FEATURE:
+    + RESOLVING:
+    + STRUCTURE:
+    + valueOf(String): MainCause
+    + values(): MainCause[]
+  }
+  enum Priority << enumeration >> {
+    + CRITICAL:
+    + MAJOR:
+    + MINOR:
+    + TRIVIAL:
+    + BLOCKER:
+    + values(): Priority[]
+    + valueOf(String): Priority
+  }
+  enum ProjectState << enumeration >> {
+    + Closed:
+    + InProgress:
+    + values(): ProjectState[]
+    + valueOf(String): ProjectState
+  }
+  enum Role << enumeration >> {
+    + ROLE_PL:
+    + ROLE_ADMIN:
+    + ROLE_DEVELOPER:
+    + ROLE_TESTER:
+    + values(): Role[]
+    + valueOf(String): Role
+  }
+  enum State << enumeration >> {
+    + NEW:
+    + RESOLVED:
+    + CLOSED:
+    + FIXED:
+    + ASSIGNED:
+    + valueOf(String): State
+    + values(): State[]
+  }
+}
+
+package "Statistics" {
+  class StatisticsController {
+    - statisticsService: StatisticsServiceIF
+    + getStatisticsById(Long): StatisticsDTO
+    + deleteIssueStatistics(Long): Boolean
+    + getNumberOfIssuesInProject(Long): Long
+    + getNumbersByStateAndDuration(Long, Long, Long): Long
+    + createIssueStatistics(StatisticsDTO): Boolean
+    + getNumberOfIssuesByProjectAndPriority(Long): HashMap<String, Long>
+    + getNumbersByStateAndDuration(Long, Long): Long
+    + getNumbersByProjectAndState(Long): HashMap<String, Long>
+    + updateIssueStatistics(StatisticsDTO, Long): Boolean
+    + getNumbersByMainCause(): HashMap<String, Long>
+    + getNumbers(): Long
+    + getNumbersByPriority(): HashMap<String, Long>
+    + getNumbersByState(): HashMap<String, Long>
+    + getNumberOfIssuesByProjectAndMainCause(Long): HashMap<String, Long>
+  }
+  class StatisticsDTO {
+    - mainCause: MainCause
+    - endDate: LocalDateTime
+    - projectId: Long
+    - startDate: LocalDateTime
+    - id: Long
+    - issueId: Long
+    - duration: Long
+    - calculateDuration(): Long
+    + getId(): Long
+    + getIssueId(): Long
+    + getProjectId(): Long
+    + getStartDate(): LocalDateTime
+    + getEndDate(): LocalDateTime
+    + getDuration(): Long
+    + getMainCause(): MainCause
+  }
+  class StatisticsEntity {
+    - mainCause: MainCause
+    - duration: Long?
+    - statisticsId: Long
+    - projectId: Long
+    - startDate: LocalDateTime
+    - endDate: LocalDateTime?
+    - issueId: Long
+    + getProjectId(): Long
+    + getStatisticsId(): Long
+    + getIssueId(): Long
+    + getStartDate(): LocalDateTime
+    + setEndDate(LocalDateTime?): void
+    + getEndDate(): LocalDateTime?
+    + getDuration(): Long?
+    + getMainCause(): MainCause
+    + setMainCause(MainCause): void
+    + setStatisticsId(Long): void
+    + setIssueId(Long): void
+    + setProjectId(Long): void
+    + setStartDate(LocalDateTime): void
+    + setDuration(Long?): void
+  }
+  interface StatisticsRepository << interface >> {
+    + countByProjectIdAndDurationBetween(Long, Long, Long): Long
+    + countByProjectIdAndMainCause(Long, MainCause): Long
+    + save(S): S
+    + deleteById(Long): void
+    + findById(Long): Optional<StatisticsEntity>
+    + countByMainCause(MainCause): Long
+    + countByDurationBetween(Long, Long): Long
+    + countByProjectId(Long): Long
+  }
+  class StatisticsService {
+    - statisticsRepository: StatisticsRepository
+    - issueService: IssueServiceIF
+    + getNumberOfIssuesByProjectAndPriority(Long): HashMap<String, Long>
+    + getNumberOfAllIssues(): Long
+    + getStatisticsByID(Long): StatisticsDTO
+    + getNumberOfAllIssuesByState(): HashMap<String, Long>
+    + getNumberOfIssuesByProject(Long): Long
+    + getNumberOfIssuesByProjectWithinDuration(Long, Long, Long): Long
+    + deleteIssueStatistics(Long): Boolean
+    + getNumberOfAllIssuesByMainCause(): HashMap<String, Long>
+    + getNumberOfAllIssuesByPriority(): HashMap<String, Long>
+    + createIssueStatistics(StatisticsDTO): Boolean
+    + getNumberOfIssuesWithinDuration(Long, Long): Long
+    + getNumberOfIssuesByProjectAndState(Long): HashMap<String, Long>
+    + getNumberOfIssuesByProjectAndMainCause(Long): HashMap<String, Long>
+    + updateIssueStatistics(StatisticsDTO, Long): Boolean
+  }
+  interface StatisticsServiceIF << interface >> {
+    + getNumberOfAllIssuesByPriority(): HashMap<String, Long>
+    + getNumberOfAllIssuesByMainCause(): HashMap<String, Long>
+    + getNumberOfIssuesByProjectAndMainCause(Long): HashMap<String, Long>
+    + getNumberOfIssuesByProjectWithinDuration(Long, Long, Long): Long
+    + getNumberOfIssuesByProjectAndState(Long): HashMap<String, Long>
+    + getNumberOfAllIssuesByState(): HashMap<String, Long>
+    + getNumberOfIssuesWithinDuration(Long, Long): Long
+    + createIssueStatistics(StatisticsDTO): Boolean
+    + getNumberOfIssuesByProject(Long): Long
+    + getNumberOfAllIssues(): Long
+    + updateIssueStatistics(StatisticsDTO, Long): Boolean
+    + getNumberOfIssuesByProjectAndPriority(Long): HashMap<String, Long>
+    + getStatisticsByID(Long): StatisticsDTO
+    + deleteIssueStatistics(Long): Boolean
+  }
+}
+
+package "User" {
+  class CustomUserDetails {
+    - userEntity: UserEntity
+    + isEnabled(): boolean
+    + getAuthorities(): Collection<GrantedAuthority>
+    + isAccountNonExpired(): boolean
+    + isCredentialsNonExpired(): boolean
+    + isAccountNonLocked(): boolean
+    + getId(): String
+    + getPassword(): String
+    + getUsername(): String
+  }
+  class CustomUserDetailsService {
+    - userRepository: UserRepository
+    + loadUserByUsername(String): UserDetails
+  }
+  class DeveloperEntity {
+    + fixBugs(): void
+    + getRole(): Role
+    + writeCode(): void
+  }
+  class Home {
+    ~ jwtUtil: JWTUtil
+    + adminTest(): String
+    + authTest(): String
+    + devTest(): String
+    + showUserInfo(String): String
+    + test(): String
+    + plTest(): String
+    + testerTest(): String
+  }
+  class PLEntity {
+    + assignTasks(): void
+    + manageProject(): void
+    + getRole(): Role
+  }
+  class TesterEntity {
+    + writeTestCases(): void
+    + getRole(): Role
+    + performTesting(): void
+  }
+  class UserController {
+    - userService: UserServiceIF
+    + CreateUser(UserDTO): boolean
+    + getUser(String): UserDTO
+    + findAllByRole(Role): List<UserDTO>
+  }
+  class UserDTO {
+    - name: String
+    - email: String
+    - password: String
+    - id: String
+    - role: Role
+    + getId(): String
+    + getName(): String
+    + getEmail(): String
+    + getPassword(): String
+    + getRole(): Role
+  }
+  class UserEntity {
+    - userId: String
+    - email: String
+    - name: String
+    - password: String
+    - role: Role
+    + getUserId(): String
+    + getName(): String
+    + getEmail(): String
+    + getPassword(): String
+    + setUserId(String): void
+    + setName(String): void
+    + setEmail(String): void
+    + setPassword(String): void
+    + setRole(Role): void
+    + getRole(): Role
+  }
+  class UserEntityFactory {
+    + createUserEntity(Role): UserEntity
+  }
+  interface UserRepository << interface >> {
+    + existsByUserId(String): Boolean
+    + findByUserId(String): UserEntity
+    + findAllByRole(Role): List<UserEntity>
+  }
+  class UserService {
+    - jwtUtil: JWTUtil
+    - bCryptPasswordEncoder: BCryptPasswordEncoder
+    - userRepository: UserRepository
+    + updateUser(UserDTO, String): void
+    + deleteUser(String): void
+    + getAllUserByRole(Role): List<UserDTO>
+    + switchUserEntityToDTO(UserEntity): UserDTO
+    + getUser(String): UserDTO
+    + createUser(UserDTO): boolean
+    + isValidPassword(String): boolean
+  }
+  interface UserServiceIF << interface >> {
+    + createUser(UserDTO): boolean
+    + updateUser(UserDTO, String): void
+    + getAllUserByRole(Role): List<UserDTO>
+    + getUser(String): UserDTO
+    + deleteUser(String): void
+    + switchUserEntityToDTO(UserEntity): UserDTO
+  }
+}
+
+package "Project" {
+  class ProjectController {
+    - projectService: ProjectServiceIF
+    + createProject(ProjectDTO, String): boolean
+    + deleteProject(Long): boolean
+    + getProject(Long): ProjectDTO
+    + changeDiffState(Long, ProjectState): boolean
+    + updateProject(ProjectDTO): boolean
+  }
+  class ProjectDTO {
+    - id: Long
+    - description: String
+    - name: String
+    - adminId: String
+    - projectState: ProjectState
+    + getId(): Long
+    + getName(): String
+    + getDescription(): String
+    + getProjectState(): ProjectState
+    + getAdminId(): String
+  }
+  class ProjectEntity {
+    - adminId: String
+    - projectId: Long
+    - projectState: ProjectState
+    - description: String
+    - name: String
+    + getProjectId(): Long
+    + getName(): String
+    + getProjectState(): ProjectState
+    + getDescription(): String
+    + getAdminId(): String
+    + setProjectId(Long): void
+    + setName(String): void
+    + setProjectState(ProjectState): void
+    + setDescription(String): void
+    + setAdminId(String): void
+  }
+  interface ProjectRepository << interface >> {
+    + findById(Long): Optional<ProjectEntity>
+    + delete(ProjectEntity): void
+    + save(S): S
+    + findAll(): List<ProjectEntity>
+  }
+  class ProjectService {
+    - userService: UserService
+    - projectRepository: ProjectRepository
+    - projectMemberService: ProjectMemberService
+    - jwtUtil: JWTUtil
+    + updateProject(ProjectDTO): boolean
+    + switchProjectEntityToDTO(ProjectEntity): ProjectDTO
+    + switchProjectDTOToEntity(ProjectDTO): ProjectEntity
+    + changeDiffState(Long, ProjectState): boolean
+    + createProject(ProjectDTO, String): boolean
+    + assignUserToProject(Long, UserDTO): void
+    + deleteProject(Long): boolean
+    + getProject(Long): ProjectDTO
+  }
+  interface ProjectServiceIF << interface >> {
+    + assignUserToProject(Long, UserDTO): void
+    + switchProjectEntityToDTO(ProjectEntity): ProjectDTO
+    + createProject(ProjectDTO, String): boolean
+    + deleteProject(Long): boolean
+    + getProject(Long): ProjectDTO
+    + updateProject(ProjectDTO): boolean
+    + switchProjectDTOToEntity(ProjectDTO): ProjectEntity
+    + changeDiffState(Long, ProjectState): boolean
+  }
+}
+
+package "ProjectMember" {
+  class ProjectMemberController {
+    - projectMemberService: ProjectMemberServiceIF
+    + deleteProjectMember(Long, String): boolean
+    + addProjectMember(ProjectMemberDTO): boolean
+    + getMembersInProject(Long): List<UserDTO>
+    + getProjectsOfUser(String): List<ProjectDTO>
+    + getSpecificUsersOfRoleInProject(Long, Role): List<UserDTO>
+  }
+  class ProjectMemberDTO {
+    - projectId: Long
+    - mappingId: Long
+    - role: Role
+    - userId: String
+    + getMappingId(): Long
+    + getProjectId(): Long
+    + getUserId(): String
+    + getRole(): Role
+  }
+  class ProjectMemberEntity {
+    - userId: String
+    - projectId: Long
+    - role: Role
+    - mappingId: Long
+    + getMappingId(): Long
+    + getProjectId(): Long
+    + getUserId(): String
+    + getRole(): Role
+    + setMappingId(Long): void
+    + setProjectId(Long): void
+    + setUserId(String): void
+    + setRole(Role): void
+  }
+  class ProjectMemberNotFoundException
+  interface ProjectMemberRepository << interface >> {
+    + findAllByUserId(String): List<ProjectMemberEntity>
+    + existsByProjectIdAndUserId(Long, String): Boolean
+    + deleteByProjectIdAndUserId(Long, String): Long
+    + findAllByProjectId(Long): List<ProjectMemberEntity>
+    + findAllByProjectIdAndRole(Long, Role): List<ProjectMemberEntity>
+    + findById(Long): Optional<ProjectMemberEntity>
+    + existsByUserId(String): Boolean
+    + save(S): S
+  }
+  class ProjectMemberService {
+    - userService: UserServiceIF
+    - projectMemberRepository: ProjectMemberRepository
+    - projectRepository: ProjectRepository
+    + getMembersInProject(Long): List<UserDTO>
+    + getSpecificUsersOfRoleInProject(Long, Role): List<UserDTO>
+    + addProjectMember(ProjectMemberDTO): boolean
+    + deleteProjectMember(Long, String): Boolean
+    + getProjectsOfUser(String): List<ProjectDTO>
+  }
+  interface ProjectMemberServiceIF << interface >> {
+    + getProjectsOfUser(String): List<ProjectDTO>
+    + addProjectMember(ProjectMemberDTO): boolean
+    + getSpecificUsersOfRoleInProject(Long, Role): List<UserDTO>
+    + deleteProjectMember(Long, String): Boolean
+    + getMembersInProject(Long): List<UserDTO>
+  }
+}
+
+class GptPrompt {
+  - promptVer1: String
+  + getPromptVer1(): String
+}
+
+annotation IDRule << annotation >> {
+  + groups(): Class<?>[]
+  + message(): String
+  + payload(): Class<Payload>[]
+}
+annotation PasswordRule << annotation >> {
+  + groups(): Class<?>[]
+  + message(): String
+  + payload(): Class<Payload>[]
+}
+
+class Message {
+  - role: String
+  - content: String
+  + getRole(): String
+  + getContent(): String
+}
+
+class ObjectNotFoundException
+class IssueManagementBackEndApplication {
+  + main(String[]): void
+}
+
+ChatGptController                 "1" *-[#595959,plain]-> "chatGptService\n1" ChatGptServiceIF
+ChatGptRequestDTO                 "1" *-[#595959,plain]-> "messages\n*" Message
+ChatGptResponseDTO                "1" *-[#595959,plain]-> "choices\n*" Choice
+ChatGptService                     -[#595959,dashed]->  ChatGptRequestDTO                 : "«create»"
+ChatGptService                     -[#008200,dashed]-^  ChatGptServiceIF
+ChatGptService                    "1" *-[#595959,plain]-> "issueService\n1" IssueServiceIF
+ChatGptService                    "1" *-[#595959,plain]-> "projectMemberService\n1" ProjectMemberServiceIF
+ChatGptService                     -[#595959,dashed]->  QuestionRequestDTO                : "«create»"
+Choice                            "1" *-[#595959,plain]-> "message\n1" Message
+CommentController                 "1" *-[#595959,plain]-> "commentService\n1" CommentServiceIF
+CommentService                     -[#595959,dashed]->  CommentDTO                        : "«create»"
+CommentService                     -[#595959,dashed]->  CommentEntity                     : "«create»"
+CommentService                    "1" *-[#595959,plain]-> "commentRepository\n1" CommentRepository
+CommentService                     -[#008200,dashed]-^  CommentServiceIF
+CommentService                    "1" *-[#595959,plain]-> "jwtUtil\n1" JWTUtil
+CommentService                     -[#595959,dashed]->  ObjectNotFoundException           : "«create»"
+CustomUserDetails                 "1" *-[#595959,plain]-> "userEntity\n1" UserEntity
+CustomUserDetailsService           -[#595959,dashed]->  CustomUserDetails                 : "«create»"
+CustomUserDetailsService          "1" *-[#595959,plain]-> "userRepository\n1" UserRepository
+DeveloperEntity                    -[#000082,plain]-^  UserEntity
+Home                              "1" *-[#595959,plain]-> "jwtUtil\n1" JWTUtil
+IssueController                   "1" *-[#595959,plain]-> "issueServiceIF\n1" IssueServiceIF
+IssueCreationRequestDTO           "1" *-[#595959,plain]-> "comment\n1" CommentDTO
+IssueCreationRequestDTO           "1" *-[#595959,plain]-> "issue\n1" IssueDTO
+IssueDTO                          "1" *-[#595959,plain]-> "comments\n*" CommentDTO
+IssueDTO                          "1" *-[#595959,plain]-> "priority\n1" Priority
+IssueDTO                          "1" *-[#595959,plain]-> "status\n1" State
+IssueDTO                          "1" *-[#595959,plain]-> "reporter\n1" UserDTO
+IssueEntity                       "1" *-[#595959,plain]-> "priority\n1" Priority
+IssueEntity                       "1" *-[#595959,plain]-> "status\n1" State
+IssueService                      "1" *-[#595959,plain]-> "commentService\n1" CommentServiceIF
+IssueService                       -[#595959,dashed]->  IssueDTO                          : "«create»"
+IssueService                       -[#595959,dashed]->  IssueEntity                       : "«create»"
+IssueService                      "1" *-[#595959,plain]-> "issueRepository\n1" IssueRepository
+IssueService                       -[#008200,dashed]-^  IssueServiceIF
+IssueService                      "1" *-[#595959,plain]-> "jwtUtil\n1" JWTUtil
+IssueService                       -[#595959,dashed]->  StatisticsEntity                  : "«create»"
+IssueService                      "1" *-[#595959,plain]-> "statisticsRepository\n1" StatisticsRepository
+IssueService                      "1" *-[#595959,plain]-> "userService\n1" UserServiceIF
+JWTFilter                          -[#595959,dashed]->  CustomUserDetails                 : "«create»"
+JWTFilter                         "1" *-[#595959,plain]-> "jwtUtil\n1" JWTUtil
+LoginFilter                       "1" *-[#595959,plain]-> "jwtUtil\n1" JWTUtil
+PLEntity                           -[#000082,plain]-^  UserEntity
+ProjectController                 "1" *-[#595959,plain]-> "projectService\n1" ProjectServiceIF
+ProjectDTO                        "1" *-[#595959,plain]-> "projectState\n1" ProjectState
+ProjectEntity                     "1" *-[#595959,plain]-> "projectState\n1" ProjectState
+ProjectMemberController           "1" *-[#595959,plain]-> "projectMemberService\n1" ProjectMemberServiceIF
+ProjectMemberDTO                  "1" *-[#595959,plain]-> "role\n1" Role
+ProjectMemberEntity               "1" *-[#595959,plain]-> "role\n1" Role
+ProjectMemberService               -[#595959,dashed]->  ProjectDTO                        : "«create»"
+ProjectMemberService               -[#595959,dashed]->  ProjectMemberEntity               : "«create»"
+ProjectMemberService               -[#595959,dashed]->  ProjectMemberNotFoundException    : "«create»"
+ProjectMemberService              "1" *-[#595959,plain]-> "projectMemberRepository\n1" ProjectMemberRepository
+ProjectMemberService               -[#008200,dashed]-^  ProjectMemberServiceIF
+ProjectMemberService              "1" *-[#595959,plain]-> "projectRepository\n1" ProjectRepository
+ProjectMemberService              "1" *-[#595959,plain]-> "userService\n1" UserServiceIF
+ProjectService                    "1" *-[#595959,plain]-> "jwtUtil\n1" JWTUtil
+ProjectService                     -[#595959,dashed]->  ProjectDTO                        : "«create»"
+ProjectService                     -[#595959,dashed]->  ProjectEntity                     : "«create»"
+ProjectService                     -[#595959,dashed]->  ProjectMemberDTO                  : "«create»"
+ProjectService                    "1" *-[#595959,plain]-> "projectMemberService\n1" ProjectMemberService
+ProjectService                    "1" *-[#595959,plain]-> "projectRepository\n1" ProjectRepository
+ProjectService                     -[#008200,dashed]-^  ProjectServiceIF
+ProjectService                    "1" *-[#595959,plain]-> "userService\n1" UserService
+QuestionRequestDTO                 -[#595959,dashed]->  Message                           : "«create»"
+QuestionRequestDTO                "1" *-[#595959,plain]-> "messages\n*" Message
+SecurityConfig                     -[#595959,dashed]->  JWTFilter                         : "«create»"
+SecurityConfig                    "1" *-[#595959,plain]-> "jwtUtil\n1" JWTUtil
+SecurityConfig                     -[#595959,dashed]->  LoginFilter                       : "«create»"
+StatisticsController              "1" *-[#595959,plain]-> "statisticsService\n1" StatisticsServiceIF
+StatisticsDTO                     "1" *-[#595959,plain]-> "mainCause\n1" MainCause
+StatisticsEntity                  "1" *-[#595959,plain]-> "mainCause\n1" MainCause
+StatisticsService                 "1" *-[#595959,plain]-> "issueService\n1" IssueServiceIF
+StatisticsService                  -[#595959,dashed]->  ObjectNotFoundException           : "«create»"
+StatisticsService                  -[#595959,dashed]->  StatisticsDTO                     : "«create»"
+StatisticsService                  -[#595959,dashed]->  StatisticsEntity                  : "«create»"
+StatisticsService                 "1" *-[#595959,plain]-> "statisticsRepository\n1" StatisticsRepository
+StatisticsService                  -[#008200,dashed]-^  StatisticsServiceIF
+TesterEntity                       -[#000082,plain]-^  UserEntity
+UserController                    "1" *-[#595959,plain]-> "userService\n1" UserServiceIF
+UserDTO                           "1" *-[#595959,plain]-> "role\n1" Role
+UserEntity                        "1" *-[#595959,plain]-> "role\n1" Role
+UserEntityFactory                  -[#595959,dashed]->  AdminEntity                       : "«create»"
+UserEntityFactory                  -[#595959,dashed]->  DeveloperEntity                   : "«create»"
+UserEntityFactory                  -[#595959,dashed]->  PLEntity                          : "«create»"
+UserEntityFactory                  -[#595959,dashed]->  TesterEntity                      : "«create»"
+UserService                       "1" *-[#595959,plain]-> "jwtUtil\n1" JWTUtil
+UserService                        -[#595959,dashed]->  UserDTO                           : "«create»"
+UserService                       "1" *-[#595959,plain]-> "userRepository\n1" UserRepository
+UserService                        -[#008200,dashed]-^  UserServiceIF
+@enduml

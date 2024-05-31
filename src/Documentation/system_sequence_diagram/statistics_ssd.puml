@@ -1,0 +1,97 @@
+@startuml
+participant User
+participant SecurityFilterChain
+participant JWTFilter
+participant JWTUtil
+participant IssueController
+participant IssueServiceIF
+participant IssueRepository
+participant StatisticsServiceIF
+participant StatisticsRepository
+participant CommentServiceIF
+participant CommentRepository
+participant ChatGptController
+participant ChatGptServiceIF
+participant ProjectMemberServiceIF
+participant ChatGptService
+
+User -> SecurityFilterChain: HTTP Request
+SecurityFilterChain -> JWTFilter: Filter Request
+JWTFilter -> JWTUtil: getRole(String token)
+JWTUtil --> JWTFilter: Role
+JWTFilter --> SecurityFilterChain: Allow or Deny
+
+alt Role is Tester or PL or Admin
+    alt Role is Tester
+        User -> IssueController: createIssue(IssueCreationRequestDTO, String)
+        IssueController -> IssueServiceIF: createIssue(IssueDTO, CommentDTO, String)
+        IssueServiceIF -> JWTUtil: getUserId(String token)
+        JWTUtil --> IssueServiceIF: String userId
+
+        IssueServiceIF -> IssueRepository: save(IssueEntity)
+        IssueRepository --> IssueServiceIF: IssueEntity
+
+        IssueServiceIF -> StatisticsServiceIF: createIssueStatistics(StatisticsDTO)
+        StatisticsServiceIF -> StatisticsRepository: save(StatisticsEntity)
+        StatisticsRepository --> StatisticsServiceIF: StatisticsEntity
+
+        IssueServiceIF -> CommentServiceIF: createComment(CommentDTO, String, Long issueId)
+        CommentServiceIF -> CommentRepository: save(CommentEntity)
+        CommentRepository --> CommentServiceIF: CommentEntity
+
+        CommentServiceIF --> IssueServiceIF: Boolean
+        IssueServiceIF --> IssueController: Boolean
+        IssueController --> User: Boolean
+    end
+
+    alt Role is PL or Admin
+        User -> ChatGptController: selectUser(Long issueId)
+        ChatGptController -> ChatGptServiceIF: selectUser(Long issueId)
+        ChatGptServiceIF -> IssueServiceIF: getIssue(Long issueId)
+        IssueServiceIF -> IssueRepository: findById(Long issueId)
+        IssueRepository --> IssueServiceIF: IssueEntity
+        IssueServiceIF --> ChatGptServiceIF: IssueDTO
+
+        ChatGptServiceIF -> ProjectMemberServiceIF: getSpecificUsersOfRoleInProject(Long projectId, Role.ROLE_DEVELOPER)
+        ProjectMemberServiceIF -> ProjectMemberRepository: findAllByUserId(String userId)
+        ProjectMemberRepository --> ProjectMemberServiceIF: List<ProjectMemberEntity
+        ProjectMemberServiceIF --> ChatGptServiceIF: List<UserDTO
+
+        ChatGptServiceIF -> IssueServiceIF: findAllIssuesRelatedAssignee(List<String> devIds)
+        IssueServiceIF -> IssueRepository: findAllByAssigneeIdIn(List<String> devIds)
+        IssueRepository --> IssueServiceIF: List<IssueEntity
+        IssueServiceIF --> ChatGptServiceIF: List<IssueDTO
+
+        ChatGptServiceIF -> ChatGptService: makeQuestionStr(List<IssueDTO> relatedIssues, IssueDTO currIssue, List<String> devIds)
+        ChatGptService --> ChatGptServiceIF: String
+        ChatGptServiceIF -> ChatGptService: buildHttpEntity(ChatGptRequestDTO requestDto)
+        ChatGptService --> ChatGptServiceIF: HttpEntity<ChatGptRequestDTO>
+        ChatGptServiceIF -> ChatGptService: getResponse(HttpEntity<ChatGptRequestDTO> chatGptRequestDtoHttpEntity)
+        ChatGptService --> ChatGptServiceIF: ChatGptResponseDTO
+        ChatGptServiceIF --> ChatGptController: ChatGptResponseDTO
+        ChatGptController --> User: ChatGptResponseDTO
+
+        User -> IssueController: assignDev(Long issueId, String userId)
+        IssueController -> IssueServiceIF: assignDev(Long issueId, String userId)
+        IssueServiceIF -> IssueRepository: findById(Long issueId)
+        IssueRepository --> IssueServiceIF: Optional<IssueEntity>
+
+        IssueServiceIF -> IssueEntity: setAssigneeId(String userId)
+        IssueServiceIF -> IssueRepository: save(IssueEntity)
+        IssueRepository --> IssueServiceIF: IssueEntity
+
+        IssueServiceIF -> StatisticsServiceIF: updateIssueStatistics(StatisticsDTO, Long issueId)
+        StatisticsServiceIF -> StatisticsRepository: findById(Long issueId)
+        StatisticsRepository --> StatisticsServiceIF: Optional<StatisticsEntity>
+
+        StatisticsServiceIF -> StatisticsEntity: setAssigneeId(String userId)
+        StatisticsServiceIF -> StatisticsRepository: save(StatisticsEntity)
+        StatisticsRepository --> StatisticsServiceIF: StatisticsEntity
+
+        IssueServiceIF --> IssueController: void
+        IssueController --> User: void
+    end
+else Not Tester or PL or Admin
+    SecurityFilterChain --> User: Access Denied
+end
+@enduml

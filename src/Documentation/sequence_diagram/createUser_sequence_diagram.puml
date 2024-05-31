@@ -1,0 +1,13 @@
+@startuml
+participant User
+participant UserController
+participant UserServiceIF
+participant UserRepository
+
+User -> UserController: CreateUser(UserDTO)
+UserController -> UserServiceIF: createUser(UserDTO)
+UserServiceIF -> UserRepository: save(UserEntity)
+UserRepository --> UserServiceIF: UserEntity
+UserServiceIF --> UserController: Boolean
+UserController --> User: Boolean
+@enduml

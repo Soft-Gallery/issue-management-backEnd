@@ -1,0 +1,35 @@
+@startuml
+participant User
+participant ProjectMemberController
+participant ProjectMemberServiceIF
+participant ProjectMemberRepository
+participant UserServiceIF
+participant SecurityFilterChain
+participant JWTFilter
+participant JWTUtil
+
+User -> SecurityFilterChain: HTTP Request
+SecurityFilterChain -> JWTFilter: Filter Request
+JWTFilter -> JWTUtil: getRole(String token)
+JWTUtil --> JWTFilter: Role
+JWTFilter --> SecurityFilterChain: Allow or Deny
+
+alt Role is Admin
+    User -> ProjectMemberController: addProjectMember
+    ProjectMemberController -> ProjectMemberServiceIF: addProjectMember
+
+    loop for each member
+      ProjectMemberServiceIF -> UserServiceIF: getUser
+      UserServiceIF -> UserRepository: findUser
+      UserRepository --> UserServiceIF: UserEntity
+      UserServiceIF --> ProjectMemberServiceIF: UserDTO
+      ProjectMemberServiceIF -> ProjectMemberRepository: save(ProjectMemberEntity)
+      ProjectMemberRepository --> ProjectMemberServiceIF: ProjectMemberEntity
+      end
+
+    ProjectMemberServiceIF --> ProjectMemberController: Boolean
+    ProjectMemberController --> User: Boolean
+else Not Admin
+    SecurityFilterChain --> User: Access Denied
+end
+@enduml
