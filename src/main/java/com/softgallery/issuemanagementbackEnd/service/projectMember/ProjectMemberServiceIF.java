@@ -8,7 +8,7 @@ import com.softgallery.issuemanagementbackEnd.service.user.Role;
 import java.util.List;
 
 public interface ProjectMemberServiceIF {
-    boolean addProjectMember(ProjectMemberDTO projectMemberDTO);
+    boolean addProjectMember(List<ProjectMemberDTO> projectMemberDTOs);
     List<UserDTO> getMembersInProject(Long projectId);
     List<UserDTO> getSpecificUsersOfRoleInProject(Long projectId, Role role);
     List<ProjectDTO> getProjectsOfUser(String userId);
