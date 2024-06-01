@@ -32,7 +32,7 @@ public class ProjectService implements ProjectServiceIF {
     }
 
     @Override
-    public boolean createProject(final ProjectDTO projectDTO, final String token) {
+    public Long createProject(final ProjectDTO projectDTO, final String token) {
 
         try {
             ProjectEntity projectEntity = new ProjectEntity();
@@ -47,9 +47,9 @@ public class ProjectService implements ProjectServiceIF {
             UserDTO adminDTO = userService.getUser(token);
             assignUserToProject(savedProjectEntity.getProjectId(), adminDTO);
 
-            return true;
+            return savedProjectEntity.getProjectId();
         } catch (IllegalArgumentException e){
-            return false;
+            throw new RuntimeException("Failed creating new project");
         }
 
     }
