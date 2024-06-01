@@ -4,6 +4,7 @@ import com.softgallery.issuemanagementbackEnd.dto.project.ProjectDTO;
 import com.softgallery.issuemanagementbackEnd.service.project.ProjectServiceIF;
 
 import com.softgallery.issuemanagementbackEnd.service.project.ProjectState;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +19,8 @@ public class ProjectController {
     }
 
     @PostMapping("/create")
-    public boolean createProject(@RequestBody ProjectDTO projectDTO, @RequestHeader(name="Authorization") String token){
-        return projectService.createProject(projectDTO, token);
+    public ResponseEntity<Long> createProject(@RequestBody ProjectDTO projectDTO, @RequestHeader(name="Authorization") String token){
+        return ResponseEntity.ok().body(projectService.createProject(projectDTO, token));
     }
 
     @GetMapping("/selection/{projectId}")
