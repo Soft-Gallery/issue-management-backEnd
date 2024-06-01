@@ -10,6 +10,7 @@ import com.softgallery.issuemanagementbackEnd.repository.project.ProjectReposito
 import com.softgallery.issuemanagementbackEnd.service.projectMember.ProjectMemberService;
 import com.softgallery.issuemanagementbackEnd.service.user.UserService;
 
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,7 @@ public class ProjectService implements ProjectServiceIF {
     }
 
     @Override
+    @Transactional
     public Long createProject(final ProjectDTO projectDTO, final String token) {
 
         try {
