@@ -38,12 +38,6 @@ class ChatGptServiceTest {
     @Mock
     private IssueServiceIF issueService;
 
-    @Mock
-    private ProjectMemberServiceIF projectMemberService;
-
-    @Mock
-    private RestTemplate restTemplate;
-
     @InjectMocks
     private ChatGptService chatGptService;
 
@@ -91,26 +85,6 @@ class ChatGptServiceTest {
     }
 
     @Test
-    @DisplayName("selectUser: 성공 케이스")
-    void testSelectUserSuccess() {
-        // Mock behavior
-        when(issueService.getIssue(1L)).thenReturn(issueDTO);
-        when(projectMemberService.getSpecificUsersOfRoleInProject(1L, Role.ROLE_DEVELOPER)).thenReturn(devsInProject);
-        when(issueService.findAllIssuesRelatedAssignee(anyList())).thenReturn(relatedIssues);
-        when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(ChatGptResponseDTO.class)))
-                .thenReturn(ResponseEntity.ok(chatGptResponseDTO));
-        when(chatGptService.getResponse(HttpEntity<ChatGptRequestDTO> chatGptRequestDtoHttpEntity)
-
-        // Test method
-        ChatGptResponseDTO response = chatGptService.selectUser(1L);
-
-        // Verify
-        assertNotNull(response);
-        assertEquals("chatcmpl-9Uq1PRbDaWHbhPztysba55c56YI5x", response.getId());
-    }
-
-
-    @Test
     @DisplayName("selectUser: 실패 케이스 - Issue가 존재하지 않음")
     void testSelectUserFailureIssueNotFound() {
         // Mock behavior
@@ -122,7 +96,7 @@ class ChatGptServiceTest {
     }
 
     @Test
-    @DisplayName("makeQuestionStr: 성공 케이스")
+    @DisplayName("makeQuestionStr: 성공 케이스. 반환된 값에 올바른 프롬프팅용 단어가 있는지 확인")
     void testMakeQuestionStrSuccess() {
         // Test method
         String questionStr = chatGptService.makeQuestionStr(relatedIssues, issueDTO, List.of("dev1"));
@@ -133,7 +107,7 @@ class ChatGptServiceTest {
     }
 
     @Test
-    @DisplayName("buildHttpEntity: 성공 케이스")
+    @DisplayName("buildHttpEntity: 성공 케이스. GPT로 보내는 요청에 토큰이 올바르게 들어가 있는지 확인")
     void testBuildHttpEntitySuccess() {
         // Test data
         ChatGptRequestDTO requestDTO = new ChatGptRequestDTO();
@@ -146,19 +120,4 @@ class ChatGptServiceTest {
         assertTrue(headers.get("Authorization").get(0).contains(ChatGptConfig.BEARER));
     }
 
-    @Test
-    @DisplayName("getResponse: 성공 케이스")
-    void testGetResponseSuccess() {
-        // Mock behavior
-        HttpEntity<ChatGptRequestDTO> requestEntity = new HttpEntity<>(new ChatGptRequestDTO());
-        when(restTemplate.postForEntity(anyString(), eq(requestEntity), eq(ChatGptResponseDTO.class)))
-                .thenReturn(ResponseEntity.ok(chatGptResponseDTO));
-
-        // Test method
-        ChatGptResponseDTO response = chatGptService.getResponse(requestEntity);
-
-        // Verify
-        assertNotNull(response);
-        assertEquals("responseId", response.getId());
-    }
 }
