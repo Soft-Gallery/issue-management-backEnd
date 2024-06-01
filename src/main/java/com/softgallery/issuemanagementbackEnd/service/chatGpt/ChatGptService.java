@@ -63,7 +63,6 @@ public class ChatGptService implements ChatGptServiceIF {
         List<IssueDTO> relatedIssues=issueService.findAllIssuesRelatedAssignee(devIdsInProject);
 
         String content=makeQuestionStr(relatedIssues, issueDTO, devIdsInProject);
-        System.out.println(content);
 
         QuestionRequestDTO requestDTO = new QuestionRequestDTO(content);
 

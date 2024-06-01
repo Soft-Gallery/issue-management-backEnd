@@ -1,0 +1,45 @@
+@startuml
+participant User
+participant IssueController
+participant IssueServiceIF
+participant CommentServiceIF
+participant CommentRepository
+participant ProjectController
+participant ProjectServiceIF
+participant ProjectRepository
+participant IssueRepository
+participant SecurityFilterChain
+participant JWTFilter
+participant JWTUtil
+
+User -> SecurityFilterChain: HTTP Request
+SecurityFilterChain -> JWTFilter: Filter Request
+JWTFilter -> JWTUtil: getRole(String token)
+JWTUtil --> JWTFilter: Role
+JWTFilter --> SecurityFilterChain: Allow or Deny
+
+alt Role is Tester
+    User -> ProjectController: getProject
+    ProjectController -> ProjectServiceIF: getProject
+    ProjectServiceIF -> ProjectRepository: findById(Long projectId)
+    ProjectRepository --> ProjectServiceIF: Optional<ProjectEntity>
+    ProjectServiceIF --> ProjectController: ProjectEntity
+    ProjectController --> User: ProjectEntity
+    User -> IssueController: createIssue
+    IssueController -> IssueServiceIF: createIssue
+
+    IssueServiceIF -> IssueRepository: save(IssueEntity)
+    IssueRepository --> IssueServiceIF: IssueEntity
+
+    IssueServiceIF -> CommentServiceIF: createComment
+    CommentServiceIF -> CommentRepository: save(CommentEntity)
+    CommentRepository --> CommentServiceIF: CommentEntity
+
+    CommentServiceIF --> IssueServiceIF: Boolean
+
+    IssueServiceIF --> IssueController: Boolean
+    IssueController --> User: Boolean
+else Not Tester
+    SecurityFilterChain --> User: Access Denied
+end
+@enduml

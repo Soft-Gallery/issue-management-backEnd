@@ -1,0 +1,27 @@
+@startuml
+participant User
+participant ProjectController
+participant ProjectServiceIF
+participant ProjectRepository
+participant SecurityFilterChain
+participant JWTFilter
+participant JWTUtil
+
+User -> SecurityFilterChain: HTTP Request
+SecurityFilterChain -> JWTFilter: Filter Request
+JWTFilter -> JWTUtil: getRole(String token)
+JWTUtil --> JWTFilter: Role
+JWTFilter --> SecurityFilterChain: Allow or Deny
+
+alt Role is Admin
+
+    User -> ProjectController: createProject
+    ProjectController -> ProjectServiceIF: createProjectß
+    ProjectServiceIF -> ProjectRepository: save(ProjectEntity)
+    ProjectRepository --> ProjectServiceIF: ProjectEntity
+    ProjectServiceIF --> ProjectController: Boolean
+    ProjectController --> User: Boolean
+else Not Admin
+    SecurityFilterChain --> User: Access Denied
+end
+@enduml

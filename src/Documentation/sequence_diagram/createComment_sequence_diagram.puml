@@ -1,0 +1,13 @@
+@startuml
+participant User
+participant CommentController
+participant CommentServiceIF
+participant CommentRepository
+
+User -> CommentController: createComment
+CommentController -> CommentServiceIF: createComment
+CommentServiceIF -> CommentRepository: save(CommentEntity)
+CommentRepository --> CommentServiceIF: CommentEntity
+CommentServiceIF --> CommentController: Boolean
+CommentController --> User: Boolean
+@enduml

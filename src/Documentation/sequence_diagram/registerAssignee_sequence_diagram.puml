@@ -1,0 +1,59 @@
+@startuml
+participant User
+participant ChatGptController
+participant ChatGptServiceIF
+participant ProjectMemberServiceIF
+participant ProjectMemberRepository
+participant IssueServiceIF
+participant IssueController
+participant IssueRepository
+participant GptApi
+participant SecurityFilterChain
+participant JWTFilter
+participant JWTUtil
+
+User -> SecurityFilterChain: HTTP Request
+SecurityFilterChain -> JWTFilter: Filter Request
+JWTFilter -> JWTUtil: getRole(String token)
+JWTUtil --> JWTFilter: Role
+JWTFilter --> SecurityFilterChain: Allow or Deny
+
+alt Role is PL
+    User -> ChatGptController: selectUser(Long issueId)
+    ChatGptController -> ChatGptServiceIF: selectUser(Long issueId)
+    ChatGptServiceIF -> IssueServiceIF: getIssue(Long issueId)
+    IssueServiceIF -> IssueRepository: findById(Long issueId)
+    IssueRepository --> IssueServiceIF: IssueEntity
+    IssueServiceIF --> ChatGptServiceIF: IssueDTO
+
+    ChatGptServiceIF -> ProjectMemberServiceIF: getSpecificUsersOfRoleInProject(Role.ROLE_DEVELOPER)
+    ProjectMemberServiceIF -> ProjectMemberRepository: findAllByUserId(String userId)
+    ProjectMemberRepository --> ProjectMemberServiceIF: List<ProjectMemberEntity>
+    ProjectMemberServiceIF --> ChatGptServiceIF: List<UserDTO>
+
+    ChatGptServiceIF -> IssueServiceIF: findAllIssuesRelatedAssignee(List<String> devIds)
+    IssueServiceIF -> IssueRepository: findAllByAssigneeIdIn(List<String> devIds)
+    IssueRepository --> IssueServiceIF: List<IssueEntity
+    IssueServiceIF --> ChatGptServiceIF: List<IssueDTO
+
+    ChatGptServiceIF -> GptApi: makeQuestionStr(List<IssueDTO> issues, List<String> devIds)
+    GptApi --> ChatGptServiceIF: String
+    ChatGptServiceIF -> GptApi: buildHttpEntity
+    GptApi --> ChatGptServiceIF: HttpEntity<ChatGptRequestDTO>
+    ChatGptServiceIF -> GptApi: getResponse(HttpEntity<ChatGptRequestDTO> chatGptRequestDtoHttpEntity)
+    GptApi --> ChatGptServiceIF: ChatGptResponseDTO
+    ChatGptServiceIF --> ChatGptController: ChatGptResponseDTO
+    ChatGptController --> User: ChatGptResponseDTO
+
+    User -> IssueController: assignDev(Long issueId, String userId)
+    IssueController -> IssueServiceIF: assignDev(Long issueId, String userId)
+    IssueServiceIF -> IssueRepository: findById(Long issueId)
+    IssueRepository --> IssueServiceIF: Optional<IssueEntity>
+    IssueServiceIF -> IssueRepository: save(IssueEntity)
+    IssueRepository --> IssueServiceIF: IssueEntity
+    IssueServiceIF --> IssueController: void
+    IssueController --> User: void
+else Not PL
+    SecurityFilterChain --> User: Access Denied
+end
+@enduml

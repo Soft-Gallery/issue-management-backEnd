@@ -1,0 +1,67 @@
+@startuml
+participant User
+participant IssueController
+participant IssueServiceIF
+participant IssueRepository
+participant StatisticsServiceIF
+participant StatisticsRepository
+participant CommentServiceIF
+participant CommentRepository
+participant SecurityFilterChain
+participant JWTFilter
+participant JWTUtil
+
+User -> SecurityFilterChain: HTTP Request
+SecurityFilterChain -> JWTFilter: Filter Request
+JWTFilter -> JWTUtil: getRole(String token)
+JWTUtil --> JWTFilter: Role
+JWTFilter --> SecurityFilterChain: Allow or Deny
+
+    alt Role is Tester
+        User -> IssueController: createIssue
+        IssueController -> IssueServiceIF: createIssue
+        IssueServiceIF -> JWTUtil: getUserId(String token)
+        JWTUtil --> IssueServiceIF: String userId
+
+        IssueServiceIF -> IssueRepository: save(IssueEntity)
+        IssueRepository --> IssueServiceIF: IssueEntity
+
+        IssueServiceIF -> StatisticsServiceIF: createIssueStatistics(StatisticsDTO)
+        StatisticsServiceIF -> StatisticsRepository: save(StatisticsEntity)
+        StatisticsRepository --> StatisticsServiceIF: StatisticsEntity
+
+        IssueServiceIF -> CommentServiceIF: createComment
+        CommentServiceIF -> CommentRepository: save(CommentEntity)
+        CommentRepository --> CommentServiceIF: CommentEntity
+
+        CommentServiceIF --> IssueServiceIF: Boolean
+        IssueServiceIF --> IssueController: Boolean
+        IssueController --> User: Boolean
+    else Not Tester
+    end
+
+    alt Role is PL
+        User -> IssueController: assignDev
+        IssueController -> IssueServiceIF: assignDev
+        IssueServiceIF -> IssueRepository: findById(Long issueId)
+        IssueRepository --> IssueServiceIF: Optional<IssueEntity>
+
+        IssueServiceIF -> IssueEntity: setAssigneeId(String userId)
+        IssueServiceIF -> IssueRepository: save(IssueEntity)
+        IssueRepository --> IssueServiceIF: IssueEntity
+
+        IssueServiceIF -> StatisticsServiceIF: updateIssueStatistics
+        StatisticsServiceIF -> StatisticsRepository: findById(Long issueId)
+        StatisticsRepository --> StatisticsServiceIF: Optional<StatisticsEntity>
+
+        StatisticsServiceIF -> StatisticsEntity: setAssigneeId(String userId)
+        StatisticsServiceIF -> StatisticsRepository: save(StatisticsEntity)
+        StatisticsRepository --> StatisticsServiceIF: StatisticsEntity
+
+        IssueServiceIF --> IssueController: void
+        IssueController --> User: void
+    else Not PL
+    end
+    SecurityFilterChain --> User: Access Denied
+
+@enduml
