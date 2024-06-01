@@ -11,10 +11,6 @@ public interface IssueServiceIF {
     IssueDTO getIssue(Long id);
     void updateIssue(IssueDTO issueDTO, Long id);
     void deleteIssue(Long id);
-
-    IssueDTO switchIssueEntityToDTO(IssueEntity issueEntity);
-    IssueEntity switchIssueDTOToEntity(IssueDTO issueDTO, String userId);
-
     List<IssueDTO> findAllIssuesInProject(Long projectId);
     List<IssueDTO> findIssuesByState(Long projectId, State state);
     void assignDev(Long issueId, String userID);
@@ -25,13 +21,11 @@ public interface IssueServiceIF {
     List<IssueDTO> findFixedIssueRelatedToReporter(String token);
     void resolveIssue(String token, Long issueId);
     void closeIssue(Long issueId);
-
     Long countByPriority(Priority priority);
     Long countByStatus(State state);
-
     Long countByProjectIdAndPriority(Long projectId, Priority priority);
     Long countByProjectIdAndStatus(Long projectId, State state);
-
     List<IssueDTO> findAllIssuesRelatedAssignee(List<String> ids);
-
+    IssueDTO switchIssueEntityToDTO(IssueEntity issueEntity);
+    IssueEntity switchIssueDTOToEntity(IssueDTO issueDTO, String userId);
 }

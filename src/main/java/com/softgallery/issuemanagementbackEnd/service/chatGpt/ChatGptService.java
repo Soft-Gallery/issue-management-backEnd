@@ -53,7 +53,8 @@ public class ChatGptService implements ChatGptServiceIF {
     @Override
     public ChatGptResponseDTO selectUser(Long issueId) {
         IssueDTO issueDTO = issueService.getIssue(issueId);
-        List<UserDTO> devsInProject= projectMemberService.getSpecificUsersOfRoleInProject(issueDTO.getProjectId(), Role.ROLE_DEVELOPER);
+        List<UserDTO> devsInProject= projectMemberService.getSpecificUsersOfRoleInProject(issueDTO.getProjectId(),
+                Role.ROLE_DEVELOPER);
 
         List<String> devIdsInProject=new ArrayList<>();
         for(UserDTO userDTO:devsInProject) {
