@@ -5,7 +5,7 @@ import com.softgallery.issuemanagementbackEnd.dto.user.UserDTO;
 import com.softgallery.issuemanagementbackEnd.entity.project.ProjectEntity;
 
 public interface ProjectServiceIF {
-    boolean createProject(ProjectDTO projectDTO, String Token);
+    Long createProject(ProjectDTO projectDTO, String Token);
     ProjectDTO getProject(Long id);
     boolean updateProject(ProjectDTO projectDTO);
     boolean deleteProject(Long id);

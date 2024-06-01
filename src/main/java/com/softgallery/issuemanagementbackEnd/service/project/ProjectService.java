@@ -10,6 +10,7 @@ import com.softgallery.issuemanagementbackEnd.repository.project.ProjectReposito
 import com.softgallery.issuemanagementbackEnd.service.projectMember.ProjectMemberService;
 import com.softgallery.issuemanagementbackEnd.service.user.UserService;
 
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,8 @@ public class ProjectService implements ProjectServiceIF {
     }
 
     @Override
-    public boolean createProject(final ProjectDTO projectDTO, final String token) {
+    @Transactional
+    public Long createProject(final ProjectDTO projectDTO, final String token) {
 
         try {
             ProjectEntity projectEntity = new ProjectEntity();
@@ -47,9 +49,9 @@ public class ProjectService implements ProjectServiceIF {
             UserDTO adminDTO = userService.getUser(token);
             assignUserToProject(savedProjectEntity.getProjectId(), adminDTO);
 
-            return true;
+            return savedProjectEntity.getProjectId();
         } catch (IllegalArgumentException e){
-            return false;
+            throw new RuntimeException("Failed creating new project");
         }
 
     }

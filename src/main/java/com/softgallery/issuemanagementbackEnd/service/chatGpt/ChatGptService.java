@@ -59,8 +59,10 @@ public class ChatGptService implements ChatGptServiceIF {
     @Override
     public Map<String, String> selectUser(Long issueId) {
         IssueDTO issueDTO = issueService.getIssue(issueId);
-        List<UserDTO> devsInProject= projectMemberService.getSpecificUsersOfRoleInProject(issueDTO.getProjectId(),
-                Role.ROLE_DEVELOPER);
+
+        if(issueDTO==null) throw new RuntimeException("can not find Issue because issue id " + issueId + " is null");
+
+        List<UserDTO> devsInProject= projectMemberService.getSpecificUsersOfRoleInProject(issueDTO.getProjectId(), Role.ROLE_DEVELOPER);
 
         List<String> devIdsInProject=new ArrayList<>();
         for(UserDTO userDTO:devsInProject) {
@@ -71,7 +73,7 @@ public class ChatGptService implements ChatGptServiceIF {
 
         String content=makeQuestionStr(relatedIssues, issueDTO, devIdsInProject);
 
-        QuestionRequestDTO requestDTO = new QuestionRequestDTO(content);
+        QuestionRequestDTO requestDTO = new  QuestionRequestDTO(content);
 
         return this.getResponse(
                 this.buildHttpEntity(
