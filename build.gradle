@@ -54,6 +54,9 @@ dependencies {
 
 	//  SpringDoc
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+
+	// org.json
+	implementation 'org.json:json:20210307'
 }
 
 tasks.named('test') {
