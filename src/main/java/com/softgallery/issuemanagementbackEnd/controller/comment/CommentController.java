@@ -6,6 +6,7 @@ import com.softgallery.issuemanagementbackEnd.service.comment.CommentServiceIF;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,12 +31,12 @@ public class CommentController {
         return commentService.createComment(commentDTO, userToken, issueId);
     }
 
-    @PostMapping("/get/{id}")
+    @GetMapping("/get/{id}")
     public CommentDTO getComment(@PathVariable Long id) throws ObjectNotFoundException {
         return commentService.getComment(id);
     }
 
-    @PostMapping("/get-list/{issueId}")
+    @GetMapping("/get-list/{issueId}")
     public List<CommentDTO> getCommentsInIssue(@PathVariable Long issueId) {
         return commentService.getCommentsInIssue(issueId);
     }
