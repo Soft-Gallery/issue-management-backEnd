@@ -54,16 +54,17 @@ class ProjectServiceTest {
         String token = "Bearer token";
         String userId = "user123";
         UserDTO userDTO = new UserDTO(userId, "User Name", "user@example.com", "password", Role.ROLE_ADMIN);
-
+        ProjectEntity projectEntity = new ProjectEntity();
+        projectEntity.setProjectId(1234L);
         when(jwtUtil.getUserId(any())).thenReturn(userId);
         when(userService.getUser(anyString())).thenReturn(userDTO);
-        when(projectRepository.save(any(ProjectEntity.class))).thenReturn(new ProjectEntity());
+        when(projectRepository.save(any(ProjectEntity.class))).thenReturn(projectEntity);
 
         // when
-        boolean result = projectService.createProject(projectDTO, token);
+        Long result = projectService.createProject(projectDTO, token);
 
         // then
-        assertTrue(result);
+        assert(result==1234L);
         verify(projectRepository, times(1)).save(any(ProjectEntity.class));
         verify(userService, times(1)).getUser(anyString());
         verify(projectMemberService, times(1)).addProjectMember(anyList());
