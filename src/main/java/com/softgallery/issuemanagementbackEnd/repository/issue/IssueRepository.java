@@ -17,24 +17,24 @@ public interface IssueRepository extends JpaRepository<IssueEntity, Long> {
     @Override
     Optional<IssueEntity> findById(Long id);
 
-    List<IssueEntity> findAllByStatus(State status);
-    List<IssueEntity> findAllByStatusAndAssigneeId(State status, String assigneeId);
+    List<IssueEntity> findAllByStatusOrderByStartDateDesc(State status);
+    List<IssueEntity> findAllByStatusAndAssigneeIdOrderByStartDateDesc(State status, String assigneeId);
 
-    List<IssueEntity> findAllByStatusAndAssigneeIdAndProjectId(State status, String assigneeId, Long projectId);
+    List<IssueEntity> findAllByStatusAndAssigneeIdAndProjectIdOrderByStartDateDesc(State status, String assigneeId, Long projectId);
 
-    List<IssueEntity> findAllByStatusAndReporterIdAndProjectId(State status, String reporterId, Long projectId);
-    List<IssueEntity> findAllByStatusAndReporterId(State status, String ReporterId);
+    List<IssueEntity> findAllByStatusAndReporterIdAndProjectIdOrderByStartDateDesc(State status, String reporterId, Long projectId);
+    List<IssueEntity> findAllByStatusAndReporterIdOrderByStartDateDesc(State status, String ReporterId);
 
-    List<IssueEntity> findAllByStatusAndProjectId(State state, Long projectId);
+    List<IssueEntity> findAllByStatusAndProjectIdOrderByStartDateDesc(State state, Long projectId);
 
-    List<IssueEntity> findAllByProjectIdAndStatusNot(Long projectId, State status);
+    List<IssueEntity> findAllByProjectIdAndStatusNotOrderByStartDateDesc(Long projectId, State status);
 
-    List<IssueEntity> findAllByAssigneeIdIn(List<String> assigneeIds);
+    List<IssueEntity> findAllByAssigneeIdInOrderByStartDateDesc(List<String> assigneeIds);
 
     @Override
     List<IssueEntity> findAll();
 
-    List<IssueEntity> findAllByProjectId(Long projectId);
+    List<IssueEntity> findAllByProjectIdOrderByStartDateDesc(Long projectId);
 
     @Override
     void delete(IssueEntity entity);
