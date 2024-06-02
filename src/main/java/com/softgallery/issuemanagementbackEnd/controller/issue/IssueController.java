@@ -79,4 +79,9 @@ public class IssueController {
     public void closeIssue(@PathVariable("issueId") Long issueId) {
         this.issueServiceIF.closeIssue(issueId);
     }
+
+    @GetMapping("/reopening/{issueId}")
+    public void reopenIssue(@PathVariable("issueId") Long issueId) {
+        this.issueServiceIF.reopenIssue(issueId);
+    }
 }

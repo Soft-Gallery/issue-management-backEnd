@@ -5,5 +5,6 @@ public enum State {
     ASSIGNED,
     FIXED,
     RESOLVED,
-    CLOSED
+    CLOSED,
+    REOPENED
 }

@@ -70,7 +70,7 @@ public class IssueService implements IssueServiceIF {
     }
 
     public List<IssueDTO> findStateIssues(Long projectId, State state) {
-        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndProjectId(state, projectId);
+        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndProjectIdOrderByStartDateDesc(state, projectId);
         List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
         for(IssueEntity currEntity:issueEntities) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));
@@ -101,7 +101,7 @@ public class IssueService implements IssueServiceIF {
 
     @Override
     public List<IssueDTO> findAllIssuesInProject(Long projectId) {
-        List<IssueEntity> issueEntities = issueRepository.findAllByProjectId(projectId);
+        List<IssueEntity> issueEntities = issueRepository.findAllByProjectIdOrderByStartDateDesc(projectId);
         List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
         for(IssueEntity currEntity:issueEntities) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));
@@ -111,7 +111,7 @@ public class IssueService implements IssueServiceIF {
 
     @Override
     public List<IssueDTO> findIssuesByState(Long projectId, State state) {
-        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndProjectId(state, projectId);
+        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndProjectIdOrderByStartDateDesc(state, projectId);
         List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
         for(IssueEntity currEntity:issueEntities) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));
@@ -136,12 +136,18 @@ public class IssueService implements IssueServiceIF {
 
     @Override
     public List<IssueDTO> findIssuesAssignedToMe(String token) {
-        String realToken=JWTUtil.getOnlyToken(token);
-        String userId=jwtUtil.getUserId(realToken);
+        String realToken = JWTUtil.getOnlyToken(token);
+        String userId = jwtUtil.getUserId(realToken);
 
-        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndAssigneeId(State.ASSIGNED, userId);
+        List<IssueEntity> issueEntitiesReopened = issueRepository.findAllByStatusAndAssigneeIdOrderByStartDateDesc(State.REOPENED, userId);
+        List<IssueEntity> issueEntitiesAssigned = issueRepository.findAllByStatusAndAssigneeIdOrderByStartDateDesc(State.ASSIGNED, userId);
         List<IssueDTO> issueDTOS = new ArrayList<>();
-        for(IssueEntity currEntity:issueEntities) {
+
+        for(IssueEntity currEntity:issueEntitiesReopened) {
+            issueDTOS.add(switchIssueEntityToDTO(currEntity));
+        }
+
+        for(IssueEntity currEntity:issueEntitiesAssigned) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));
         }
         return issueDTOS;
@@ -152,9 +158,15 @@ public class IssueService implements IssueServiceIF {
         String realToken=JWTUtil.getOnlyToken(token);
         String userId=jwtUtil.getUserId(realToken);
 
-        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndAssigneeIdAndProjectId(State.ASSIGNED, userId, projectId);
+        List<IssueEntity> issueEntitiesReopened = issueRepository.findAllByStatusAndAssigneeIdAndProjectIdOrderByStartDateDesc(State.REOPENED, userId, projectId);
+        List<IssueEntity> issueEntitiesAssigned = issueRepository.findAllByStatusAndAssigneeIdAndProjectIdOrderByStartDateDesc(State.ASSIGNED, userId, projectId);
         List<IssueDTO> issueDTOS = new ArrayList<>();
-        for(IssueEntity currEntity:issueEntities) {
+
+        for(IssueEntity currEntity:issueEntitiesReopened) {
+            issueDTOS.add(switchIssueEntityToDTO(currEntity));
+        }
+
+        for(IssueEntity currEntity:issueEntitiesAssigned) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));
         }
         return issueDTOS;
@@ -187,7 +199,7 @@ public class IssueService implements IssueServiceIF {
         String realToken=JWTUtil.getOnlyToken(token);
         String userId=jwtUtil.getUserId(realToken);
 
-        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndReporterId(State.FIXED, userId);
+        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndReporterIdOrderByStartDateDesc(State.FIXED, userId);
         List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
         for(IssueEntity currEntity:issueEntities) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));
@@ -200,7 +212,7 @@ public class IssueService implements IssueServiceIF {
         String realToken=JWTUtil.getOnlyToken(token);
         String userId=jwtUtil.getUserId(realToken);
 
-        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndReporterIdAndProjectId(State.FIXED, userId, projectId);
+        List<IssueEntity> issueEntities = issueRepository.findAllByStatusAndReporterIdAndProjectIdOrderByStartDateDesc(State.FIXED, userId, projectId);
         List<IssueDTO> issueDTOS = new ArrayList<IssueDTO>();
         for(IssueEntity currEntity:issueEntities) {
             issueDTOS.add(switchIssueEntityToDTO(currEntity));
@@ -243,6 +255,20 @@ public class IssueService implements IssueServiceIF {
     }
 
     @Override
+    public void reopenIssue(Long issueId) {
+        Optional<IssueEntity> issueEntity = issueRepository.findById(issueId);
+        if(!issueEntity.isPresent()) {
+            throw new RuntimeException("IssueEntity with id " + issueId + " not found.");
+        }
+        else {
+            IssueEntity issue = issueEntity.get();
+            issue.setFixerId(null);
+            issue.setStatus(State.REOPENED);
+            issueRepository.save(issue);
+        }
+    }
+
+    @Override
     public Long countByPriority(Priority priority) {
         return issueRepository.countByPriority(priority);
     }
@@ -263,7 +289,7 @@ public class IssueService implements IssueServiceIF {
     }
 
     public List<IssueDTO> findAllIssuesRelatedAssignee(List<String> ids) {
-        List<IssueEntity> issues = issueRepository.findAllByAssigneeIdIn(ids);
+        List<IssueEntity> issues = issueRepository.findAllByAssigneeIdInOrderByStartDateDesc(ids);
         List<IssueDTO> ret=new ArrayList<IssueDTO>();
         for(IssueEntity issue:issues) {
             ret.add(switchIssueEntityToDTO(issue));

@@ -57,8 +57,7 @@ public class SecurityConfig {
                         .requestMatchers(AUTH_WHITELIST)
                         .permitAll()
                         .requestMatchers("/admin", "/project/create").hasRole("ADMIN")
-                        .requestMatchers("/pl", "/issue/assignment/*/*", "/gpt/recommendation/*",
-                                "/issue/closing/").hasRole("PL")
+                        .requestMatchers("/pl", "/issue/assignment/*/*", "/issue/reopening/*", "/gpt/recommendation/*", "/issue/closing/*").hasRole("PL")
                         .requestMatchers("/tester", "/issue/new", "/issue/resolving/*").hasRole("TESTER")
                         .requestMatchers("/developer", "/issue/fixing/*").hasRole("DEVELOPER")
                         .anyRequest().authenticated()
