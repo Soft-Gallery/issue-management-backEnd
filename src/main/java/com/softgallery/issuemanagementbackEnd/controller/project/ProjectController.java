@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @ResponseBody
 @RequestMapping("/project")
@@ -41,6 +43,11 @@ public class ProjectController {
     @GetMapping("/change/{projectId}/state/{state}")
     public boolean changeDiffState(@PathVariable("projectId") Long projectId, @PathVariable("state") ProjectState projectState) {
         return projectService.changeDiffState(projectId, projectState);
+    }
+
+    @GetMapping("/adminid")
+    public List<ProjectDTO> findByAdminId(@RequestHeader(name="Authorization") String token) {
+        return projectService.findByAdminId(token);
     }
 
 }
