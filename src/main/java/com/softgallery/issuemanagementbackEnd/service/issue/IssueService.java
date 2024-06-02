@@ -40,6 +40,7 @@ public class IssueService implements IssueServiceIF {
     public boolean createIssue(final IssueDTO issueDTO, CommentDTO commentDTO, String fullToken) {
         try {
             String currUserId = jwtUtil.getUserId(JWTUtil.getOnlyToken(fullToken));
+            System.out.println(issueDTO.getTitle());
             IssueEntity savedEntity = issueRepository.save(switchIssueDTOToEntity(issueDTO, currUserId));
 
             StatisticsEntity statisticsEntity = new StatisticsEntity();
