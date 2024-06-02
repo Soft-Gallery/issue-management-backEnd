@@ -124,6 +124,17 @@ public class ProjectService implements ProjectServiceIF {
         projectMemberService.addProjectMember(ret);
     }
 
+    @Override
+    public List<ProjectDTO> findByAdminId(String token) {
+        String id = jwtUtil.getUserId(JWTUtil.getOnlyToken(token));
+        List<ProjectEntity> projects = projectRepository.findAllByAdminId(id);
+        List<ProjectDTO> retProjects = new ArrayList<>();
+        for(ProjectEntity project:projects) {
+            retProjects.add(switchProjectEntityToDTO(project));
+        }
+        return retProjects;
+    }
+
     public ProjectDTO switchProjectEntityToDTO(ProjectEntity projectEntity) {
         return new ProjectDTO(projectEntity.getProjectId(), projectEntity.getName(),
                 projectEntity.getDescription(), projectEntity.getProjectState(), projectEntity.getAdminId());
