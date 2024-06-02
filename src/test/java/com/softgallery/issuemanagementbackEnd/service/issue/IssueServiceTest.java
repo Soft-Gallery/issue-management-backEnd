@@ -197,7 +197,7 @@ class IssueServiceTest {
         issueEntities.add(issueEntity);
 
         when(jwtUtil.getUserId(any())).thenReturn(userId);
-        when(issueRepository.findAllByStatusAndAssigneeId(State.ASSIGNED, userId)).thenReturn(issueEntities);
+        when(issueRepository.findAllByStatusAndAssigneeIdOrderByStartDateDesc(State.ASSIGNED, userId)).thenReturn(issueEntities);
 
         // when
         List<IssueDTO> result = issueService.findIssuesAssignedToMe(fullToken);
@@ -205,7 +205,7 @@ class IssueServiceTest {
         // then
         assertNotNull(result);
         assertFalse(result.isEmpty());
-        verify(issueRepository, times(1)).findAllByStatusAndAssigneeId(State.ASSIGNED, userId);
+        verify(issueRepository, times(1)).findAllByStatusAndAssigneeIdOrderByStartDateDesc(State.ASSIGNED, userId);
     }
 
     @Test
