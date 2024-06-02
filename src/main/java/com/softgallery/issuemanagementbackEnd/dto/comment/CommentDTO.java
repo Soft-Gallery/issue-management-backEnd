@@ -13,6 +13,21 @@ public class CommentDTO {
 
     public CommentDTO() { }
 
+    public CommentDTO(String text) {
+        this.text = text;
+    }
+
+    public CommentDTO(String text, String authorId) {
+        this.text = text;
+        this.authorId = authorId;
+    }
+
+    public CommentDTO(String text, String authorId, Long issueId) {
+        this.text = text;
+        this.authorId = authorId;
+        this.issueId = issueId;
+    }
+
     public CommentDTO(final Long id, final String text, final LocalDateTime createdAt, final String authorId) {
         this.id = id;
         this.text = text;
