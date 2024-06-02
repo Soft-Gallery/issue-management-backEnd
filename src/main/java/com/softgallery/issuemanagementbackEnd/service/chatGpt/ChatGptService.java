@@ -9,6 +9,7 @@ import com.softgallery.issuemanagementbackEnd.dto.user.UserDTO;
 import com.softgallery.issuemanagementbackEnd.service.issue.IssueServiceIF;
 import com.softgallery.issuemanagementbackEnd.service.projectMember.ProjectMemberServiceIF;
 import com.softgallery.issuemanagementbackEnd.service.user.Role;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,9 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ChatGptService implements ChatGptServiceIF {
@@ -41,17 +40,24 @@ public class ChatGptService implements ChatGptServiceIF {
         return new HttpEntity<>(requestDto, headers);
     }
 
-    public ChatGptResponseDTO getResponse(HttpEntity<ChatGptRequestDTO> chatGptRequestDtoHttpEntity) {
+    @Override
+    public Map<String, String> getResponse(HttpEntity<ChatGptRequestDTO> chatGptRequestDtoHttpEntity) {
         ResponseEntity<ChatGptResponseDTO> responseEntity = restTemplate.postForEntity(
                 ChatGptConfig.URL,
                 chatGptRequestDtoHttpEntity,
                 ChatGptResponseDTO.class);
 
-        return responseEntity.getBody();
+        String output = responseEntity.getBody().getChoices().get(0).getMessage().getContent();
+
+        JSONObject jsonObject = new JSONObject(output);
+        Map<String, String> response = new HashMap<>();
+        response.put("answer", jsonObject.getString("answer"));
+        response.put("reason", jsonObject.getString("reason"));
+        return response;
     }
 
     @Override
-    public ChatGptResponseDTO selectUser(Long issueId) {
+    public Map<String, String> selectUser(Long issueId) {
         IssueDTO issueDTO = issueService.getIssue(issueId);
 
         if(issueDTO==null) throw new RuntimeException("can not find Issue because issue id " + issueId + " is null");
