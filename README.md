@@ -7,7 +7,8 @@
 - [HOW TO INSTALL](#INSTALLATION)💻
 - [EXECUTION](#EXECUTION)💫  
 - [TEAM MEMBERS](#TEAM_MEMBERS)🩵
-- [TECK STACK](#TECH_STACK)🩵
+- [TECH STACK](#TECH_STACK)🩵
+- [FILE STRUCTURE](#STRUCTURE)🩵
 ---
 ## 🎍INTRO
 2024년 1학기 중앙대학교 소프트웨어 공학 코스 텀 프로젝트.🔥🔥      
@@ -147,9 +148,171 @@ https://github.com/Soft-Gallery/issue-management-app.git
 <br>
 
 ## 🎍TECH_STACK
-- Server & DB : Spring boot, MySQL✨
-- Client : React, React Native✨
-- 배포 관리 : AWS✨  
+<img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=spring boot&logoColor=white">
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
+<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white">
+<img src="https://img.shields.io/badge/React Native-61DAFB?style=for-the-badge&logo=react&logoColor=white">
+<img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=amazon ec2&logoColor=white">
+<img src="https://img.shields.io/badge/Amazon RDs-527FFF?style=for-the-badge&logo=amazon rds&logoColor=white">
+<img src="https://img.shields.io/badge/Ngrok-1F1E37?style=for-the-badge&logo=ngrok&logoColor=white">
+<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white">
+<img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white">
+<img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=white">
+<img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white">
+<img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white">
 
 ![tech.png](./docs/images/tech.png)
+<br>
+
+## 🎍STRUCTURE
+- 2024.06.02 ver
+```
+src
+├── main
+│   ├── java
+│   │   └── com
+│   │       └── softgallery
+│   │           └── issuemanagementbackEnd
+│   │               ├── IssueManagementBackEndApplication.java
+│   │               ├── authentication
+│   │               │   ├── CustomUserDetails.java
+│   │               │   ├── CustomUserDetailsService.java
+│   │               │   ├── JWTFilter.java
+│   │               │   ├── JWTUtil.java
+│   │               │   └── LoginFilter.java
+│   │               ├── config
+│   │               │   ├── CORsMVCConfig.java
+│   │               │   ├── ChatGptConfig.java
+│   │               │   ├── CorsConfig.java
+│   │               │   ├── SecurityConfig.java
+│   │               │   └── SwaggerConfig.java
+│   │               ├── controller
+│   │               │   ├── Home.java
+│   │               │   ├── chat_gpt
+│   │               │   │   └── ChatGptController.java
+│   │               │   ├── comment
+│   │               │   │   └── CommentController.java
+│   │               │   ├── issue
+│   │               │   │   └── IssueController.java
+│   │               │   ├── project
+│   │               │   │   └── ProjectController.java
+│   │               │   ├── project_member
+│   │               │   │   └── ProjectMemberController.java
+│   │               │   ├── statistics
+│   │               │   │   └── StatisticsController.java
+│   │               │   └── user
+│   │               │       └── UserController.java
+│   │               ├── dto
+│   │               │   ├── chat_gpt
+│   │               │   │   ├── ChatGptRequestDTO.java
+│   │               │   │   ├── ChatGptResponseDTO.java
+│   │               │   │   ├── Choice.java
+│   │               │   │   ├── Message.java
+│   │               │   │   └── QuestionRequestDTO.java
+│   │               │   ├── comment
+│   │               │   │   └── CommentDTO.java
+│   │               │   ├── issue
+│   │               │   │   ├── IssueCreationRequestDTO.java
+│   │               │   │   └── IssueDTO.java
+│   │               │   ├── project
+│   │               │   │   └── ProjectDTO.java
+│   │               │   ├── project_member
+│   │               │   │   └── ProjectMemberDTO.java
+│   │               │   ├── statistics
+│   │               │   │   └── StatisticsDTO.java
+│   │               │   └── user
+│   │               │       └── UserDTO.java
+│   │               ├── entity
+│   │               │   ├── comment
+│   │               │   │   └── CommentEntity.java
+│   │               │   ├── issue
+│   │               │   │   └── IssueEntity.java
+│   │               │   ├── project
+│   │               │   │   └── ProjectEntity.java
+│   │               │   ├── project_member
+│   │               │   │   └── ProjectMemberEntity.java
+│   │               │   ├── statistics
+│   │               │   │   └── StatisticsEntity.java
+│   │               │   └── user
+│   │               │       ├── AdminEntity.java
+│   │               │       ├── DeveloperEntity.java
+│   │               │       ├── PLEntity.java
+│   │               │       ├── TesterEntity.java
+│   │               │       └── UserEntity.java
+│   │               ├── exception
+│   │               │   ├── ObjectNotFoundException.java
+│   │               │   └── ProjectMemberNotFoundException.java
+│   │               ├── repository
+│   │               │   ├── comment
+│   │               │   │   └── CommentRepository.java
+│   │               │   ├── issue
+│   │               │   │   └── IssueRepository.java
+│   │               │   ├── project
+│   │               │   │   └── ProjectRepository.java
+│   │               │   ├── project_member
+│   │               │   │   └── ProjectMemberRepository.java
+│   │               │   ├── statistics
+│   │               │   │   └── StatisticsRepository.java
+│   │               │   └── user
+│   │               │       └── UserRepository.java
+│   │               └── service
+│   │                   ├── chatGpt
+│   │                   │   ├── ChatGptService.java
+│   │                   │   ├── ChatGptServiceIF.java
+│   │                   │   └── GptPrompt.java
+│   │                   ├── comment
+│   │                   │   ├── CommentService.java
+│   │                   │   └── CommentServiceIF.java
+│   │                   ├── custom_annotation
+│   │                   │   ├── IDRule.java
+│   │                   │   └── PasswordRule.java
+│   │                   ├── issue
+│   │                   │   ├── IssueService.java
+│   │                   │   ├── IssueServiceIF.java
+│   │                   │   ├── MainCause.java
+│   │                   │   ├── Priority.java
+│   │                   │   └── State.java
+│   │                   ├── project
+│   │                   │   ├── ProjectService.java
+│   │                   │   ├── ProjectServiceIF.java
+│   │                   │   └── ProjectState.java
+│   │                   ├── projectMember
+│   │                   │   ├── ProjectMemberService.java
+│   │                   │   └── ProjectMemberServiceIF.java
+│   │                   ├── statistics
+│   │                   │   ├── StatisticsService.java
+│   │                   │   └── StatisticsServiceIF.java
+│   │                   └── user
+│   │                       ├── Role.java
+│   │                       ├── UserEntityFactory.java
+│   │                       ├── UserService.java
+│   │                       └── UserServiceIF.java
+│   └── resources
+│       └── application.properties
+└── test
+    └── java
+        └── com
+            └── softgallery
+                └── issuemanagementbackEnd
+                    ├── IssueManagementBackEndApplicationTests.java
+                    └── service
+                        ├── chatGpt
+                        │   └── ChatGptServiceTest.java
+                        ├── comment
+                        │   └── CommentServiceTest.java
+                        ├── custom_annotation
+                        │   └── IDRuleTest.java
+                        ├── issue
+                        │   └── IssueServiceTest.java
+                        ├── project
+                        │   └── ProjectServiceTest.java
+                        ├── projectMember
+                        │   └── ProjectMemberServiceTest.java
+                        ├── statistics
+                        │   └── StatisticsServiceTest.java
+                        └── user
+                            └── UserServiceTest.java
+
+
+```
 
