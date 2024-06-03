@@ -15,7 +15,7 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("http://204.236.203.188", "http://localhost:3000/")); // 모든 Origin 허용
+        config.setAllowedOrigins(Arrays.asList("http://18.205.75.48", "http://204.236.203.188", "http://localhost:3000/")); // 모든 Origin 허용
         config.addAllowedHeader("*");
         config.addExposedHeader("Authorization"); // 클라이언트가 접근할 수 있도록 노출할 헤더 추가
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
