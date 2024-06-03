@@ -30,6 +30,12 @@ public class UserService implements UserServiceIF {
         Role userRole = userDTO.getRole();
         String userPassword=userDTO.getPassword();
 
+        System.out.println(userDTO.getName());
+        System.out.println(userDTO.getId());
+        System.out.println(userDTO.getRole());
+        System.out.println(userDTO.getPassword());
+        System.out.println(userDTO.getEmail());
+
         Boolean isExist = userRepository.existsByUserId(userId);
 
         if(isExist) return false;
